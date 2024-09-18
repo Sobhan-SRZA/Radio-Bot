@@ -1,7 +1,7 @@
 {
   "name": "radio-bot",
   "version": "0.0.0",
-  "description": "Discord advanced voice channel radio bot.",
+  "description": "This is an advanced radio bot for Discord voice channels, allowing users to switch stations, manage AFK users, and enjoy a sleek and easy-to-use panel.",
   "main": "index.js",
   "scripts": {
     "start": "node ."
