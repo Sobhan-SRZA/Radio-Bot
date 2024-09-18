@@ -20,10 +20,10 @@ module.exports = async client => {
       rest = new REST().setToken(config.discord.token);
 
     // Remove all of last commands
-    await rest.put(
-      Routes.applicationCommands(client.user.id),
-      { body: [] }
-    );
+    // await rest.put(
+    //   Routes.applicationCommands(client.user.id),
+    //   { body: [] }
+    // );
     let data;
     post(`Started refreshing ${clc.cyanBright(commands.size)} application (/) commands.`, "S");
     if (config.source.one_guild) {
