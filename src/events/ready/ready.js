@@ -15,12 +15,12 @@ const
 module.exports = async client => {
   try {
     // Load Slash Commands
-    post(`Started refreshing ${clc.cyanBright(commands.length)} application (/) commands.`, "S");
     const
-      commands = client.commands.filter(a => a.only_slash),
-      rest = new REST().setToken(config.discord.token);
-
+    commands = client.commands.filter(a => a.only_slash),
+    rest = new REST().setToken(config.discord.token);
+    
     let data;
+    post(`Started refreshing ${clc.cyanBright(commands.length)} application (/) commands.`, "S");
     if (config.source.one_guild) {
       // await client.guilds.cache
       //   .get(config.discord.support.id)
