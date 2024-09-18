@@ -1,5 +1,5 @@
 const
-  { ActivityType } = require("discord.js"),
+  { ActivityType, Routes, REST } = require("discord.js"),
   clc = require("cli-color"),
   post = require("../../functions/post"),
   error = require("../../functions/error"),
@@ -15,15 +15,29 @@ const
 module.exports = async client => {
   try {
     // Load Slash Commands
-    const commands = client.commands.filter(a => a.only_slash);
-    if (config.source.one_guild)
-      await client.guilds.cache
-        .get(config.discord.support.id)
-        .commands.set(commands);
+    post(`Started refreshing ${clc.cyanBright(commands.length)} application (/) commands.`, "S");
+    const
+      commands = client.commands.filter(a => a.only_slash),
+      rest = new REST().setToken(config.discord.token);
 
-    else await client.application.commands.set(commands);
-
-    post(`${clc.cyanBright(commands.size)} Slash Commands Is Uploaded!!`, "S");
+    let data;
+    if (config.source.one_guild) {
+      // await client.guilds.cache
+      //   .get(config.discord.support.id)
+      //   .commands.set(commands);
+      data = await rest.put(
+        Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
+        { body: commands }
+      );
+    }
+    else {
+      // await client.application.commands.set(commands);
+      data = await rest.put(
+        Routes.applicationCommands(client.user.id),
+        { body: commands }
+      );
+    };
+    post(`Successfully reloaded ${clc.cyanBright(data.length)} application (/) commands.`, "S");
 
     // Change Bot Status
     setInterval(function () {

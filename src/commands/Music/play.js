@@ -1,5 +1,3 @@
-const chunkArray = require("../../functions/chunkArray");
-
 const
     {
         ApplicationCommandType,
@@ -16,6 +14,7 @@ const
     })).map(a => JSON.parse(a)),
     config = require("../../../config"),
     selectLanguage = require("../../functions/selectLanguage"),
+    chunkArray = require("../../functions/chunkArray"),
     options = [];
 
 chunkArray(choices, 25)
@@ -67,7 +66,7 @@ module.exports = {
     only_owner: false,
     only_slash: true,
     only_message: true,
-    options: JSON.stringify(options),
+    options: options.map(a => JSON.parse(a)),
 
     /**
      * 
