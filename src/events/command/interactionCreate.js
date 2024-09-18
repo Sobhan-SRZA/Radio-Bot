@@ -57,7 +57,7 @@ module.exports = async (client, interaction) => {
 
 
         const fcmd = client.application.commands.cache.find(c => c.name === command.name);
-        const mentionCommand = `</${fcmd.name}${interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ? ` ${interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${fcmd.id}>`;
+        const mentionCommand = `</${fcmd?.name}${interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ? ` ${interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${fcmd?.id}>`;
         if (interaction.guild) {
           const bot_perms = [];
           const user_perms = [];

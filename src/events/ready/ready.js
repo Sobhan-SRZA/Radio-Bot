@@ -27,16 +27,14 @@ module.exports = async client => {
     let data;
     post(`Started refreshing ${clc.cyanBright(commands.size)} application (/) commands.`, "S");
     if (config.source.one_guild) {
-      // await client.guilds.cache
-      //   .get(config.discord.support.id)
-      //   .commands.set(commands);
+      // await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
       data = await rest.put(
         Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
         { body: commands }
       );
     }
     else {
-      // await client.application.commands.set(commands);
+      // await client.application.commands.set(commands); // Old way
       data = await rest.put(
         Routes.applicationCommands(client.user.id),
         { body: commands }
