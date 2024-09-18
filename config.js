@@ -1,11 +1,11 @@
 module.exports = {
   source: {
-    default_language: process.env.default_language || "en", // Bot default language in discord.
-    anti_crash: process.env.anti_crash || false, // Anticrash on or off
-    one_guild: process.env.one_guild || false, // One Guild on or off
-    logger: process.env.logger || false, // Webhook logger on or off
+    default_language: process.env.default_language === "true" ? true : false || "en", // Bot default language in discord.
+    anti_crash: process.env.anti_crash === "true" ? true : false || false, // Anticrash on or off
+    one_guild: process.env.one_guild === "true" ? true : false || false, // One Guild on or off
+    logger: process.env.logger === "true" ? true : false || false, // Webhook logger on or off
     dashboard: {
-      on: process.env.dashboard || false, // Dashboad on or off
+      on: process.env.dashboard === "true" ? true : false || false, // Dashboad on or off
       port: process.env.dashboard_port || 3000, // Dashboard port server.
       host: process.env.dashboard_host || "http://localhost:3000" // Dashboard host url.
     },
