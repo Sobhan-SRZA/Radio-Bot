@@ -28,34 +28,27 @@ module.exports = async (client, message) => {
         language: `language.${message.guildId}`
       };
 
-    // Filter dm channels
-    if (message.channel.type === ChannelType.DM) return;
-
-    // Filter webhooks
-    if (!message || message?.webhookId) return;
-
-    // Filter the bots
-    if (message.author?.bot) return;
+    // Filter dm channels, webhooks, the bots
+    if (message.channel.type === ChannelType.DM || !message || message?.webhookId || message.author?.bot) return;
 
     // Filter all guilds
-    if (config.source.one_guild && !message.guild.equals(config.discord.support.id)) return;
+    if (config.source.one_guild && message.guild.id !== config.discord.support.id) return;
 
     // Custom commands
-    if (await db.has(databaseNames.customCommand)) {
-      const customCmd = await db.get(databaseNames.customCommand)
-      customCmd.forEach(async command => {
-        if (message.content.includes(command.name))
-          return await message.reply(command.data);
-      });
-    };
+    // if (await db.has(databaseNames.customCommand)) {
+    //   const customCmd = await db.get(databaseNames.customCommand)
+    //   customCmd.forEach(async command => {
+    //     if (message.content.includes(command.name))
+    //       return await message.reply(command.data);
+    //   });
+    // };
 
     // Select Guild Language
     const
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-      language = selectLanguage(lang).replies;
+      language = selectLanguage(lang).replies,
 
-    // Command Prefix & args
-    const
+      // Command Prefix & args
       stringPrefix = (await db.has(databaseNames.prefix)) ?
         await db.get(databaseNames.prefix) : `${config.discord.prefix}`,
 

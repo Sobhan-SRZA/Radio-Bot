@@ -16,11 +16,16 @@ module.exports = async client => {
   try {
     // Load Slash Commands
     const
-    commands = client.commands.filter(a => a.only_slash),
-    rest = new REST().setToken(config.discord.token);
-    
+      commands = client.commands.filter(a => a.only_slash),
+      rest = new REST().setToken(config.discord.token);
+
+    // Remove all of last commands
+    await rest.put(
+      Routes.applicationCommands(client.user.id),
+      { body: [] }
+    );
     let data;
-    post(`Started refreshing ${clc.cyanBright(commands.length)} application (/) commands.`, "S");
+    post(`Started refreshing ${clc.cyanBright(commands.size)} application (/) commands.`, "S");
     if (config.source.one_guild) {
       // await client.guilds.cache
       //   .get(config.discord.support.id)

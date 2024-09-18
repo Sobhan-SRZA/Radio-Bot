@@ -33,7 +33,9 @@ module.exports = async (client, interaction) => {
     // Load Slash Commands
     if (interaction.isCommand()) {
       const command = client.commands.get(interaction.commandName);
-      if (command) {
+
+      // Command Handler
+      if (command && command.only_slash) {
         const args = [];
         for (let option of interaction.options.data) {
           if (option.type === ApplicationCommandOptionType.Subcommand) {
@@ -128,8 +130,7 @@ module.exports = async (client, interaction) => {
           fetchReply: true
         });
         command.run(client, interaction, args);
-      } else return;
-
+      }
     }
   } catch (e) {
     error(e);

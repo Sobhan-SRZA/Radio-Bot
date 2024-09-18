@@ -52,8 +52,7 @@ const
 
   // Load discord.js Client
   client = new Client({
-    intents: Object.keys(GatewayIntentBits).filter(a => isNaN(a) && a !== "GuildPresences"),
-    partials: Object.keys(Partials).filter(a => isNaN(a))
+    intents: Object.keys(GatewayIntentBits).filter(a => isNaN(a) && a !== "GuildPresences")
   });
 
 // Load Variables
