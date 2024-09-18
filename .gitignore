@@ -1,2 +1,4 @@
-application/cache/*
-application/logs/*
+node_modules
+.env
+package-lock.json
+quickdb.json

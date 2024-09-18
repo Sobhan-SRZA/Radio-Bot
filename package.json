@@ -1,0 +1,23 @@
+{
+  "name": "radio-bot",
+  "version": "0.0.0",
+  "description": "Discord advanced voice channel radio bot.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@discordjs/voice": "^0.17.0",
+    "cli-color": "^2.0.4",
+    "discord.js": "^14.16.2",
+    "dotenv": "^16.4.5",
+    "ffmpeg-static": "^5.2.0",
+    "libsodium-wrappers": "^0.7.14",
+    "opusscript": "^0.0.8",
+    "quick.db": "^9.1.7",
+    "write-file-atomic": "^5.0.1"
+  }
+}

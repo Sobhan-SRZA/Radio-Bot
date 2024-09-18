@@ -1,0 +1,69 @@
+{
+    "replies": {
+        "onlyOwner": "This command is exclusive to the owner. Go play with the kids, well done, good boy.",
+        "botPerm": "As the bot, I don't have the necessary permissions to run the command {mention_command}!!\nRequired permissions: [{bot_perms}]",
+        "userPerm": "You do not have the necessary permissions to use the command {mention_command}!! \nRequired permissions: [{user_perms}]",
+        "error": "Unfortunately, this operator has encountered an issue.",
+        "cooldown": "-# **You have been temporarily banned from using the command {mention_command} due to spamming, and you can use it again in <t:{expired_timestamp}:R>.**",
+        "ephemeral": {
+            "description": "Should this message be hidden?",
+            "choices": {
+                "yes": "Yes",
+                "no": "No"
+            }
+        }
+    },
+    "commands": {
+        "setup": {
+            "description": "Register server settings in the database.",
+            "subCommands": {
+                "panel": {
+                    "description": "Create a control panel for the radio player.",
+                    "options": {
+                        "channel": "Select the desired channel."
+                    },
+                    "replies": {
+                        "panelTitle": "Radio Player",
+                        "panelMenu": "Select the desired station.",
+                        "success": "AFK has been successfully activated on this server."
+                    }
+                },
+                "prefix": {
+                    "description": "Register a custom prefix in the server database.",
+                    "options": {
+                        "input": "Enter the desired prefix."
+                    },
+                    "replies": {
+                        "noChannelError": "You must mention a voice channel or be in a voice channel.",
+                        "noPlayerError": "No player has been activated on this server. Please create a player.",
+                        "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I'm in.",
+                        "success": "AFK has been successfully activated on this server."
+                    }
+                }
+            }
+        },
+        "afk": {
+            "description": "Activate AFK mode for the server's voice channel.",
+            "options": {
+                "channel": "Select the desired channel."
+            },
+            "replies": {
+                "noChannelError": "You must mention a voice channel or be in a voice channel.",
+                "noPlayerError": "No player has been activated on this server. Please create a player.",
+                "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I'm in.",
+                "success": "The music player panel has been successfully registered in channel {channel}."
+            }
+        }
+    },
+    "interactions": {
+        "menu": {
+            "noChannelError": "You must be in a voice channel.",
+            "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I'm in.",
+            "noPermToView": "I cannot see the channel, so please give me the 'View Channel' permission.",
+            "noPermToConnect": "I cannot join the channel, so please give me the 'Connect Channel' permission.",
+            "channelFull": "This voice channel is full!",
+            "userDeaf": "You cannot use this operator while deafened.",
+            "clientMute": "Please unmute me first, then try again."
+        }
+    }
+}
