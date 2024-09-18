@@ -63,7 +63,16 @@ module.exports = async (client, interaction) => {
           log: language.userDeaf
         });
 
-      const radio = new player(interaction);
+      let radio;
+      try {
+        radio = new player(interaction);
+      } catch {
+        return await sendError({
+          interaction,
+          log: language.noPlayerError
+        });
+      };
+      
       if (channel.id !== radio.data.channelId)
         return await sendError({
           interaction,
