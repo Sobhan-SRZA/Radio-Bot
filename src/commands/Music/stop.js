@@ -4,7 +4,7 @@ const
   } = require("discord.js"),
   radio = require("../../functions/player"),
   response = require("../../functions/response");
-  
+
 module.exports = {
   name: "stop",
   description: "Stop the playback.",
@@ -26,18 +26,18 @@ module.exports = {
    * @returns 
    */
   run: async (client, interaction, args) => {
+    const memberChannelId = interaction.member?.voice?.channelId;
+    if (!memberChannelId)
+      return await response({
+        content: "You need to join a voice channel first!",
+        ephemeral: true
+      });
+
+    const queueChannelId = queue?.data.channelId;
     const queue = new radio(interaction);
     if (!queue)
       return await response({
         content: "I’m currently not playing in this server.",
-        ephemeral: true
-      });
-
-    const memberChannelId = interaction.member?.voice?.channelId;
-    const queueChannelId = queue?.data.channelId;
-    if (!memberChannelId)
-      return await response({
-        content: "You need to join a voice channel first!",
         ephemeral: true
       });
 

@@ -5,6 +5,7 @@ const
     EmbedBuilder
   } = require("discord.js"),
   radio = require("../../functions/player"),
+  data = require("../../storage/embed"),
   response = require("../../functions/response");
 
 module.exports = {
@@ -38,18 +39,18 @@ module.exports = {
    * @returns 
    */
   run: async (client, interaction, args) => {
-    const queue = new radio(interaction);
-    if (!queue)
-      return await response(interaction, {
-        content: "I’m currently not playing in this server.",
-        ephemeral: true
-      });
-
     const memberChannelId = interaction.member?.voice?.channelId;
-    const queueChannelId = queue?.data.channelId;
     if (!memberChannelId)
       return await response(interaction, {
         content: "You need to join a voice channel first!",
+        ephemeral: true
+      });
+
+    const queue = new radio(interaction);
+    const queueChannelId = queue?.data.channelId;
+    if (!queue)
+      return await response(interaction, {
+        content: "I’m currently not playing in this server.",
         ephemeral: true
       });
 
@@ -62,6 +63,7 @@ module.exports = {
     const newVol = interaction.user ? interaction.options.getNumber("amount", false) : args[0];
     if (!newVol) {
       const embed = new EmbedBuilder()
+        .setColor(data.color.theme)
         .setDescription(`Current volume is \`${queue.volume}%\`.`)
         .setFooter({ text: "Use '/volume <1-100>' to change the volume." });
 

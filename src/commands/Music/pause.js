@@ -1,10 +1,10 @@
 const
- {
-  ApplicationCommandType
-} = require("discord.js"),
- radio = require("../../functions/player"),
- response = require("../../functions/response");
- 
+  {
+    ApplicationCommandType
+  } = require("discord.js"),
+  radio = require("../../functions/player"),
+  response = require("../../functions/response");
+
 module.exports = {
   name: "pause",
   description: "Pause the playback",
@@ -26,21 +26,22 @@ module.exports = {
    * @returns 
    */
   run: async (client, interaction, args) => {
-    const queue = new radio(interaction);
-    if (!queue)
-      return await response({
-        content: "I’m currently not playing in this server.",
-        ephemeral: true
-      });
 
     const memberChannelId = interaction.member?.voice?.channelId;
-    const queueChannelId = queue?.data.channelId;
     if (!memberChannelId)
       return await response({
         content: "You need to join a voice channel first!",
         ephemeral: true
       });
 
+    const queue = new radio(interaction);
+    const queueChannelId = queue?.data.channelId;
+    if (!queue)
+      return await response({
+        content: "I’m currently not playing in this server.",
+        ephemeral: true
+      });
+      
     if (memberChannelId !== queueChannelId)
       return await response({
         content: "You must be in the same voice channel as me!",

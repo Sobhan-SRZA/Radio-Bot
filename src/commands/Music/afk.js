@@ -62,7 +62,6 @@ module.exports = {
    */
   run: async (client, interaction, args) => {
     const
-      queue = new radio(interaction),
       db = client.db,
       databaseNames = {
         afk: `radioAFK.${interaction.guildId}`,
@@ -70,19 +69,11 @@ module.exports = {
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).commands.afk,
-      memberChannelId = interaction.member?.voice?.channelId,
-      queueChannelId = queue?.data.channelId;
+      memberChannelId = interaction.member?.voice?.channelId;
 
     let channel = interaction.user ? interaction.options.getChannel("channel") : interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[0]);
     if (!channel && memberChannelId)
       channel = interaction.member?.voice?.channel;
-
-    if (!queue)
-      return await sendError({
-        interaction,
-        isUpdateNeed: true,
-        log: language.replies.noPlayerError
-      });
 
     if (!channel && !memberChannelId)
       return await sendError({
@@ -91,6 +82,15 @@ module.exports = {
         log: language.replies.noChannelError
       });
 
+    const queue = new radio(interaction);
+    if (!queue)
+      return await sendError({
+        interaction,
+        isUpdateNeed: true,
+        log: language.replies.noPlayerError
+      });
+
+    const queueChannelId = queue?.data.channelId;
     if (memberChannelId !== queueChannelId)
       return await sendError({
         interaction,
