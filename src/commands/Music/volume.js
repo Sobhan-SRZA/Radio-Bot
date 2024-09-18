@@ -46,14 +46,18 @@ module.exports = {
         ephemeral: true
       });
 
-    const queue = new radio(interaction);
-    const queueChannelId = queue?.data.channelId;
-    if (!queue)
-      return await response(interaction, {
-        content: "I’m currently not playing in this server.",
-        ephemeral: true
+    let queue;
+    try {
+      queue = new radio(interaction);
+    } catch {
+      return await sendError({
+        interaction,
+        isUpdateNeed: true,
+        log: language.replies.noPlayerError
       });
+    }
 
+    const queueChannelId = queue?.data.channelId;
     if (memberChannelId !== queueChannelId)
       return await response(interaction, {
         content: "You must be in the same voice channel as me!",

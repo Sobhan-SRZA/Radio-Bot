@@ -57,6 +57,7 @@
     },
     "interactions": {
         "menu": {
+            "noPlayerError": "No player has been activated on this server. Please create a player.",
             "noChannelError": "You must be in a voice channel.",
             "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I'm in.",
             "noPermToView": "I cannot see the channel, so please give me the 'View Channel' permission.",

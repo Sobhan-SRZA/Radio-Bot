@@ -78,7 +78,7 @@ module.exports = {
     run: async (client, interaction, args) => {
         try {
             const
-                query = interaction.user ? interaction.options.data.find(a => a.name.startsWith("station")) : args.join(" "),
+                query = interaction.user ? interaction.options.data.find(a => a.name.startsWith("station")).value : args.join(" "),
                 member = interaction.guild.members.cache.get(interaction.member.id),
                 channel = member?.voice?.channel,
                 db = client.db,
@@ -89,7 +89,7 @@ module.exports = {
                 },
                 lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
                 language = selectLanguage(lang).commands.play;
-
+                
             if (await db.has(databaseNames.panel))
                 if (interaction.channel.id !== (await db.get(databaseNames.panel)).channel)
                     return await sendError({
