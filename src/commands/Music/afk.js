@@ -101,7 +101,7 @@ module.exports = {
     await db.set(databaseNames.afk, channel.id);
     return await response(interaction, {
       content: replaceValues(language.replies.sucess, {
-        channel
+        channel: channel
       })
     });
   }
