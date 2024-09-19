@@ -127,9 +127,9 @@ module.exports = {
                 case "panel": {
                     let channel;
                     if (interaction.user)
-                        channel = interaction.options.getChannel("channel") || interaction.channel;
+                        channel = interaction.options.getChannel("channel");
                     else
-                        channel = interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[1]) || interaction.channel;
+                        channel = interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[1]);
 
                     if (!channel && await db.has(databaseNames.panel)) {
                         const databaseChannel = await db.get(databaseNames.panel);
@@ -219,7 +219,7 @@ module.exports = {
 
                     await db.set(databaseNames.panel, { channel: channel.id, message: message.id });
                     return await response(interaction, {
-                        content: replaceValues(language.subCommands.panel.replies.sucess, { channel })
+                        content: replaceValues(language.subCommands.panel.replies.success, { channel })
                     });
                 }
 
