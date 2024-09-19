@@ -1,5 +1,3 @@
-const chunkArray = require("../../functions/chunkArray");
-
 const
     {
         ApplicationCommandType,
@@ -7,16 +5,22 @@ const
         ChannelType,
         EmbedBuilder,
         ActionRowBuilder,
-        StringSelectMenuBuilder
+        StringSelectMenuBuilder,
+        ButtonBuilder,
+        ButtonStyle,
+        ComponentType
     } = require("discord.js"),
     error = require("../../functions/error"),
+    deleteResponse = require("../../functions/deleteResponse"),
     response = require("../../functions/response"),
+    sendError = require("../../functions/sendError"),
     copyRight = require("../../storage/embed"),
     config = require("../../../config"),
     selectLanguage = require("../../functions/selectLanguage"),
     ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
     defaultLanguage = selectLanguage(config.source.default_language).commands.setup,
     radiostation = require("../../storage/radiostation.json"),
+    chunkArray = require("../../functions/chunkArray"),
     replaceValues = require("../../functions/replaceValues"),
     choices = Object.keys(radiostation).map((a) => JSON.stringify({
         label: `${a}`,
@@ -126,6 +130,65 @@ module.exports = {
                         channel = interaction.options.getChannel("channel") || interaction.channel;
                     else
                         channel = interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[1]) || interaction.channel;
+
+                    if (!channel && await db.has(databaseNames.panel)) {
+                        const databaseChannel = await db.get(databaseNames.panel);
+                        const collector = await sendError({
+                            interaction,
+                            data:
+                            {
+                                embeds: [
+                                    new EmbedBuilder()
+                                        .setColor(embed.color.red)
+                                        .setFooter(
+                                            {
+                                                text: embed.footer.footerText,
+                                                iconURL: embed.footer.footerIcon
+                                            }
+                                        )
+                                        .setTitle(selectLanguage(lang).replies.error)
+                                        .setDescription(`${replaceValues(language.subCommands.panel.replies.noChannel, {
+                                            channel: databaseChannel
+                                        })}`)
+                                ],
+                                components: [
+                                    new ActionRowBuilder()
+                                        .addComponents(
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-accept")
+                                                .setEmoji("✅")
+                                                .setLabel(language.subCommands.panel.replies.buttonYes)
+                                                .setStyle(ButtonStyle.Success),
+
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-cancel")
+                                                .setEmoji("❌")
+                                                .setLabel(language.subCommands.panel.replies.buttonNo)
+                                                .setStyle(ButtonStyle.Secondary)
+                                        )
+                                ]
+                            }
+                        });
+                        const collect = collector.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
+                        collect.on("collect", async (button) => {
+                            switch (button.customId) {
+                                case "setup-accept": {
+                                    await button.deferUpdate();
+                                    await db.delete(databaseNames.panel);
+                                    return await button.editReply({
+                                        content: language.subCommands.panel.replies.deleteChannel,
+                                        components: []
+                                    });
+                                };
+                                case "setup-cancel": {
+                                    collect.stop();
+                                };
+                            }
+                        });
+                        collect.on("end", async () => {
+                            return await deleteResponse(interaction, collector);
+                        });
+                    }
 
                     const
                         embed = new EmbedBuilder()
