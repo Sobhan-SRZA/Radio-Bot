@@ -1,5 +1,3 @@
-const deleteResponse = require("../../functions/deleteResponse");
-
 const
     {
         ApplicationCommandType,
@@ -13,6 +11,7 @@ const
         ComponentType
     } = require("discord.js"),
     error = require("../../functions/error"),
+    deleteResponse = require("../../functions/deleteResponse"),
     response = require("../../functions/response"),
     sendError = require("../../functions/sendError"),
     copyRight = require("../../storage/embed"),
