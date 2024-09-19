@@ -1,70 +1,113 @@
 {
     "replies": {
-        "onlyOwner": "This command is exclusive to the owner. Go play with the kids, well done, good boy.",
-        "botPerm": "As the bot, I don't have the necessary permissions to run the command {mention_command}!!\nRequired permissions: [{bot_perms}]",
-        "userPerm": "You do not have the necessary permissions to use the command {mention_command}!! \nRequired permissions: [{user_perms}]",
-        "error": "Unfortunately, this operator has encountered an issue.",
-        "cooldown": "-# **You have been temporarily banned from using the command {mention_command} due to spamming, and you can use it again in <t:{expired_timestamp}:R>.**",
+        "onlyOwner": "این کامند جیززه پسر خوب برو پی بچه بازی آفرین گل پسر.",
+        "botPerm": "ربات که من باشم دسترسی لازم برای ران کردن کامند {mention_command} رو ندارم!!\nدسترسی های لازم: [{bot_perms}]",
+        "userPerm": "شما دسترسی های لازم برای استفاده از کامند {mention_command} رو نداری!! \nدسترسی های لازم: [{user_perms}]",
+        "error": "متاسفانه این عملگر به مشکل برخورده است",
+        "cooldown": "-# **شما به دلیل اسپم از کامند {mention_command} محروم شدید و تا <t:{expired_timestamp}:R> دیگر میتوانید دوباره از آن استفاده کنید.**",
         "ephemeral": {
-            "description": "Should this message be hidden?",
+            "description": "آیا این پیغام پنهان باشد؟",
             "choices": {
-                "yes": "Yes",
-                "no": "No"
+                "yes": "بله",
+                "no": "خیر"
             }
         }
     },
     "commands": {
         "setup": {
-            "description": "Register server settings in the database.",
+            "description": "ثبت تنظیمات سرور در دیتابیس.",
             "subCommands": {
                 "panel": {
-                    "description": "Create a control panel for the radio player.",
+                    "description": "ایجاد پنل کنترل رادیو پلیر.",
                     "options": {
-                        "channel": "Select the desired channel."
+                        "channel": "چنل مورد نظر را انتخاب کنید."
                     },
                     "replies": {
-                        "panelTitle": "Radio Player",
-                        "panelMenu": "Select the desired station.",
-                        "success": "AFK has been successfully activated on this server."
+                        "panelTitle": "پادیو پلیر",
+                        "panelMenu": "استیشن مورد نظر را انتخاب کنبد.",
+                        "success": "با موفقیت AFK در این سرور فعال شد.",
+                        "doDeleteChannel": "-# **برای تنظیم پنل در چنل دلخواه حتما آن را انتخاب کنید. در این سرور چنل <#{channel}> برای پنل تنظیم شده است، اگر تمایل به حذف آن دارید به یکی از باتن های زیر کلیک کنید.**",
+                        "noChannel": "شما باید یک تکست چنل منشن کنید.",
+                        "buttonYes": "بله",
+                        "buttonNo": "خیر",
+                        "deleteChannel": "با موفقیت چنل مورد از داخل دیتابیس حذف شد."
                     }
                 },
                 "prefix": {
-                    "description": "Register a custom prefix in the server database.",
+                    "description": "ثبت پرفیکس دلخواه در دیتابیس سرور.",
                     "options": {
-                        "input": "Enter the desired prefix."
+                        "input": "پرفیکس مورد نظر را وارد کنید."
                     },
                     "replies": {
-                        "noChannelError": "You must mention a voice channel or be in a voice channel.",
-                        "noPlayerError": "No player has been activated on this server. Please create a player.",
-                        "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I'm in.",
-                        "success": "AFK has been successfully activated on this server."
+                        "noChannelError": "شما باید یک ویس چنل منشن کنید و یا در یک ویس جوین باشید.",
+                        "noPlayerError": "هیچ پلیری در این سرور فعال نشده است لطفا یک پلیر ایجاد کنید.",
+                        "notMatchedVoice": "ویس چنل شما با ویس چنل من برابر نمی باشد لطفا در ویسی که من جوین هستم جوین شوید.",
+                        "success": "با موفقیت AFK در این سرور فعال شد."
                     }
                 }
             }
         },
         "afk": {
-            "description": "Activate AFK mode for the server's voice channel.",
+            "description": "فعال سازی AFK مود برای ویس چنل سرور.",
             "options": {
-                "channel": "Select the desired channel."
+                "channel": "چنل مورد نظر را انتخاب کنید."
             },
             "replies": {
-                "noChannelError": "You must mention a voice channel or be in a voice channel.",
-                "noPlayerError": "No player has been activated on this server. Please create a player.",
-                "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I'm in.",
-                "success": "The music player panel has been successfully registered in channel {channel}."
+                "noChannelError": "شما باید یک ویس چنل منشن کنید و یا در یک ویس جوین باشید.",
+                "noPlayerError": "هیچ پلیری در این سرور فعال نشده است لطفا یک پلیر ایجاد کنید.",
+                "notMatchedVoice": "ویس چنل شما با ویس چنل من برابر نمی باشد لطفا در ویسی که من جوین هستم جوین شوید.",
+                "success": "پنل موزیک پلیر سرور با موفقیت در چنل {channel} ثبت شد."
+            }
+        },
+        "help": {
+            "description": "دستورات بات",
+            "replies": {
+                "invalidUser": "این دکمه فقط برای {author} میباشد و شما اجازه استفاده از آن را ندارید.\nبرای استفاده از دکمه ها بهتر است کامند رو به رو را فراخوانی کنید: \"{mention_command}\"",
+                "noPlayerError": "هیچ پلیری در این سرور فعال نشده است لطفا یک پلیر ایجاد کنید.",
+                "notMatchedVoice": "ویس چنل شما با ویس چنل من برابر نمی باشد لطفا در ویسی که من جوین هستم جوین شوید.",
+                "success": "پنل موزیک پلیر سرور با موفقیت در چنل {channel} ثبت شد.",
+                "embed": {
+                    "author": "راهنمای ربات",
+                    "footer": "درخواست شده توسط",
+                    "field1": "درباره من:",
+                    "value1": ">>> درود من {username} هستم.\nمن یک ربات فان و مدیریتی هستم که به ادمین ها کمک میکنم راحت تر سرور رو مدیریت کنند و همچنین به ممبر ها کمک میکنم داخل سرور سرگرم بشوند و در حل مشکلاتشون کمک کنم.",
+                    "field2": "دیدن دستورات من:",
+                    "value2": ">>> برای دیدن تمام دستورات من میتوانید به منوی زیر این پیام کلیک کنید و بر اساس کتگوری مورد نظر کامند های اون بخش رو ببینید."
+                },
+                "menu": "روی من کلیک کن!!",
+                "button": "صفحه نخست",
+                "aliases": "نام های مستعار:",
+                "description": "توضیحات:",
+                "noCommands": "`هیچ دستوری برای این کتگوری یافت نشد.`"
+            }
+        },
+        "ping": {
+            "description": "پینگ بات",
+            "replies": {
+                "pinging": "درحال پردازش...",
+                "ping": "پونگ!",
+                "fields": {
+                    "pinging": "سرعت ربات:",
+                    "time": "سرعت پاسخ api:",
+                    "uptime": "مدت آنلاین بودن:",
+                    "memory": "مقدار حافظه:"
+                },
+                "values": {
+                    "pinging": "سرعت هاست:"
+                }
             }
         }
     },
     "interactions": {
         "menu": {
-            "noPlayerError": "No player has been activated on this server. Please create a player.",
-            "noChannelError": "You must be in a voice channel.",
-            "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I'm in.",
-            "noPermToView": "I cannot see the channel, so please give me the 'View Channel' permission.",
-            "noPermToConnect": "I cannot join the channel, so please give me the 'Connect Channel' permission.",
-            "channelFull": "This voice channel is full!",
-            "userDeaf": "You cannot use this operator while deafened.",
-            "clientMute": "Please unmute me first, then try again."
+            "noPlayerError": "هیچ پلیری در این سرور فعال نشده است لطفا یک پلیر ایجاد کنید.",
+            "noChannelError": "شما باید در یک ویس جوین باشید.",
+            "notMatchedVoice": "ویس چنل شما با ویس چنل من برابر نمی باشد لطفا در ویسی که من جوین هستم جوین شوید.",
+            "noPermToView": "من نمیتوانم چنل را ببینم پس به من پرم \"View Channel\" دهید.",
+            "noPermToConnect": "من نمیتوانم به چنل جوین بشوم پس پرم \"Connect Channel\" را به من دهید.",
+            "channelFull": "این ویس چنل پر است!",
+            "userDeaf": "شما نمیتوانید زمانی که deaf هستید از این عملگر استفاده کنید.",
+            "clientMute": "ابتدا من را unmute کنید سپس دوباره تلاش کنید."
         }
     }
 }

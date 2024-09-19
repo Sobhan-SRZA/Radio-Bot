@@ -1,5 +1,3 @@
-const chunkArray = require("../../functions/chunkArray");
-
 const
     {
         ApplicationCommandType,
@@ -7,16 +5,22 @@ const
         ChannelType,
         EmbedBuilder,
         ActionRowBuilder,
-        StringSelectMenuBuilder
+        StringSelectMenuBuilder,
+        ButtonBuilder,
+        ButtonStyle,
+        ComponentType
     } = require("discord.js"),
     error = require("../../functions/error"),
+    deleteResponse = require("../../functions/deleteResponse"),
     response = require("../../functions/response"),
+    sendError = require("../../functions/sendError"),
     copyRight = require("../../storage/embed"),
     config = require("../../../config"),
     selectLanguage = require("../../functions/selectLanguage"),
     ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
     defaultLanguage = selectLanguage(config.source.default_language).commands.setup,
     radiostation = require("../../storage/radiostation.json"),
+    chunkArray = require("../../functions/chunkArray"),
     replaceValues = require("../../functions/replaceValues"),
     choices = Object.keys(radiostation).map((a) => JSON.stringify({
         label: `${a}`,
@@ -30,7 +34,7 @@ module.exports = {
     aliases: ["set", "st"],
     type: ApplicationCommandType.ChatInput,
     cooldown: 10,
-    user_permissions: ["ManageChannels", "ManageGuild", "SendMessages"],
+    defaultMemberPermissions: ["ManageChannels", "ManageGuild", "SendMessages"],
     bot_permissions: ["ManageChannels", "SendMessages", "EmbedLinks"],
     only_message: true,
     only_slash: true,
@@ -123,41 +127,111 @@ module.exports = {
                 case "panel": {
                     let channel;
                     if (interaction.user)
-                        channel = interaction.options.getChannel("channel") || interaction.channel;
+                        channel = interaction.options.getChannel("channel");
                     else
-                        channel = interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[1]) || interaction.channel;
+                        channel = interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[1]);
 
-                    const
-                        embed = new EmbedBuilder()
-                            .setColor(copyRight.color.theme)
-                            .setTitle(language.subCommands.panel.replies.panelTitle)
-                            .setTimestamp(),
+                    if (!channel && await db.has(databaseNames.panel)) {
+                        const radioPanel = await db.get(databaseNames.panel);
+                        const message = await sendError({
+                            interaction,
+                            isUpdateNeed: true,
+                            data: {
+                                embeds: [
+                                    new EmbedBuilder()
+                                        .setColor(copyRight.color.red)
+                                        .setFooter(
+                                            {
+                                                text: copyRight.footer.footerText,
+                                                iconURL: copyRight.footer.footerIcon
+                                            }
+                                        )
+                                        .setTitle(selectLanguage(lang).replies.error)
+                                        .setDescription(`${replaceValues(language.subCommands.panel.replies.doDeleteChannel, {
+                                            channel: radioPanel.channel
+                                        })}`)
+                                ],
+                                components: [
+                                    new ActionRowBuilder()
+                                        .addComponents(
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-accept")
+                                                .setEmoji("✅")
+                                                .setLabel(language.subCommands.panel.replies.buttonYes)
+                                                .setStyle(ButtonStyle.Success),
 
-                        components = [];
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-cancel")
+                                                .setEmoji("❌")
+                                                .setLabel(language.subCommands.panel.replies.buttonNo)
+                                                .setStyle(ButtonStyle.Secondary)
+                                        )
+                                ]
+                            }
+                        });
+                        const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
+                        collector.on("collect", async (button) => {
+                            switch (button.customId) {
+                                case "setup-accept": {
+                                    await button.deferUpdate();
+                                    await db.delete(databaseNames.panel);
+                                    return await button.editReply({
+                                        content: language.subCommands.panel.replies.deleteChannel,
+                                        embeds: [],
+                                        components: []
+                                    });
+                                };
+                                case "setup-cancel": {
+                                    collector.stop();
+                                };
+                            }
+                        });
+                        collector.on("end", async () => {
+                            return await deleteResponse({ interaction, message: message });
+                        });
+                    }
 
-                    chunkArray(choices, 25)
-                        .forEach((array, index) => {
-                            components.push(
-                                new ActionRowBuilder()
-                                    .addComponents(
-                                        new StringSelectMenuBuilder()
-                                            .setCustomId(`radioPanel-${++index}`)
-                                            .setPlaceholder(language.subCommands.panel.replies.panelMenu)
-                                            .setOptions(array)
-                                            .setMaxValues(1)
-                                    )
-                            )
+                    else if (!channel)
+                        return await sendError({
+                            interaction,
+                            isUpdateNeed: true,
+                            log: language.subCommands.panel.replies.noChannel
+                        })
+
+                    else {
+                        const
+                            embed = new EmbedBuilder()
+                                .setColor(copyRight.color.theme)
+                                .setTitle(language.subCommands.panel.replies.panelTitle)
+                                .setTimestamp(),
+
+                            components = [];
+
+                        chunkArray(choices, 25)
+                            .forEach((array, index) => {
+                                components.push(
+                                    new ActionRowBuilder()
+                                        .addComponents(
+                                            new StringSelectMenuBuilder()
+                                                .setCustomId(`radioPanel-${++index}`)
+                                                .setPlaceholder(language.subCommands.panel.replies.panelMenu)
+                                                .setOptions(array)
+                                                .setMaxValues(1)
+                                        )
+                                )
+                            });
+
+                        const message = await channel.send({
+                            embeds: [embed],
+                            components: components
                         });
 
-                    const message = await channel.send({
-                        embeds: [embed],
-                        components: components
-                    });
-
-                    await db.set(databaseNames.panel, { channel: channel.id, message: message.id });
-                    return await response(interaction, {
-                        content: replaceValues(language.subCommands.panel.replies.sucess, { channel })
-                    });
+                        await db.set(databaseNames.panel, { channel: channel.id, message: message.id });
+                        return await response(interaction, {
+                            content: replaceValues(language.subCommands.panel.replies.success, { channel })
+                        });
+                    }
+                    break;
                 }
 
                 default: {
@@ -165,13 +239,13 @@ module.exports = {
                     const embed = new EmbedBuilder()
                         .setColor(copyRight.color.theme)
                         .setTitle("Help | Setup")
-                        .setDescription(setup.description)
+                        .setDescription(language.description)
                         .setFooter(
                             {
                                 text: `Admin Embed • ${copyRight.footer.footerText}`
                             }
                         )
-                        .setThumbnail(author.displayAvatarURL(
+                        .setThumbnail(client.user.displayAvatarURL(
                             {
                                 forceStatic: true
                             }
@@ -187,7 +261,7 @@ module.exports = {
                             }
                         )
                     });
-                    return await response(
+                    return await response(interaction,
                         {
                             embeds: [embed]
                         }

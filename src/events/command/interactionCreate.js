@@ -56,13 +56,13 @@ module.exports = async (client, interaction) => {
             });
 
 
-        const fcmd = client.application.commands.cache.find(c => c.name === command.name);
+        const fcmd = (await interaction.guild.commands.fetch()).find(c => c.name === command.name);
         const mentionCommand = `</${fcmd?.name}${interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ? ` ${interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${fcmd?.id}>`;
         if (interaction.guild) {
           const bot_perms = [];
           const user_perms = [];
           command.bot_permissions.forEach(perm => bot_perms.push(PermissionsBitField.Flags[perm]));
-          command.user_permissions.forEach(perm => user_perms.push(PermissionsBitField.Flags[perm]));
+          command.defaultMemberPermissions.forEach(perm => user_perms.push(PermissionsBitField.Flags[perm]));
           if (!interaction.guild.members.me.permissions.has([bot_perms] || []))
             return await sendError({
               interaction,

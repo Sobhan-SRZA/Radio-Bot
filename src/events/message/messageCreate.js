@@ -87,7 +87,7 @@ module.exports = async (client, message) => {
         command.bot_permissions.forEach(perm =>
           bot_perms.push(PermissionsBitField.Flags[perm])
         );
-        command.user_permissions.forEach(perm =>
+        command.defaultMemberPermissions.forEach(perm =>
           user_perms.push(PermissionsBitField.Flags[perm])
         );
         if (!message.guild.members.me.permissions.has([bot_perms] || []))

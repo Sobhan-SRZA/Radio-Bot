@@ -13,10 +13,10 @@ module.exports = {
   description: "تغییر موقت استاتوس بات.",
   category: "owner",
   cooldown: 5,
-
-  user_permissions: ["SendMessages"],
+  defaultMemberPermissions: ["SendMessages"],
   bot_permissions: ["SendMessages"],
-  dm_permissions: true,
+  dmPermission: true,
+  nsfw: false,
   only_owner: true,
   only_slash: false,
   only_message: true,

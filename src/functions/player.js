@@ -6,6 +6,7 @@ const
         NoSubscriberBehavior,
         StreamType
     } = require("@discordjs/voice"),
+    chooseRandom = require("./chooseRandom"),
     audioPlayer = new Map(),
     queue = new Map(),
     audioResourceData = {
@@ -82,11 +83,11 @@ module.exports = class {
      * @param {string} resource 
      * @returns {import("@discordjs/voice").AudioResource}
      */
-    play(resource) {
+    async play(resource) {
         const connection = joinVoiceChannel(this.data);
         const player = createAudioPlayer();
         player.play(
-            createAudioResource(resource, audioResourceData)
+            createAudioResource(await this.#createStream(resource), audioResourceData)
         );
         connection.subscribe(player);
         audioPlayer.set(this.data.guildId, player);
@@ -174,7 +175,7 @@ module.exports = class {
             throw this.#error("No resource to play!");
 
         player.play(
-            createAudioResource(await this.#createStream(queue.get(count)), audioResourceData)
+            createAudioResource(await this.#createStream(chooseRandom(resources)), audioResourceData)
         );
         connection.subscribe(player);
         audioPlayer.set(this.data.guildId, player);
@@ -216,7 +217,6 @@ module.exports = class {
      * @returns {stream}
      */
     async #createStream(url) {
-        
         return url;
     }
 }
