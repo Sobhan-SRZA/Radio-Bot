@@ -1,49 +1,51 @@
 {
     "replies": {
-        "onlyOwner": "This command is restricted, buddy! No fooling around, be a good boy.",
-        "botPerm": "I, the bot, don't have the necessary permissions to run the {mention_command} command!\nRequired permissions: [{bot_perms}]",
-        "userPerm": "You don't have the required permissions to use the {mention_command} command!\nRequired permissions: [{user_perms}]",
+        "onlyOwner": "```diff\n- Are you bored? This command is not for you! Don't touch it!```",
+        "botPerm": "-# **I (the bot) do not have the necessary permissions to run the command {mention_command}!!\nRequired permissions: [{bot_perms}]**",
+        "userPerm": "-# **You do not have the required permissions to use the command {mention_command}!! \nRequired permissions: [{user_perms}]**",
         "error": "Unfortunately, an error has occurred.",
-        "cooldown": "-# **You've been blocked from using the {mention_command} command for spamming. You can use it again after <t:{expired_timestamp}:R>.**",
+        "cooldown": "-# **You have been temporarily blocked from using the command {mention_command} due to spamming. You can use it again after <t:{expired_timestamp}:R>.**",
         "ephemeral": {
             "description": "Should this message be hidden?",
             "choices": {
                 "yes": "Yes",
                 "no": "No"
             }
-        }
+        },
+        "noChannelError": "```diff\n- You need to join a voice channel.```",
+        "notMatchedVoice": "```diff\n- Your voice channel doesn't match mine. Please join the one I am in.```",
+        "noPermToView": "```diff\n- I cannot see the channel. Please give me the 'View Channel' permission.```",
+        "noPermToConnect": "```diff\n- I cannot join the channel. Please give me the 'Connect to Channel' permission.```",
+        "channelFull": "```diff\n- This voice channel is full!```",
+        "userDeaf": "```diff\n- You cannot use this command while you are deafened.```",
+        "clientMute": "```diff\n- Please unmute me first, then try again.```"
     },
     "commands": {
         "setup": {
-            "description": "Register server settings in the database.",
+            "description": "Register the server settings in the database.",
             "subCommands": {
                 "panel": {
                     "description": "Create a control panel for the radio player.",
                     "options": {
-                        "channel": "Choose the desired channel."
+                        "channel": "Select the desired channel."
                     },
                     "replies": {
                         "panelTitle": "Radio Player",
-                        "panelMenu": "Select your preferred station.",
-                        "success": "AFK has been successfully activated on this server.",
-                        "doDeleteChannel": "-# **To set up the panel in your chosen channel, make sure to select it. The channel <#{channel}> is currently set for the panel. If you want to delete it, click one of the buttons below.**",
-                        "noChannel": "You must mention a text channel.",
+                        "panelMenu": "Select your desired station.",
+                        "success": "AFK mode has been successfully activated on this server.",
+                        "doDeleteChannel": "-# **To set up the panel in your desired channel, make sure to select it. The channel <#{channel}> has been set for the panel in this server. If you'd like to delete it, click one of the buttons below.**",
+                        "noChannel": "```diff\n- You must mention a text channel.```",
                         "buttonYes": "Yes",
                         "buttonNo": "No",
-                        "deleteChannel": "The channel was successfully removed from the database."
+                        "deleteChannel": "The channel has been successfully deleted from the database."
                     }
                 },
                 "prefix": {
-                    "description": "Set a custom prefix in the server's database.",
+                    "description": "Set a custom prefix in the server database.",
                     "options": {
-                        "input": "Enter your desired prefix."
+                        "input": "Enter the desired prefix."
                     },
-                    "replies": {
-                        "noChannelError": "You must mention a voice channel or join one.",
-                        "noPlayerError": "No player has been activated on this server. Please create a player.",
-                        "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I am in.",
-                        "success": "AFK has been successfully activated on this server."
-                    }
+                    "replies": {}
                 }
             }
         },
@@ -53,28 +55,28 @@
                 "channel": "Select the desired channel."
             },
             "replies": {
-                "noChannelError": "You must mention a voice channel or join one.",
-                "noPlayerError": "No player has been activated on this server. Please create a player.",
-                "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I am in.",
-                "success": "The music player panel has been successfully set up in the {channel} channel."
+                "noChannelError": "```diff\n- You must mention a voice channel or be connected to one.```",
+                "noPlayerError": "```diff\n- No player is active on this server. Please create a player.```",
+                "notMatchedVoice": "```diff\n- Your voice channel doesn't match mine. Please join the one I am in.```",
+                "success": "The music player panel has been successfully set in the channel {channel}."
             }
         },
         "help": {
             "description": "Bot commands",
             "replies": {
-                "invalidUser": "This button is only for {author}, and you are not allowed to use it.\nTo use the buttons, it’s better to call the following command: \"{mention_command}\"",
-                "noPlayerError": "No player has been activated on this server. Please create a player.",
-                "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I am in.",
-                "success": "The music player panel has been successfully set up in the {channel} channel.",
+                "invalidUser": "This button is for {author} only, and you are not allowed to use it.\nTo use the buttons, it's better to call the command \"{mention_command}\".",
+                "noPlayerError": "No player is active on this server. Please create a player.",
+                "notMatchedVoice": "Your voice channel doesn't match mine. Please join the one I am in.",
+                "success": "The music player panel has been successfully set in the channel {channel}.",
                 "embed": {
-                    "author": "Bot Guide",
+                    "author": "Bot Help",
                     "footer": "Requested by",
-                    "field1": "About me:",
-                    "value1": ">>> Hi, I’m {username}.\nI'm a fun and management bot that helps admins manage the server easily and helps members have fun and solve their issues.",
-                    "field2": "See my commands:",
-                    "value2": ">>> To see all my commands, you can click on the menu below and explore the commands based on the category you're interested in."
+                    "field1": "About Me:",
+                    "value1": ">>> Hello, I am {username}.\nI am a fun and management bot, helping admins manage the server easily while entertaining members and solving their problems.",
+                    "field2": "View My Commands:",
+                    "value2": ">>> To see all my commands, click on the menu below this message and check the commands by category."
                 },
-                "menu": "Click me!",
+                "menu": "Click on me!",
                 "button": "Home Page",
                 "aliases": "Aliases:",
                 "description": "Description:",
@@ -88,7 +90,7 @@
                 "ping": "Pong!",
                 "fields": {
                     "pinging": "Bot speed:",
-                    "time": "API response speed:",
+                    "time": "API response time:",
                     "uptime": "Uptime:",
                     "memory": "Memory usage:"
                 },
@@ -96,18 +98,29 @@
                     "pinging": "Host speed:"
                 }
             }
-        }
-    },
-    "interactions": {
-        "menu": {
-            "noPlayerError": "No player has been activated on this server. Please create a player.",
-            "noChannelError": "You need to join a voice channel.",
-            "notMatchedVoice": "Your voice channel does not match mine. Please join the voice channel I am in.",
-            "noPermToView": "I can't see the channel, so please give me the 'View Channel' permission.",
-            "noPermToConnect": "I can't join the channel, so please give me the 'Connect Channel' permission.",
-            "channelFull": "This voice channel is full!",
-            "userDeaf": "You cannot use this feature while you're deafened.",
-            "clientMute": "Please unmute me first, then try again."
+        },
+        "pause": {
+            "description": "Pause the player.",
+            "replies": {
+                "paused": "The player has been successfully paused."
+            }
+        },
+        "play": {
+            "description": "Play music in the voice channel.",
+            "options": {
+                "station": "Select one of the stations."
+            },
+            "replies": {
+                "onlyPanel": "This command can only be used in the channel <#{channel}>.",
+                "invalidQuery": "-# **This station is not approved! Please select from the following stations:\n```json\n{stations}```**",
+                "play": "-# **Station `{song}` has been successfully selected.**"
+            }
+        },
+        "stop": {
+            "description": "Stop and remove the player in the voice channel.",
+            "replies": {
+                "stopped": "The player has been successfully removed."
+            }
         }
     }
 }
