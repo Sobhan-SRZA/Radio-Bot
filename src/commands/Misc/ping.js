@@ -1,9 +1,9 @@
-
 const
   {
     EmbedBuilder,
     ApplicationCommandType,
-    ApplicationCommandOptionType
+    ApplicationCommandOptionType,
+    PermissionFlagsBits
   } = require("discord.js"),
   os = require("os"),
   response = require("../../functions/response"),
@@ -22,9 +22,9 @@ module.exports = {
   category: "misc",
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  defaultMemberPermissions: ["SendMessages"],
-  bot_permissions: ["SendMessages", "EmbedLinks"],
-  dmPermission: false,
+  default_member_permissions: [PermissionFlagsBits.SendMessages],
+  bot_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
+  dm_permission: false,
   nsfw: false,
   only_owner: false,
   only_slash: true,
@@ -71,11 +71,17 @@ module.exports = {
 
       embed2 = new EmbedBuilder()
         .setColor(embed.color.theme)
+        .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
+        .setFooter({
+          text:embed.footer.footerText,
+          iconURL:embed.footer.footerIcon,
+        })
         .setTitle(`${embed.emotes.default.ping} ${language.replies.ping}`)
         .setFields(
           [
             {
-              name: `${embed.emotes.default.server}| ${language.replies.fields.pinging}`,
+              name: `\u200b`,
+              // name: `${embed.emotes.default.server}| ${language.replies.fields.pinging}`,
               value: `**${embed.emotes.default.heartbeat}| ${language.replies.values.pinging} \`${Math.round(client.ws.ping)}\` ms**`,
               inline: true
             },
@@ -90,7 +96,7 @@ module.exports = {
               inline: true
             },
             {
-              name: `${embed.emotes.default.memory}| ${language.replies.fields.پemory}`,
+              name: `${embed.emotes.default.memory}| ${language.replies.fields.memory}`,
               value: `${embed.emotes.default.reply} **${Math.round(((os.totalmem() - os.freemem()) / 1024 / 1024).toFixed(2)).toLocaleString()}/${Math.round(((os.totalmem()) / 1024 / 1024).toFixed(2)).toLocaleString()} MB | \`${(((os.totalmem() - os.freemem()) / os.totalmem()) * 100).toFixed(2)}%\`**`
             }
           ]

@@ -6,7 +6,8 @@ const
     ButtonStyle,
     StringSelectMenuBuilder,
     ButtonBuilder,
-    ApplicationCommandOptionType
+    ApplicationCommandOptionType,
+    PermissionFlagsBits
   } = require("discord.js"),
   config = require("../../../config"),
   data = require("../../storage/embed"),
@@ -25,9 +26,9 @@ module.exports = {
   aliases: ["h"],
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  defaultMemberPermissions: ["SendMessages"],
-  bot_permissions: ["SendMessages", "EmbedLinks"],
-  dmPermission: false,
+  default_member_permissions: [PermissionFlagsBits.SendMessages],
+  bot_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
+  dm_permission: false,
   nsfw: false,
   only_owner: false,
   only_slash: true,
@@ -77,7 +78,7 @@ module.exports = {
       prefix = await db.has(databaseNames.prefix) ? await db.get(databaseNames.prefix) : config.discord.prefix,
       embed = new EmbedBuilder()
         .setAuthor({
-          name: `${language.replies.embed.author} ${client.user.username}`
+          name: `${client.user.username} ${language.replies.embed.author}`
         })
         .setFooter({
           text: `${language.replies.embed.footer} ${author.user.tag}`,
@@ -158,7 +159,7 @@ module.exports = {
               const embed = new EmbedBuilder()
                 .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
                 .setAuthor({
-                  name: `${language.replies.embed.author} ${client.user.username}`
+                  name: `${client.user.username} ${language.replies.embed.author}`
                 })
                 .setTitle(`${firstUpperCase(value)}`)
                 .setFooter({
@@ -167,55 +168,63 @@ module.exports = {
                 })
                 .setColor(data.color.theme)
 
+              const description = "";
               client.commands
                 .filter(a => a.category === value)
                 .forEach(async (cmd) => {
-                  const command = (await interaction.guild.commands.fetch()).find(a => a.name === cmd.name);
-                  if (cmd.only_slash && command.options && command.options.some(a => a.type === 1))
-                    command.options.forEach((option) => {
-                      name.push(
-                        JSON.stringify(
-                          {
-                            name: command.name + " " + option.name,
-                            description: option.description
-                          }
-                        )
-                      )
+                  const command = (await client.application.commands.fetch()).find(a => a.name === cmd.name);
+                  if (cmd.only_slash && cmd.options && cmd.options.some(a => a.type === 1))
+                    cmd.options.forEach((option) => {
+                      description +=
+                        `**${cmd.only_slash ?
+                          `</${cmd.name} ${option.name}:${command.id}>` : ""}${cmd.only_message ?
+                            `${prefix}${cmd.name} ${option.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
+                              `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${option.description}\`**`;
+                      // name.push(
+                      //   JSON.stringify(
+                      //     {
+                      //       name: cmd.name + " " + option.name,
+                      //       description: option.description
+                      //     }
+                      //   )
+                      // )
                     })
 
-                  else name.push(
-                    JSON.stringify(
-                      {
-                        name: `${command.name}`,
-                        description: command.description
+                  // else name.push(
+                  //   JSON.stringify(
+                  //     {
+                  //       name: `${cmd.name}`,
+                  //       description: cmd.description
 
-                      }
-                    )
-                  );
+                  //     }
+                  else description +=
+                    `**${cmd.only_slash ?
+                      `</${cmd.name}:${command.id}>` : ""}${cmd.only_message ?
+                        `${prefix}${cmd.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
+                          `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${cmd.description}\`**`;
 
-                  name
-                    .map(a => JSON.parse(a))
-                    .forEach(element => {
-                      description
-                        .push(
-                          `**${cmd.only_slash ?
-                            `</${element.name}:${command.id}>` : ""}${cmd.only_message ?
-                              `${prefix}${element.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
-                                `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${element.description}\`**`
-                        );
-                    });
+                  // name
+                  //   .map(a => JSON.parse(a))
+                  //   .forEach(element => {
+                  //     description
+                  //       .push(
+                  //         `**${cmd.only_slash ?
+                  //           `</${element.name}:${command.id}>` : ""}${cmd.only_message ?
+                  //             `${prefix}${element.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
+                  //               `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${element.description}\`**`
+                  //       );
+                  //   });
 
-                  description
-                    .push(
-                      `**${cmd.only_slash ?
-                        `</${command.name}:${command.id}>` : ""}${cmd.only_slash && cmd.only_message ? " | " : ""}${cmd.only_message ?
-                          `${prefix}${cmd.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
-                            `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${cmd.description}\`**`
-                    );
+                  description +=
+                    `**${cmd.only_slash ?
+                      `</${cmd.name}:${command.id}>` : ""}${cmd.only_slash && cmd.only_message ? " | " : ""}${cmd.only_message ?
+                        `${prefix}${cmd.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
+                          `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${cmd.description}\`**`;
 
                 });
 
-              embed.setDescription(`${description.length < 0 ? language.replies.noCommands : description.join("\n\n").toString()}`);
+              console.log(description);
+              embed.setDescription(`${description.length < 1 ? language.replies.noCommands : description}`);
               return int.update({
                 embeds: [embed],
                 components: [

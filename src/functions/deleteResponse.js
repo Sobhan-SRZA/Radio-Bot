@@ -3,7 +3,7 @@ const error = require("./error");
 /**
  *
  * @param {{interaction: import("discord.js").CommandInteraction, message: import("discord.js").Message }} param0
- * @returns {import("discord.js").Message}
+ * @returns {void}
  */
 module.exports = async function ({ interaction, message = null }) {
   try {

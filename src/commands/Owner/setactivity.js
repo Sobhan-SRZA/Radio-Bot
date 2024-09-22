@@ -1,6 +1,7 @@
 const
   {
-    ActivityType
+    ActivityType,
+    PermissionFlagsBits
   } = require("discord.js"),
   error = require("../../functions/error"),
   response = require("../../functions/response"),
@@ -13,9 +14,9 @@ module.exports = {
   description: "تغییر موقت استاتوس بات.",
   category: "owner",
   cooldown: 5,
-  defaultMemberPermissions: ["SendMessages"],
-  bot_permissions: ["SendMessages"],
-  dmPermission: true,
+  default_member_permissions: [PermissionFlagsBits.SendMessages],
+  bot_permissions: [PermissionFlagsBits.SendMessages],
+  dm_permission: true,
   nsfw: false,
   only_owner: true,
   only_slash: false,

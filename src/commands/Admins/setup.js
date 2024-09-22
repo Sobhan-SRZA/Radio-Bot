@@ -8,7 +8,8 @@ const
         StringSelectMenuBuilder,
         ButtonBuilder,
         ButtonStyle,
-        ComponentType
+        ComponentType,
+        PermissionFlagsBits
     } = require("discord.js"),
     error = require("../../functions/error"),
     deleteResponse = require("../../functions/deleteResponse"),
@@ -34,8 +35,16 @@ module.exports = {
     aliases: ["set", "st"],
     type: ApplicationCommandType.ChatInput,
     cooldown: 10,
-    defaultMemberPermissions: ["ManageChannels", "ManageGuild", "SendMessages"],
-    bot_permissions: ["ManageChannels", "SendMessages", "EmbedLinks"],
+    default_member_permissions: [
+        PermissionFlagsBits.ManageChannels,
+        PermissionFlagsBits.ManageGuild,
+        PermissionFlagsBits.SendMessages
+    ],
+    bot_permissions: [
+        PermissionFlagsBits.ManageChannels,
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.EmbedLinks
+    ],
     only_message: true,
     only_slash: true,
     options: [
@@ -49,7 +58,7 @@ module.exports = {
                     name: "channel",
                     description: defaultLanguage.subCommands.panel.options.channel,
                     type: ApplicationCommandOptionType.Channel,
-                    channelTypes: [ChannelType.GuildText],
+                    channel_types: [ChannelType.GuildText],
                     required: false
                 },
                 {

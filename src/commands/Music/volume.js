@@ -2,7 +2,8 @@ const
   {
     ApplicationCommandOptionType,
     ApplicationCommandType,
-    EmbedBuilder
+    EmbedBuilder,
+    PermissionFlagsBits
   } = require("discord.js"),
   radio = require("../../functions/player"),
   data = require("../../storage/embed"),
@@ -14,9 +15,14 @@ module.exports = {
   category: "music",
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  defaultMemberPermissions: ["SendMessages"],
-  bot_permissions: ["SendMessages", "EmbedLinks", "Connect", "Speak"],
-  dmPermission: false,
+  default_member_permissions: [PermissionFlagsBits.SendMessages],
+  bot_permissions: [
+    PermissionFlagsBits.SendMessages,
+    PermissionFlagsBits.EmbedLinks,
+    PermissionFlagsBits.Connect,
+    PermissionFlagsBits.Speak
+  ],
+  dm_permission: false,
   nsfw: false,
   only_owner: false,
   only_slash: true,
@@ -29,6 +35,22 @@ module.exports = {
       required: false,
       minValue: 1,
       maxValue: 200
+    },
+    {
+      name: "ephemeral",
+      description: ephemeral.description,
+      type: ApplicationCommandOptionType.String,
+      choices: [
+        {
+          name: ephemeral.choices.yes,
+          value: "true"
+        },
+        {
+          name: ephemeral.choices.no,
+          value: "false"
+        }
+      ],
+      required: false
     }
   ],
 

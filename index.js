@@ -55,7 +55,7 @@ const
     intents: Object.keys(GatewayIntentBits).filter(a => isNaN(a) && a !== "GuildPresences"),
     partials: Object.keys(Partials).filter(a => isNaN(a))
   });
-  
+
 // Load Variables
 client.config = require("./config.js");
 client.token = config.discord.token;
