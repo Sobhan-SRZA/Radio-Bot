@@ -1,16 +1,12 @@
 const
   {
-    ChannelType,
-    PermissionsBitField,
-    Collection,
-    EmbedBuilder
+    ChannelType
   } = require("discord.js"),
   error = require("../../functions/error"),
   config = require("../../../config"),
-  sendError = require("../../functions/sendError"),
-  embed = require("../../storage/embed"),
   selectLanguage = require("../../functions/selectLanguage"),
-  replaceValues = require("../../functions/replaceValues");
+  checkCmdPerms = require("../../functions/checkCmdPerms"),
+  checkCmdCooldown = require("../../functions/checkCmdCooldown");
 
 /**
  *
@@ -80,78 +76,11 @@ module.exports = async (client, message) => {
       if (command.only_owner)
         if (!config.discord.support.owners.includes(message.author.id)) return;
 
-      const mentionCommand = `\`${prefix + command.name}\``;
-      if (message.guild) {
-        const bot_perms = [];
-        const user_perms = [];
-        command.bot_permissions.forEach(perm =>
-          bot_perms.push(PermissionsBitField.Flags[perm])
-        );
-        command.user_permissions.forEach(perm =>
-          user_perms.push(PermissionsBitField.Flags[perm])
-        );
-        if (!message.guild.members.me.permissions.has([bot_perms] || []))
-          return await sendError({
-            interaction: message,
-            log: replaceValues(language.botPerm, {
-              mention_command: mentionCommand,
-              bot_perms: command.bot_perms
-                .map(p => `"${p}"`)
-                .join(", ")
-            })
-          });
-
-        if (!message.member.permissions.has([user_perms] || []))
-          return await sendError({
-            interaction: message,
-            log: replaceValues(language.userPerm, {
-              mention_command: `\`${mentionCommand}\``,
-              user_perms: command.user_perms
-                .map(p => `"${p}"`)
-                .join(", ")
-            })
-          });
-      };
+      if (message.guild)
+        await checkCmdPerms(message, command, prefix);
 
       // Cooldown
-      if (!client.cooldowns.has(command.name)) {
-        client.cooldowns.set(command.name, new Collection());
-      };
-
-      const timestamps = client.cooldowns.get(command.name);
-      const defaultCooldownDuration = 3;
-      const cooldownAmount =
-        (command.cooldown ?? defaultCooldownDuration) * 1000;
-      if (timestamps.has(message.author.id)) {
-        const expirationTime =
-          timestamps.get(message.author.id) + cooldownAmount;
-        if (Date.now() < expirationTime) {
-          const expiredTimestamp = Math.round(expirationTime / 1000);
-          return await sendError({
-            interaction: message,
-            data: {
-              embeds: [
-                new EmbedBuilder()
-                  .setColor(embed.color.red)
-                  .setFooter({
-                    text: embed.footer.footerText,
-                    iconURL: embed.footer.footerIcon
-                  })
-                  .setTitle(language.error)
-                  .setDescription(
-                    replaceValues(language.cooldown, {
-                      mention_command: mentionCommand,
-                      expired_timestamp: expiredTimestamp
-                    })
-                  )
-              ]
-            }
-          });
-        };
-      };
-
-      timestamps.set(message.author.id, Date.now());
-      setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+      await checkCmdCooldown(message, command, prefix);
 
       // Command Handler
       message.channel.sendTyping();

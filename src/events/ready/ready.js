@@ -5,7 +5,8 @@ const
   error = require("../../functions/error"),
   logger = require("../../functions/logger"),
   config = require("../../../config"),
-  replaceValues = require("../../functions/replaceValues");
+  replaceValues = require("../../functions/replaceValues"),
+  chooseRandom = require("../../functions/chooseRandom");
 
 /**
  *
@@ -20,6 +21,7 @@ module.exports = async client => {
       rest = new REST().setToken(config.discord.token);
 
     // Remove all of last commands
+    // await client.application.commands.set([]); // Old way
     // await rest.put(
     //   Routes.applicationCommands(client.user.id),
     //   { body: [] }
@@ -27,14 +29,14 @@ module.exports = async client => {
     let data;
     post(`Started refreshing ${clc.cyanBright(commands.size)} application (/) commands.`, "S");
     if (config.source.one_guild) {
-      // await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
-      data = await rest.put(
+      // data = await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
+      data = await rest.post(
         Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
         { body: commands }
       );
     }
     else {
-      // await client.application.commands.set(commands); // Old way
+      // data = await client.application.commands.set(commands); // Old way
       data = await rest.put(
         Routes.applicationCommands(client.user.id),
         { body: commands }
@@ -44,28 +46,23 @@ module.exports = async client => {
 
     // Change Bot Status
     setInterval(function () {
-      const Presence = config.discord.status.presence,
-        selectedPresence =
-          Presence[Math.floor(Math.random() * Presence.length)],
-        Activity = config.discord.status.activity,
-        selectedActivity =
-          Activity[Math.floor(Math.random() * Activity.length)],
-        Type = config.discord.status.type,
-        selectedType =
-          ActivityType[Type[Math.floor(Math.random() * Type.length)]],
-        stateName = replaceValues(selectedActivity, {
+      const
+        Presence = chooseRandom(config.discord.status.presence),
+        Activity = chooseRandom(config.discord.status.activity),
+        Type = chooseRandom(config.discord.status.type),
+        stateName = replaceValues(Activity, {
           servers: client.guilds.cache.size.toLocaleString(),
           members: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),
           prefix: config.discord.prefix
         });
 
       client.user.setPresence({
-        status: selectedPresence,
+        status: Presence,
         activities: [
           {
-            type: selectedType,
+            type: ActivityType[Type],
             name: stateName,
-            state: selectedType === ActivityType.Custom ? stateName : ""
+            state: Type === "Custom" ? stateName : ""
           }
         ]
       });

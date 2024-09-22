@@ -1,10 +1,9 @@
-const replaceValues = require("../../functions/replaceValues");
-
 const
   {
     ApplicationCommandType,
     ApplicationCommandOptionType,
-    ChannelType
+    ChannelType,
+    PermissionFlagsBits
   } = require("discord.js"),
   response = require("../../functions/response"),
   radio = require("../../functions/player"),
@@ -12,6 +11,7 @@ const
   selectLanguage = require("../../functions/selectLanguage"),
   config = require("../../../config"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
+  replaceValues = require("../../functions/replaceValues"),
   defaultLanguage = selectLanguage(config.source.default_language).commands.afk;
 
 module.exports = {
@@ -21,9 +21,15 @@ module.exports = {
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
   usage: "[channel | id]",
-  user_permissions: ["SendMessages"],
-  bot_permissions: ["SendMessages", "EmbedLinks", "Connect", "Speak"],
-  dm_permissions: false,
+  default_member_permissions: [PermissionFlagsBits.SendMessages],
+  bot_permissions: [
+    PermissionFlagsBits.SendMessages,
+    PermissionFlagsBits.EmbedLinks,
+    PermissionFlagsBits.Connect,
+    PermissionFlagsBits.Speak
+  ],
+  dm_permission: false,
+  nsfw: false,
   only_owner: false,
   only_slash: true,
   only_message: true,
@@ -32,7 +38,7 @@ module.exports = {
       name: "channel",
       description: defaultLanguage.options.channel,
       type: ApplicationCommandOptionType.Channel,
-      channelTypes: [ChannelType.GuildVoice],
+      channel_types: [ChannelType.GuildVoice],
       required: false
     },
     {
@@ -84,7 +90,12 @@ module.exports = {
 
     let queue;
     try {
-      queue = new radio(interaction);
+      queue = new radio()
+        .setData({
+          channelId: channel.id,
+          guildId: interaction.guildId,
+          adapterCreator: interaction.guild.voiceAdapterCreator
+        });
     } catch {
       return await sendError({
         interaction,
@@ -92,14 +103,6 @@ module.exports = {
         log: language.replies.noPlayerError
       });
     }
-
-    const queueChannelId = queue?.data.channelId;
-    if (memberChannelId !== queueChannelId)
-      return await sendError({
-        interaction,
-        isUpdateNeed: true,
-        log: language.replies.notMatchedVoice
-      });
 
     await db.set(databaseNames.afk, channel.id);
     return await response(interaction, {

@@ -1,16 +1,13 @@
 const
   {
-    EmbedBuilder,
-    PermissionsBitField,
-    ApplicationCommandOptionType,
-    Collection
+    ApplicationCommandOptionType
   } = require("discord.js"),
   error = require("../../functions/error"),
   config = require("../../../config"),
   sendError = require("../../functions/sendError"),
-  embed = require("../../storage/embed"),
-  replaceValues = require("../../functions/replaceValues"),
-  selectLanguage = require("../../functions/selectLanguage");
+  selectLanguage = require("../../functions/selectLanguage"),
+  checkCmdPerms = require("../../functions/checkCmdPerms"),
+  checkCmdCooldown = require("../../functions/checkCmdCooldown");
 
 /**
  * 
@@ -56,73 +53,11 @@ module.exports = async (client, interaction) => {
             });
 
 
-        const fcmd = client.application.commands.cache.find(c => c.name === command.name);
-        const mentionCommand = `</${fcmd?.name}${interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ? ` ${interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${fcmd?.id}>`;
-        if (interaction.guild) {
-          const bot_perms = [];
-          const user_perms = [];
-          command.bot_permissions.forEach(perm => bot_perms.push(PermissionsBitField.Flags[perm]));
-          command.user_permissions.forEach(perm => user_perms.push(PermissionsBitField.Flags[perm]));
-          if (!interaction.guild.members.me.permissions.has([bot_perms] || []))
-            return await sendError({
-              interaction,
-              log: replaceValues(language.botPerm, {
-                mention_command: mentionCommand,
-                bot_perms: command.bot_perms
-                  .map(p => `"${p}"`)
-                  .join(", ")
-              })
-            });
+        // Check command perms
+        await checkCmdPerms(interaction, command);
 
-          if (!interaction.member.permissions.has([user_perms] || []))
-            return await sendError({
-              interaction,
-              log: replaceValues(language.userPerm, {
-                mention_command: mentionCommand,
-                user_perms: command.user_perms
-                  .map(p => `"${p}"`)
-                  .join(", ")
-              })
-            });
-        };
-
-        // Cooldown
-        if (!client.cooldowns.has(command.name)) {
-          client.cooldowns.set(command.name, new Collection());
-        };
-
-        const timestamps = client.cooldowns.get(command.name);
-        const defaultCooldownDuration = 3;
-        const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
-        if (timestamps.has(interaction.user.id)) {
-          const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
-          if (Date.now() < expirationTime) {
-            const expiredTimestamp = Math.round(expirationTime / 1000);
-            return await sendError({
-              interaction,
-              data: {
-                embeds: [
-                  new EmbedBuilder()
-                    .setColor(embed.color.red)
-                    .setFooter({
-                      text: embed.footer.footerText,
-                      iconURL: embed.footer.footerIcon
-                    })
-                    .setTitle(language.error)
-                    .setDescription(
-                      replaceValues(language.cooldown, {
-                        mention_command: mentionCommand,
-                        expired_timestamp: expiredTimestamp
-                      })
-                    )
-                ]
-              }
-            });
-          }
-        };
-
-        timestamps.set(interaction.user.id, Date.now());
-        setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+        // Command cooldown
+        await checkCmdCooldown(interaction, command);
 
         // Command Handler 
         await interaction.deferReply({

@@ -1,22 +1,53 @@
 const
   {
-    ApplicationCommandType
+    ApplicationCommandType,
+    PermissionFlagsBits,
+    ApplicationCommandOptionType
   } = require("discord.js"),
   radio = require("../../functions/player"),
+  selectLanguage = require("../../functions/selectLanguage"),
+  config = require("../../../config"),
+  ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
+  replaceValues = require("../../functions/replaceValues"),
+  defaultLanguage = selectLanguage(config.source.default_language).commands.stop,
   response = require("../../functions/response");
 
 module.exports = {
   name: "stop",
-  description: "Stop the playback.",
+  description: defaultLanguage.description,
   category: "music",
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  user_permissions: ["SendMessages"],
-  bot_permissions: ["SendMessages", "EmbedLinks", "Connect", "Speak"],
-  dm_permissions: false,
+  default_member_permissions: [PermissionFlagsBits.SendMessages],
+  bot_permissions: [
+    PermissionFlagsBits.SendMessages,
+    PermissionFlagsBits.EmbedLinks,
+    PermissionFlagsBits.Connect,
+    PermissionFlagsBits.Speak
+  ],
+  dm_permission: false,
+  nsfw: false,
   only_owner: false,
   only_slash: true,
   only_message: true,
+  options: [
+    {
+      name: "ephemeral",
+      description: ephemeral.description,
+      type: ApplicationCommandOptionType.String,
+      choices: [
+        {
+          name: ephemeral.choices.yes,
+          value: "true"
+        },
+        {
+          name: ephemeral.choices.no,
+          value: "false"
+        }
+      ],
+      required: false
+    }
+  ],
 
   /**
    * 
@@ -26,33 +57,23 @@ module.exports = {
    * @returns 
    */
   run: async (client, interaction, args) => {
-    const memberChannelId = interaction.member?.voice?.channelId;
-    if (!memberChannelId)
-      return await response({
-        content: "You need to join a voice channel first!",
-        ephemeral: true
-      });
+    const
+      db = client.db,
+      databaseNames = {
+        language: `language.${interaction.guild.id}`
+      },
+      lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
+      language = selectLanguage(lang).commands.stop;
 
-    let queue;
-    try {
-      queue = new radio(interaction);
-    } catch {
-      return await sendError({
-        interaction,
-        isUpdateNeed: true,
-        log: language.replies.noPlayerError
-      });
-    }
+    // Check perms
+    await checkPlayerPerms(interaction);
 
-    const queueChannelId = queue?.data.channelId;
-    if (memberChannelId !== queueChannelId)
-      return await response({
-        content: "You must be in the same voice channel as me!",
-        ephemeral: true
-      });
-
+    // Stop The Player
+    const queue = new radio(interaction);
     queue.stop();
-    return await response("Stopped the playback.");
+    return await response(interaction, {
+      content:language.replies.stopped
+    });
   }
 };
 /**

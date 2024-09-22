@@ -38,7 +38,7 @@ module.exports = async function ({
               }
             )
             .setTitle(language.replies.error)
-            .setDescription(`\`\`\`diff\n-${log}\`\`\``)
+            .setDescription(log)
         ]
       };
 

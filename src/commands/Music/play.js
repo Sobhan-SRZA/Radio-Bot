@@ -1,21 +1,27 @@
 const
     {
         ApplicationCommandType,
-        ApplicationCommandOptionType
+        ApplicationCommandOptionType,
+        PermissionFlagsBits
     } = require("discord.js"),
     radio = require("../../functions/player"),
     radiostation = require("../../storage/radiostation.json"),
     error = require("../../functions/error"),
     response = require("../../functions/response"),
+    replaceValues = require("../../functions/replaceValues"),
+    selectLanguage = require("../../functions/selectLanguage"),
+    config = require("../../../config"),
+    defaultLanguage = selectLanguage(config.source.default_language).commands.play,
+    ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
     sendError = require("../../functions/sendError"),
     choices = Object.keys(radiostation).map((a) => JSON.stringify({
         name: `${a}`,
         value: `${a}`
     })).map(a => JSON.parse(a)),
     config = require("../../../config"),
-    selectLanguage = require("../../functions/selectLanguage"),
     chunkArray = require("../../functions/chunkArray"),
-    options = [];
+    options = [],
+    checkPlayerPerms = require("../../functions/checkPlayerPerms");
 
 chunkArray(choices, 25)
     .forEach((array, index) => {
@@ -23,7 +29,7 @@ chunkArray(choices, 25)
             JSON.stringify(
                 {
                     name: `station-${++index}`,
-                    description: "Choose one of them.",
+                    description: defaultLanguage.options.station,
                     type: ApplicationCommandOptionType.String,
                     choices: array,
                     required: false
@@ -36,15 +42,15 @@ options.push(
     JSON.stringify(
         {
             name: "ephemeral",
-            description: "آیا این پیغام پنهان باشد؟",
+            description: ephemeral.description,
             type: ApplicationCommandOptionType.String,
             choices: [
                 {
-                    name: "بله",
+                    name: ephemeral.choices.yes,
                     value: "true"
                 },
                 {
-                    name: "خیر",
+                    name: ephemeral.choices.no,
                     value: "false"
                 }
             ],
@@ -55,14 +61,20 @@ options.push(
 
 module.exports = {
     name: "play",
-    description: "پخش موزیک در ویس چنل.",
+    description: defaultLanguage.description,
     category: "music",
     type: ApplicationCommandType.ChatInput,
     cooldown: 5,
     aliases: ["p"],
-    user_permissions: ["SendMessages"],
-    bot_permissions: ["SendMessages", "EmbedLinks", "Connect", "Speak"],
-    dm_permissions: false,
+    default_member_permissions: [PermissionFlagsBits.SendMessages],
+    bot_permissions: [
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.EmbedLinks,
+        PermissionFlagsBits.Connect,
+        PermissionFlagsBits.Speak
+    ],
+    dm_permission: false,
+    nsfw: false,
     only_owner: false,
     only_slash: true,
     only_message: true,
@@ -79,8 +91,6 @@ module.exports = {
         try {
             const
                 query = interaction.user ? interaction.options.data.find(a => a.name.startsWith("station"))?.value : args.join(" "),
-                member = interaction.guild.members.cache.get(interaction.member.id),
-                channel = member?.voice?.channel,
                 db = client.db,
                 databaseNames = {
                     station: `radioStation.${interaction.guildId}`,
@@ -95,63 +105,31 @@ module.exports = {
                     return await sendError({
                         isUpdateNeed: true,
                         interaction,
-                        log: `You can't use this command here!\n+Go to <#${(await db.get(databaseNames.panel)).channel}> and try again.`
+                        log: replaceValues(language.replies.onlyPanel, {
+                            channel: await db.get(databaseNames.panel).channel
+                        })
                     });
 
             if (!choices.map(a => a.name).includes(query))
                 return await sendError({
                     isUpdateNeed: true,
                     interaction,
-                    log: `Invalid query!!\n+ Valid queries: ${choices.map(a => a.name).join(", ")}`
+                    log: replaceValues(language.replies.invalidQuery, {
+                        stations: JSON.stringify(choices.map(a => a.name))
+                    })
                 });
 
-            if (!channel)
-                return await sendError({
-                    isUpdateNeed: true,
-                    interaction,
-                    log: "You have to join a voice channel first."
-
-                });
-
-            if (!channel.viewable)
-                return await sendError({
-                    isUpdateNeed: true,
-                    interaction,
-                    log: "I need \"View Channel\" permission."
-                });
-
-            if (!channel.joinable)
-                return await sendError({
-                    isUpdateNeed: true,
-                    interaction,
-                    log: "I need \"Connect Channel\" permission."
-                });
-
-            if (channel.full)
-                return await sendError({
-                    isUpdateNeed: true,
-                    interaction,
-                    log: "Can't join, the voice channel is full."
-                });
-
-            if (member.voice.deaf)
-                return await sendError({
-                    isUpdateNeed: true,
-                    interaction,
-                    log: "You cannot run this command while deafened."
-                });
-
-            if (interaction.guild.members.me?.voice?.mute)
-                return await sendError({
-                    isUpdateNeed: true,
-                    interaction,
-                    log: "Please unmute me before playing."
-                });
+            // Check perms
+            await checkPlayerPerms(interaction);
 
             const player = new radio(interaction);
             await player.radio(radiostation[query]);
             await db.set(databaseNames.station, query);
-            return await response(interaction, { content: `On playing!` });
+            return await response(interaction, {
+                content: replaceValues(language.replies.play, {
+                    song: query
+                })
+            });
         } catch (e) {
             error(e);
         }

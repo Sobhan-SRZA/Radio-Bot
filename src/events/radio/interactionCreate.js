@@ -8,6 +8,8 @@ const
   sendError = require("../../functions/sendError"),
   config = require("../../../config"),
   selectLanguage = require("../../functions/selectLanguage");
+const checkPlayerPerms = require("../../functions/checkPlayerPerms");
+const replaceValues = require("../../functions/replaceValues");
 
 /**
  * 
@@ -22,74 +24,26 @@ module.exports = async (client, interaction) => {
     if (interaction.customId.startsWith("radioPanel")) {
       const
         choice = interaction.values[0],
-        member = interaction.guild.members.cache.get(interaction.member.id),
-        channel = member?.voice?.channel,
         db = client.db,
         databaseNames = {
           station: `radioStation.${interaction.guildId}`,
           language: `language.${interaction.guildId}`
         },
         lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-        language = selectLanguage(lang).interactions.menu;
+        language = selectLanguage(lang);
 
-      if (!channel)
-        return await sendError({
-          interaction,
-          log: language.noChannelError
+      // Check perms
+      await checkPlayerPerms(interaction);
 
-        });
-
-      if (!channel.viewable)
-        return await sendError({
-          interaction,
-          log: language.noPermToView
-        });
-
-      if (!channel.joinable)
-        return await sendError({
-          interaction,
-          log: language.noPermToConnect
-        });
-
-      if (channel.full)
-        return await sendError({
-          interaction,
-          log: language.channelFull
-        });
-
-      if (member.voice.deaf)
-        return await sendError({
-          interaction,
-          log: language.userDeaf
-        });
-
-      let radio;
-      try {
-        radio = new player(interaction);
-      } catch {
-        return await sendError({
-          interaction,
-          log: language.noPlayerError
-        });
-      };
-      
-      if (channel.id !== radio.data.channelId)
-        return await sendError({
-          interaction,
-          log: language.notMatchedVoice
-        });
-
-      if (interaction.guild.members.me?.voice?.mute)
-        return await sendError({
-          interaction,
-          log: language.clientMute
-        });
-
+      // Start to play station
+      const radio = new player(interaction);
       await db.set(databaseNames.station, choice);
       radio.radio(radiostation[choice]);
       await interaction.reply({
         ephemeral: true,
-        content: `Playing ${choice}`
+        content: replaceValues(language.commands.play.replies.play, {
+          song: choice
+        })
       })
     }
   } catch (e) {
