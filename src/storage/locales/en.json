@@ -10,7 +10,7 @@
             "choices": {
                 "yes": "Yes",
                 "no": "No"
-            }
+            } 
         },
         "noChannelError": "```diff\n- You need to join a voice channel.```",
         "notMatchedVoice": "```diff\n- Your voice channel doesn't match mine. Please join the one I am in.```",
