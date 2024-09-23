@@ -8,10 +8,8 @@ const
     error = require("../../functions/error"),
     config = require("../../../config"),
     data = require("../../storage/embed"),
-    statusEmbedBuilder = require("../../functions/statusEmbedBuilder"),
-    selectLanguage = require("../../functions/selectLanguage"),
-    defaultLanguage = selectLanguage(config.source.default_language),
-    replaceValues = require("../../functions/replaceValues");
+    replaceValues = require("../../functions/replaceValues"),
+    statusEmbedBuilder = require("../../functions/statusEmbedBuilder");
 
 /**
  * 
@@ -39,7 +37,7 @@ module.exports = async (client) => {
                         .addComponents(
                             new ButtonBuilder()
                                 .setStyle(ButtonStyle.Secondary)
-                                .setLabel(defaultLanguage.replies.status.refresh)
+                                .setLabel("Refresh")
                                 .setEmoji(data.emotes.default.update)
                                 .setCustomId("refreshStatus")
                         ),
@@ -48,13 +46,13 @@ module.exports = async (client) => {
                         .addComponents(
                             new ButtonBuilder()
                                 .setStyle(ButtonStyle.Link)
-                                .setLabel(defaultLanguage.replies.status.invite)
+                                .setLabel("Invite Me")
                                 .setEmoji(data.emotes.default.invite)
                                 .setURL(replaceValues(config.discord.default_invite, { clientId: client.user.id })),
 
                             new ButtonBuilder()
                                 .setStyle(ButtonStyle.Link)
-                                .setLabel(defaultLanguage.replies.status.vote)
+                                .setLabel("Vote Me")
                                 .setEmoji(data.emotes.default.topgg)
                                 .setURL(`${replaceValues(config.discord.topgg, { clientId: client.user.id })}`)
                         )

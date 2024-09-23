@@ -1,5 +1,3 @@
-const sendError = require("../../functions/sendError");
-
 const
   {
     ApplicationCommandOptionType,
@@ -9,16 +7,11 @@ const
   } = require("discord.js"),
   radio = require("../../functions/player"),
   data = require("../../storage/embed"),
-  config = require("../../../config"),
-  selectLanguage = require("../../functions/selectLanguage"),
-  ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
-  replaceValues = require("../../functions/replaceValues"),
-  defaultLanguage = selectLanguage(config.source.default_language).commands.volume,
   response = require("../../functions/response");
 
 module.exports = {
   name: "volume",
-  description: defaultLanguage.description,
+  description: "Check or change the volume",
   category: "music",
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
@@ -36,8 +29,8 @@ module.exports = {
   only_message: true,
   options: [
     {
-      name: "input",
-      description: defaultLanguage.options.input,
+      name: "amount",
+      description: "Volume amount to set",
       type: ApplicationCommandOptionType.Number,
       required: false,
       minValue: 1,
@@ -69,53 +62,43 @@ module.exports = {
    * @returns 
    */
   run: async (client, interaction, args) => {
-    const
-      db = client.db,
-      databaseNames = {
-        language: `language.${interaction.guild.id}`
-      },
-      lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-      language = selectLanguage(lang).commands.volume;
-
-    // Check perms
-    await checkPlayerPerms(interaction);
-
-    // Stop The Player
-    const queue = new radio(interaction);
-    const input = interaction.user ? interaction.options.getNumber("input", false) : args[0];
-    if (!input) {
-      const embed = new EmbedBuilder()
-        .setColor(data.color.theme)
-        .setDescription(
-          replaceValues(language.replies.currentVolume, {
-            volume: queue.volume
-          })
-        )
-        .setFooter(
-          {
-            text: language.replies.footer
-          }
-        );
-
+    const memberChannelId = interaction.member?.voice?.channelId;
+    if (!memberChannelId)
       return await response(interaction, {
-        ephemeral: true,
-        embeds: [embed]
+        content: "You need to join a voice channel first!",
+        ephemeral: true
       });
-    }
 
-    if (Number(input) < 0 || Number(input) > 200)
+    let queue;
+    try {
+      queue = new radio(interaction);
+    } catch {
       return await sendError({
         interaction,
         isUpdateNeed: true,
-        log: language.replies.invalidInput
+        log: language.replies.noPlayerError
+      });
+    }
+
+    const queueChannelId = queue?.data.channelId;
+    if (memberChannelId !== queueChannelId)
+      return await response(interaction, {
+        content: "You must be in the same voice channel as me!",
+        ephemeral: true
       });
 
-    queue.setVolume(Number(input));
-    return await response(interaction, {
-      content: replaceValues(language.replies.success, {
-        volume: input
-      })
-    });
+    const newVol = interaction.user ? interaction.options.getNumber("amount", false) : args[0];
+    if (!newVol) {
+      const embed = new EmbedBuilder()
+        .setColor(data.color.theme)
+        .setDescription(`Current volume is \`${queue.volume}%\`.`)
+        .setFooter({ text: "Use '/volume <1-100>' to change the volume." });
+
+      return await response(interaction, { ephemeral: true, embeds: [embed] }).catch(error);
+    }
+
+    queue.setVolume(Number(newVol));
+    return await response(interaction, { content: `Volume is updated to ${newVol}.` });
   }
 };
 /**

@@ -8,6 +8,7 @@ const
   selectLanguage = require("../../functions/selectLanguage"),
   config = require("../../../config"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
+  replaceValues = require("../../functions/replaceValues"),
   defaultLanguage = selectLanguage(config.source.default_language).commands.stop,
   response = require("../../functions/response");
 

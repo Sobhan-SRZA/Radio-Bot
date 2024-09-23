@@ -3,11 +3,7 @@ const
     post = require("../functions/post"),
     loadCommand = require("../functions/loadCommand"),
     firstUpperCase = require("../functions/firstUpperCase"),
-    error = require("../functions/error"),
-    config = require("../../config"),
-    selectLanguage = require("../functions/selectLanguage"),
-    replaceValues = require("../functions/replaceValues"),
-    defaultLanguage = selectLanguage(config.source.default_language);
+    error = require("../functions/error");
 
 /**
  * 
@@ -18,13 +14,7 @@ module.exports = async (client) => {
     try {
         ["only_message", "only_slash"].forEach((type) => {
             loadCommand(`${process.cwd()}/src/commands`, type, client.commands);
-            post(
-                replaceValues(defaultLanguage.replies.loadCommands, {
-                    cmdCount: clc.cyanBright(client.commands.filter(a => a[type]).size),
-                    type: firstUpperCase(type.replace("only_", ""))
-                }),
-                "S"
-            );
+            post(`${clc.cyanBright(client.commands.filter(a => a[type]).size)} ${firstUpperCase(type.replace("only_", ""))} Commands Is Loaded!!`, "S");
         });
     } catch (e) {
         error(e)

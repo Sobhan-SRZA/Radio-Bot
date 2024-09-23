@@ -1,10 +1,6 @@
 const
   error = require("../../functions/error"),
-  sendGuildAlert = require("../../functions/sendGuildAlert"),
-  config = require("../../../config"),
-  selectLanguage = require("../../functions/selectLanguage"),
-  defaultLanguage = selectLanguage(config.source.default_language),
-  replaceValues = require("../../functions/replaceValues");
+  sendGuildAlert = require("../../functions/sendGuildAlert");
 
 /**
  * 
@@ -14,14 +10,7 @@ const
  */
 module.exports = async (client, guild) => {
   try {
-    return await sendGuildAlert({
-      client,
-      guild,
-      isWebhook: true,
-      description: replaceValues(defaultLanguage.replies.guildDelete, {
-        guilds: client.guilds.cache.size.toLocaleString()
-      })
-    })
+    return await sendGuildAlert({ client, guild, isWebhook: true, description: `-# **My membership in one server has been revoked. I remain a member of \`${client.guilds.cache.size.toLocaleString()}\` other servers.**` })
   } catch (e) {
     error(e)
   }

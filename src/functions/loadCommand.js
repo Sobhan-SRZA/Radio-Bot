@@ -2,9 +2,7 @@ const
   fs = require("fs"),
   error = require("./error"),
   post = require("./post"),
-  config = require("../../config"),
-  selectLanguage = require("./selectLanguage"),
-  defaultLanguage = selectLanguage(config.source.default_language);
+  firstUpperCase = require("./firstUpperCase");
 
 /**
  *
@@ -27,7 +25,9 @@ module.exports = async function (dirname, type, object) {
 
         else {
           post(
-            `${defaultLanguage.replies.loadCommandError} ${file}`,
+            `${firstUpperCase(
+              type.replace("only_", "")
+            )} Command Not Loaded: ${file}`,
             "E",
             "red",
             "redBright"

@@ -5,10 +5,7 @@ const
   clc = require("cli-color"),
   error = require("../functions/error"),
   post = require("../functions/post"),
-  config = require("../../config"),
-  selectLanguage = require("../functions/selectLanguage"),
-  replaceValues = require("../functions/replaceValues"),
-  defaultLanguage = selectLanguage(config.source.default_language);
+  database = (require("../../config")).source.database;
 
 /**
  * 
@@ -17,7 +14,7 @@ const
  */
 module.exports = async (client) => {
   try {
-    switch (config.source.database.type) {
+    switch (database.type) {
       case "sql": {
         const {
           SqliteDriver
@@ -29,7 +26,7 @@ module.exports = async (client) => {
         const {
           MySQLDriver
         } = require("quick.db");
-        driver = new MySQLDriver(config.source.database.mysql)
+        driver = new MySQLDriver(database.mysql)
       } break;
 
       case "json": {
@@ -43,7 +40,7 @@ module.exports = async (client) => {
         const {
           MongoDriver
         } = require("quickmongo");
-        driver = new MongoDriver(config.source.database.mongoURL);
+        driver = new MongoDriver(database.mongoURL);
         await driver.connect();
       } break;
     };
@@ -53,23 +50,9 @@ module.exports = async (client) => {
     });
     await db.init();
     client.db = db;
-    post(
-      replaceValues(defaultLanguage.replies.loadDatabase, {
-        type: config.source.database.type.toLocaleUpperCase()
-      }),
-      "S"
-    );
+    post(`Database Is Successfully Connected!! (Type: ${database.type.toLocaleUpperCase()})`, "S");
   } catch (e) {
-    post(
-      `${clc.red(
-        replaceValues(defaultLanguage.replies.databaseError, {
-          type: config.source.database.type.toLocaleUpperCase()
-        })
-      )}`,
-      "E",
-      "red",
-      "redBright"
-    );
+    post(`${clc.red(`Database Doesn't Connected!! (Type: ${database.type.toLocaleUpperCase()})`)}`, "E", "red", "redBright");
     error(e);
   }
 }

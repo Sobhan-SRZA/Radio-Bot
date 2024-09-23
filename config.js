@@ -1,6 +1,6 @@
 module.exports = {
   source: {
-    default_language: process.env.default_language || "en", // Bot default language in discord.
+    default_language: process.env.default_language === "true" ? true : false || "en", // Bot default language in discord.
     anti_crash: process.env.anti_crash === "true" ? true : false || false, // Anticrash on or off
     one_guild: process.env.one_guild === "true" ? true : false || false, // One Guild on or off
     logger: process.env.logger === "true" ? true : false || false, // Webhook logger on or off
