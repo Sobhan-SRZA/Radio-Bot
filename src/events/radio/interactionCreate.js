@@ -1,15 +1,11 @@
 const
-  {
-    EmbedBuilder
-  } = require("discord.js"),
   error = require("../../functions/error"),
   player = require("../../functions/player"),
   radiostation = require("../../storage/radiostation.json"),
-  sendError = require("../../functions/sendError"),
   config = require("../../../config"),
-  selectLanguage = require("../../functions/selectLanguage");
-const checkPlayerPerms = require("../../functions/checkPlayerPerms");
-const replaceValues = require("../../functions/replaceValues");
+  selectLanguage = require("../../functions/selectLanguage"),
+  checkPlayerPerms = require("../../functions/checkPlayerPerms"),
+  replaceValues = require("../../functions/replaceValues");
 
 /**
  * 

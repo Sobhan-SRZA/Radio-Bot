@@ -6,7 +6,9 @@ const
   } = require("discord.js"),
   error = require("./error"),
   copyRight = require("../storage/embed"),
-  config = require("../../config");
+  config = require("../../config"),
+  selectLanguage = require("./selectLanguage"),
+  defaultLanguage = selectLanguage(config.source.default_language);
 
 /**
  *
@@ -18,7 +20,7 @@ module.exports = async function ({
   guild,
   guildChannel = null,
   isWebhook = false,
-  description = "-# **The total number of servers I'm a member of is \`{guilds}\`**"
+  description = defaultLanguage.replies.guildAlert
 }) {
   try {
     let channel;
@@ -59,17 +61,17 @@ module.exports = async function ({
       .addFields(
         [
           {
-            name: `${copyRight.emotes[isWebhook ? "default" : "theme"].owner}| Owner: `,
+            name: `${copyRight.emotes[isWebhook ? "default" : "theme"].owner}| ${defaultLanguage.replies.guild.owner}`,
             value: `${copyRight.emotes[isWebhook ? "default" : "theme"].reply} **${owner?.user} | \`${owner?.user?.tag}\` | \`${owner?.user?.id}\`**`,
             inline: false
           },
           {
-            name: `${copyRight.emotes[isWebhook ? "default" : "theme"].server}| Guild: `,
+            name: `${copyRight.emotes[isWebhook ? "default" : "theme"].server}| ${defaultLanguage.replies.guild.guild}`,
             value: `${copyRight.emotes[isWebhook ? "default" : "theme"].reply} **${invite ? `[${guild.name}](${invite.url})` : `${guild.name}`} | \`${guild.id}\` | \`${guild.memberCount}\` Members**`,
             inline: false
           },
           {
-            name: `${copyRight.emotes[isWebhook ? "default" : "theme"].date}| Created at:`,
+            name: `${copyRight.emotes[isWebhook ? "default" : "theme"].date}| ${defaultLanguage.replies.guild.createdAt}`,
             value: `${copyRight.emotes[isWebhook ? "default" : "theme"].reply} **<t:${Date.parse(guild.createdAt) / 1000}:D> | <t:${Date.parse(guild.createdAt) / 1000}:R>**`,
             inline: false
           }

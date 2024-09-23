@@ -1,6 +1,10 @@
 const
   error = require("../../functions/error"),
-  sendGuildAlert = require("../../functions/sendGuildAlert");
+  sendGuildAlert = require("../../functions/sendGuildAlert"),
+  config = require("../../../config"),
+  selectLanguage = require("../../functions/selectLanguage"),
+  defaultLanguage = selectLanguage(config.source.default_language),
+  replaceValues = require("../../functions/replaceValues");
 
 /**
  * 
@@ -10,7 +14,14 @@ const
  */
 module.exports = async (client, guild) => {
   try {
-    return await sendGuildAlert({ client, guild, isWebhook: true, description: `-# **I have recently become a member of a new server, bringing my total server membership to \`${client.guilds.cache.size.toLocaleString()}\`.**` })
+    return await sendGuildAlert({
+      client,
+      guild,
+      isWebhook: true,
+      description: replaceValues(defaultLanguage.replies.guildCreate, {
+        guilds: client.guilds.cache.size.toLocaleString()
+      })
+    })
   } catch (e) {
     error(e)
   }

@@ -1,7 +1,11 @@
 const
   fs = require("fs"),
   clc = require("cli-color"),
-  post = require("../functions/post");
+  post = require("../functions/post"),
+  config = require("../../config"),
+  selectLanguage = require("../functions/selectLanguage"),
+  replaceValues = require("../functions/replaceValues"),
+  defaultLanguage = selectLanguage(config.source.default_language);
 
 /**
  * 
@@ -18,7 +22,14 @@ module.exports = async (client) => {
       amount++;
     };
   });
-  post(`${clc.cyanBright(amount)} Events Is Loaded!!`, "S", "yellowBright", "greenBright");
+  post(
+    replaceValues(defaultLanguage.replies.loadEvents, {
+      count: clc.cyanBright(amount)
+    }),
+    "S",
+    "yellowBright",
+    "greenBright"
+  );
 }
 /**
  * @copyright
