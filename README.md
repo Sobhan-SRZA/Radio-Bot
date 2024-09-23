@@ -21,15 +21,19 @@
 
 # 🎧 Discord Radio Bot 🎶
 
-This is an advanced radio bot for Discord voice channels, allowing users to switch stations, manage AFK users, and enjoy a sleek and easy-to-use panel.
+This is an advanced radio bot for Discord voice channels, allowing users to enjoy a wide variety of trending online radios with high quality and seamless performance.
 
 ## Features ✨
-- **Station Switching**: Change radio stations on the fly! 🎵
-- **AFK Management**: Automatically manage AFK users 💤
-- **User-Friendly Panel**: A beautiful dashboard for quick management 💻
-- **Fast and Responsive** 🚀
+- **Station Switching**: Change radio stations effortlessly! 🎵
+- **AFK Management**: Automatically rejoin specified AFK channels from the database. 
+- **Multilingual Support**: Language switching feature coming soon! 🌍
+- **High-Quality Streaming**: Experience smooth, lag-free audio. 
+- **Clean and Editable Code**: Well-structured for new developers to easily customize.
+- **Database Support**: Compatible with multiple databases like SQL, JSON, Docker, and MongoDB.
+- **User-Friendly Panel**: Simple Discord interface for easy management. 💻
+- **Audio Format Support**: Play audio from various formats such as OGG, MP3, MP4, MKV, and M4A (coming soon).
 
----
+--- 
 
 ## Installation and Setup 📦
 
@@ -37,7 +41,7 @@ This is an advanced radio bot for Discord voice channels, allowing users to swit
 Clone or download the project files:
 ```bash
 git clone https://github.com/Sobhan-SRZA/Radio-Bot.git
-cd radio-bot
+cd Radio-Bot
 ```
 
 Install all dependencies:

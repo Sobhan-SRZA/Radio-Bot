@@ -7,11 +7,15 @@ const
   response = require("../../functions/response"),
   sendError = require("../../functions/sendError"),
   firstUpperCase = require("../../functions/firstUpperCase"),
-  selectArg = require("../../functions/selectArg");
+  selectArg = require("../../functions/selectArg"),
+  config = require("../../../config"),
+  selectLanguage = require("../../functions/selectLanguage"),
+  replaceValues = require("../../functions/replaceValues"),
+  defaultLanguage = selectLanguage(config.source.default_language).commands.setactivity;
 
 module.exports = {
   name: "setactivity",
-  description: "تغییر موقت استاتوس بات.",
+  description: defaultLanguage.description,
   category: "owner",
   cooldown: 5,
   default_member_permissions: [PermissionFlagsBits.SendMessages],
@@ -39,24 +43,34 @@ module.exports = {
         types = {
           status: ["dnd", "online", "idle", "invisible"],
           activity: Object.keys(ActivityType).filter(a => isNaN(a)).map(a => a.toLowerCase())
-        };
+        },
+        db = client.db,
+        databaseNames = {
+          language: `language.${message.guild.id}`
+        },
+        lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
+        language = selectLanguage(lang).commands.setactivity;
 
       if (!types.status.includes(status))
         return await sendError({
           interaction: message,
-          log: `ورودی اشتباه!\n+ ورودی درست: status:[statusName]\n+ statusName میتونه باشه: [${types.status.join(" | ")}]`
+          log: replaceValues(language.replies.invalidStatus, {
+            status: types.status.join(" | ")
+          })
         });
 
       if (!types.activity.includes(activityType))
         return await sendError({
           interaction: message,
-          log: `ورودی اشتباه!\n+ ورودی درست: type:[typeName]\n+ typeName میتونه باشه: [${types.activity.join(" | ")}]`
+          log: replaceValues(language.replies.invalidStatus, {
+            activity: types.activity.join(" | ")
+          })
         });
 
       const data = {
         activities: [
           {
-            name: activityName ? activityName : "Hello World",
+            name: activityName ? activityName : language.replies.activityName,
             type: activityType ? ActivityType[firstUpperCase(activityType)] : 4,
             state: ActivityType[firstUpperCase(activityType)] === 4 ? activityName : null,
             url: url ? url : null
@@ -66,7 +80,9 @@ module.exports = {
       };
       await client.user.setPresence(data);
       return await response(message, {
-        content: `✅| استاتوس ربات به صورت موقت تغییر یافت.\n\`\`\`js\n${JSON.stringify(data).toString()}\`\`\``
+        content: replaceValues(language.replies.success, {
+          data: JSON.stringify(data).toString()
+        })
       });
     } catch (e) {
       error(e)

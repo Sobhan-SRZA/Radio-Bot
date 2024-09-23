@@ -45,6 +45,9 @@ const
   post = require("./src/functions/post.js"),
   error = require("./src/functions/error.js"),
   config = require("./config.js"),
+  selectLanguage = require("./src/functions/selectLanguage.js"),
+  replaceValues = require("./src/functions/replaceValues.js"),
+  defaultLanguage = selectLanguage(config.source.default_language),
   data = require("./package.json"),
   handle = fs
     .readdirSync("./src/handlers")
@@ -82,13 +85,20 @@ post(
   "magentaBright",
   "cyanBright"
 );
-post("Logging into the BOT...", "S", "yellowBright", "greenBright");
+post(
+  defaultLanguage.replies.loadBot,
+  "S",
+  "yellowBright",
+  "greenBright"
+);
 handle.forEach(file => {
   require(`./src/handlers/${file}`)(client)
   count += 1
 });
 post(
-  `${clc.cyanBright(count)} Handler Is Loaded!!`,
+  replaceValues(defaultLanguage.replies.loadHandlers, {
+    count: clc.cyanBright(count)
+  }),
   "S",
   "yellowBright",
   "greenBright"
@@ -99,7 +109,7 @@ if (client.token)
   client.login(client.token).catch(e => {
     if (e.stack.toLowerCase().includes("connect"))
       post(
-        "Unfortunately, your IP has been banned by Discord. It is recommended that you use a new IP address.",
+        defaultLanguage.replies.ipError,
         "E",
         "red",
         "redBright"
@@ -107,7 +117,7 @@ if (client.token)
 
     else
       post(
-        "An error has occurred. Your bot token might be incorrect, or some of your bot intents may be disabled :(",
+        defaultLanguage.replies.loginError,
         "E",
         "red",
         "redBright"
@@ -118,7 +128,7 @@ if (client.token)
 
 else
   post(
-    "You have not entered your bot token in the config.js or .env file!!",
+    defaultLanguage.replies.noTokenError,
     "E",
     "red",
     "redBright"

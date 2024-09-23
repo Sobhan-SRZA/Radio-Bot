@@ -5,8 +5,10 @@ const
   error = require("../../functions/error"),
   logger = require("../../functions/logger"),
   config = require("../../../config"),
-  replaceValues = require("../../functions/replaceValues"),
-  chooseRandom = require("../../functions/chooseRandom");
+  chooseRandom = require("../../functions/chooseRandom"),
+  selectLanguage = require("../../functions/selectLanguage"),
+  defaultLanguage = selectLanguage(config.source.default_language),
+  replaceValues = require("../../functions/replaceValues");
 
 /**
  *
@@ -27,7 +29,12 @@ module.exports = async client => {
     //   { body: [] }
     // );
     let data;
-    post(`Started refreshing ${clc.cyanBright(commands.size)} application (/) commands.`, "S");
+    post(
+      replaceValues(defaultLanguage.replies.uploadSlashCmd, {
+        count: clc.cyanBright(commands.size)
+      }),
+      "S"
+    );
     if (config.source.one_guild) {
       // data = await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
       data = await rest.post(
@@ -42,7 +49,12 @@ module.exports = async client => {
         { body: commands }
       );
     };
-    post(`Successfully reloaded ${clc.cyanBright(data.length)} application (/) commands.`, "S");
+    post(
+      replaceValues(defaultLanguage.replies.sucessUploadSlashCmd, {
+        count: clc.cyanBright(data.length)
+      }),
+      "S"
+    );
 
     // Change Bot Status
     setInterval(function () {
@@ -68,9 +80,13 @@ module.exports = async client => {
       });
     }, 30000);
     post(
-      `${clc.blueBright("Discord Bot is online!")}` +
+      `${clc.blueBright(
+        defaultLanguage.replies.alertBotIsOnline
+      )}` +
       `\n` +
-      `${clc.cyanBright(client.user.tag)} Is Now Online :)`,
+      replaceValues(defaultLanguage.replies.botIsOnline, {
+        name: clc.cyanBright(client.user.tag)
+      }),
       "S"
     );
     logger(

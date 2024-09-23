@@ -64,8 +64,6 @@ module.exports = {
       category = new Map(),
       commands = new Map(),
       menu_options = [],
-      description = [],
-      name = [],
       db = client.db,
       databaseNames = {
         prefix: `prefix.${interaction.guildId}`,
@@ -168,7 +166,7 @@ module.exports = {
                 })
                 .setColor(data.color.theme)
 
-              const description = "";
+              let description = "";
               client.commands
                 .filter(a => a.category === value)
                 .forEach(async (cmd) => {
@@ -180,40 +178,14 @@ module.exports = {
                           `</${cmd.name} ${option.name}:${command.id}>` : ""}${cmd.only_message ?
                             `${prefix}${cmd.name} ${option.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
                               `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${option.description}\`**`;
-                      // name.push(
-                      //   JSON.stringify(
-                      //     {
-                      //       name: cmd.name + " " + option.name,
-                      //       description: option.description
-                      //     }
-                      //   )
-                      // )
-                    })
+                    });
 
-                  // else name.push(
-                  //   JSON.stringify(
-                  //     {
-                  //       name: `${cmd.name}`,
-                  //       description: cmd.description
-
-                  //     }
                   else description +=
                     `**${cmd.only_slash ?
                       `</${cmd.name}:${command.id}>` : ""}${cmd.only_message ?
                         `${prefix}${cmd.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
                           `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${cmd.description}\`**`;
 
-                  // name
-                  //   .map(a => JSON.parse(a))
-                  //   .forEach(element => {
-                  //     description
-                  //       .push(
-                  //         `**${cmd.only_slash ?
-                  //           `</${element.name}:${command.id}>` : ""}${cmd.only_message ?
-                  //             `${prefix}${element.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
-                  //               `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${element.description}\`**`
-                  //       );
-                  //   });
 
                   description +=
                     `**${cmd.only_slash ?
@@ -223,7 +195,6 @@ module.exports = {
 
                 });
 
-              console.log(description);
               embed.setDescription(`${description.length < 1 ? language.replies.noCommands : description}`);
               return int.update({
                 embeds: [embed],

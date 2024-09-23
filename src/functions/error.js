@@ -5,8 +5,10 @@ const
     AttachmentBuilder
   } = require("discord.js"),
   post = require("./post"),
+  copyright = require("../storage/embed"),
   config = require("../../config"),
-  copyright = require("../storage/embed");
+  selectLanguage = require("./selectLanguage"),
+  defaultLanguage = selectLanguage(config.source.default_language);
 
 /**
  *
@@ -37,13 +39,13 @@ module.exports = function (error) {
             iconURL: copyright.footer.footerIcon
           }
         )
-        .setTitle(`${copyright.emotes.default.error}| An error occurred`)
+        .setTitle(`${copyright.emotes.default.error}| ${defaultLanguage.replies.errorEmbed.title}`)
         .setDescription(`\`\`\`js\n${error.stack}\`\`\``)
         .setColor(copyright.color.theme)
         .addFields(
           [
             {
-              name: `${copyright.emotes.default.entry}| Name:`,
+              name: `${copyright.emotes.default.entry}| ${defaultLanguage.replies.errorEmbed.name}`,
               value: `${error.name}`
             }
           ]
@@ -53,7 +55,7 @@ module.exports = function (error) {
         embed.addFields(
           [
             {
-              name: `${copyright.emotes.default.prohibited}| Code:`,
+              name: `${copyright.emotes.default.prohibited}| ${defaultLanguage.replies.errorEmbed.code}`,
               value: `${error.code}`
             }
           ]
@@ -63,7 +65,7 @@ module.exports = function (error) {
         embed.addFields(
           [
             {
-              name: `${copyright.emotes.default.globe}| httpStatus:`,
+              name: `${copyright.emotes.default.globe}| ${defaultLanguage.replies.errorEmbed.httpStatus}`,
               value: `${error.status}`
             }
           ]
@@ -72,7 +74,7 @@ module.exports = function (error) {
       embed.addFields(
         [
           {
-            name: `${copyright.emotes.default.clock}| Timestamp:`,
+            name: `${copyright.emotes.default.clock}| ${defaultLanguage.replies.errorEmbed.timestamp}`,
             value: `**<t:${Date.parse(new Date()) / 1000}:D> | <t:${Date.parse(new Date()) / 1000}:R>**`
           }
         ]
@@ -81,11 +83,11 @@ module.exports = function (error) {
         data.embeds = [embed];
 
       else {
-        data.content = `**${copyright.emotes.default.entry}| Name: \`${error.name}\`${error.code ?
-          `\n${copyright.emotes.default.prohibited}| Code: \`${error.code}\`` : ""
+        data.content = `**${copyright.emotes.default.entry}| ${defaultLanguage.replies.errorEmbed.name} \`${error.name}\`${error.code ?
+          `\n${copyright.emotes.default.prohibited}| ${defaultLanguage.replies.errorEmbed.code} \`${error.code}\`` : ""
           }${error.status ?
-            `\n${copyright.emotes.default.globe}| httpStatus: \`${error.status}\`` : ""
-          }\n${copyright.emotes.default.clock}| Timestamp: <t:${Date.parse(new Date()) / 1000}:D> | <t:${Date.parse(new Date()) / 1000}:R>**`;
+            `\n${copyright.emotes.default.globe}| ${defaultLanguage.replies.errorEmbed.httpStatus} \`${error.status}\`` : ""
+          }\n${copyright.emotes.default.clock}| ${defaultLanguage.replies.errorEmbed.timestamp} <t:${Date.parse(new Date()) / 1000}:D> | <t:${Date.parse(new Date()) / 1000}:R>**`;
         data.files = [
           new AttachmentBuilder()
             .setDescription(error.name)
@@ -102,9 +104,9 @@ module.exports = function (error) {
       console.log(error);
 
   } catch (e) {
-    post("Error logger to discord webhook have bug!!", "E", "red", "redBright");
+    post(defaultLanguage.replies.webhookBug, "E", "red", "redBright");
     console.log(e);
-    post("Main Error:", "E", "red", "redBright");
+    post(defaultLanguage.replies.mainErrorLog, "E", "red", "redBright");
     console.log(error);
   }
 }
