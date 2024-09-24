@@ -1,5 +1,10 @@
 const
-  { ActivityType, Routes, REST, PermissionsBitField, PermissionOverwrites } = require("discord.js"),
+  {
+    ActivityType,
+    Routes,
+    REST,
+    PermissionsBitField
+  } = require("discord.js"),
   clc = require("cli-color"),
   post = require("../../functions/post"),
   error = require("../../functions/error"),
