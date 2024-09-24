@@ -23,7 +23,7 @@ module.exports = {
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
   default_member_permissions: [PermissionFlagsBits.SendMessages],
-  bot_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
+  default_permission: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
   dm_permission: false,
   nsfw: false,
   only_owner: false,

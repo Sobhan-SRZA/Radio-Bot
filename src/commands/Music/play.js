@@ -66,7 +66,7 @@ module.exports = {
     cooldown: 5,
     aliases: ["p"],
     default_member_permissions: [PermissionFlagsBits.SendMessages],
-    bot_permissions: [
+    default_permission: [
         PermissionFlagsBits.SendMessages,
         PermissionFlagsBits.EmbedLinks,
         PermissionFlagsBits.Connect,
