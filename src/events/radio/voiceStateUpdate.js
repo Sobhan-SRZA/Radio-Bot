@@ -1,7 +1,7 @@
 const
     error = require("../../functions/error"),
     radiostation = require("../../storage/radiostation.json"),
-    player = require("../../functions/player");
+    player = new (require("../../functions/player"))();
 
 /**
  * 
@@ -22,7 +22,7 @@ module.exports = async (client, oldState, newState) => {
         if (oldState.member.id === client.user.id && !newState.channelId)
             if (await db.has(databaseNames.afk)) {
                 const station = await db.get(databaseNames.station) || "Lofi Radio";
-                new player()
+                player
                     .setData({
                         channelId: oldState.channelId,
                         guildId: oldState.guild.id,
@@ -30,6 +30,17 @@ module.exports = async (client, oldState, newState) => {
                     })
                     .radio(radiostation[station]);
             }
+
+        if (oldState && !newState.channelId)
+            if (player.isConnection(oldState.guild.id))
+                if (!await db.has(databaseNames.afk))
+                    return await player
+                        .setData({
+                            channelId: oldState.channelId,
+                            guildId: oldState.guild.id,
+                            adapterCreator: oldState.guild.voiceAdapterCreator
+                        })
+                        .stop();
 
     } catch (e) {
         error(e)

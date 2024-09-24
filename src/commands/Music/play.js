@@ -1,5 +1,3 @@
-const chooseRandom = require("../../functions/chooseRandom");
-
 const
     {
         ApplicationCommandType,
@@ -20,7 +18,8 @@ const
         name: `${a}`,
         value: `${a}`
     })).map(a => JSON.parse(a)),
-    checkPlayerPerms = require("../../functions/checkPlayerPerms");
+    checkPlayerPerms = require("../../functions/checkPlayerPerms"),
+    chooseRandom = require("../../functions/chooseRandom");
 
 module.exports = {
     name: "play",
