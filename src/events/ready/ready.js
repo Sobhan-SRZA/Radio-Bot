@@ -63,7 +63,7 @@ module.exports = async client => {
 
     // Change Bot Status
     setInterval(function () {
-      if (!config.discord.status.activity.length < 1) return;
+      if (config.discord.status.activity.length < 1) return;
 
       const
         Presence = chooseRandom(config.discord.status.presence || ["online"]),
