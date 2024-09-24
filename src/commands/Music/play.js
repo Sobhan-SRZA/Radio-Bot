@@ -18,7 +18,6 @@ const
         name: `${a}`,
         value: `${a}`
     })).map(a => JSON.parse(a)),
-    config = require("../../../config"),
     chunkArray = require("../../functions/chunkArray"),
     options = [],
     checkPlayerPerms = require("../../functions/checkPlayerPerms");
