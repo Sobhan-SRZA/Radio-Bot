@@ -1,9 +1,13 @@
 const
-  { PermissionsBitField, ApplicationCommandOptionType, Collection } = require("discord.js"),
+  {
+    ApplicationCommandOptionType,
+    Collection
+  } = require("discord.js"),
   error = require("./error"),
   selectLanguage = require("./selectLanguage"),
   config = require("../../config"),
-  sendError = require("./sendError");
+  sendError = require("./sendError"),
+  replaceValues = require("./replaceValues");
 
 /**
  *

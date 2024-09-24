@@ -1,3 +1,5 @@
+const chooseRandom = require("../../functions/chooseRandom");
+
 const
     {
         ApplicationCommandType,
@@ -18,7 +20,7 @@ const
         name: `${a}`,
         value: `${a}`
     })).map(a => JSON.parse(a)),
-   checkPlayerPerms = require("../../functions/checkPlayerPerms");
+    checkPlayerPerms = require("../../functions/checkPlayerPerms");
 
 module.exports = {
     name: "play",
@@ -95,7 +97,7 @@ module.exports = {
                         })
                     });
 
-            if (!choices.map(a => a.name).includes(query))
+            if (!query)
                 return await sendError({
                     isUpdateNeed: true,
                     interaction,
@@ -107,12 +109,29 @@ module.exports = {
             // Check perms
             await checkPlayerPerms(interaction);
 
-            const player = new radio(interaction);
-            await player.radio(radiostation[query]);
-            await db.set(databaseNames.station, query);
+            // Start to playe
+            const firstChoice = chooseRandom(
+                choices
+                    .filter(a =>
+                        a.name.toLowerCase().startsWith(query.toLowerCase()
+                        )
+                    )
+                    .map(a =>
+                        a.name
+                    )
+            );
+            const player = new radio()
+                .setData({
+                    guildId: interaction.guildId,
+                    channelId: interaction.member.voice.channelId,
+                    adapterCreator: interaction.guild.voiceAdapterCreator
+                });
+
+            await player.radio(radiostation[firstChoice]);
+            await db.set(databaseNames.station, firstChoice);
             return await response(interaction, {
                 content: replaceValues(language.replies.play, {
-                    song: query
+                    song: firstChoice
                 })
             });
         } catch (e) {

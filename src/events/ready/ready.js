@@ -63,15 +63,17 @@ module.exports = async client => {
 
     // Change Bot Status
     setInterval(function () {
+      if (!config.discord.status.activity.length < 1) return;
+
       const
-        Presence = chooseRandom(config.discord.status.presence) || "",
-        Activity = chooseRandom(config.discord.status.activity) || "",
-        Type = chooseRandom(config.discord.status.type) || null,
+        Presence = chooseRandom(config.discord.status.presence || ["online"]),
+        Activity = chooseRandom(config.discord.status.activity),
+        Type = chooseRandom(config.discord.status.type || ["Custom"]),
         stateName = replaceValues(Activity, {
           servers: client.guilds.cache.size.toLocaleString(),
           members: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),
           prefix: config.discord.prefix
-        }) || null;
+        });
 
       client.user.setPresence({
         status: Presence,
