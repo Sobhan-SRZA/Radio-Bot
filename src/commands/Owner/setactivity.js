@@ -19,7 +19,7 @@ module.exports = {
   category: "owner",
   cooldown: 5,
   default_member_permissions: [PermissionFlagsBits.SendMessages],
-  bot_permissions: [PermissionFlagsBits.SendMessages],
+  default_permission: [PermissionFlagsBits.SendMessages],
   dm_permission: true,
   nsfw: false,
   only_owner: true,

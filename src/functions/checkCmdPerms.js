@@ -33,13 +33,13 @@ module.exports = async function (interaction, command, prefix = null) {
       const value = keys.find(b => PermissionsBitField.Flags[b] === a);
       map.set(a, value);
     });
-    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.bot_permissions || []))
+    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.default_permission || []))
       return await sendError({
         interaction,
         data: {
           content: replaceValues(language.botPerm, {
             mention_command: mentionCommand,
-            bot_perms: command.bot_permissions
+            bot_perms: command.default_permission
               .map(a => `"${map.get(a)}"`)
               .join(", ")
           })
