@@ -18,27 +18,35 @@ const
         name: `${a}`,
         value: `${a}`
     })).map(a => JSON.parse(a)),
-    chunkArray = require("../../functions/chunkArray"),
-    options = [],
-    checkPlayerPerms = require("../../functions/checkPlayerPerms");
+   checkPlayerPerms = require("../../functions/checkPlayerPerms");
 
-chunkArray(choices, 25)
-    .forEach((array, index) => {
-        options.push(
-            JSON.stringify(
-                {
-                    name: `station-${++index}`,
-                    description: defaultLanguage.options.station,
-                    type: ApplicationCommandOptionType.String,
-                    choices: array,
-                    required: false
-                }
-            )
-        )
-    });
-
-options.push(
-    JSON.stringify(
+module.exports = {
+    name: "play",
+    description: defaultLanguage.description,
+    category: "music",
+    type: ApplicationCommandType.ChatInput,
+    cooldown: 5,
+    aliases: ["p"],
+    default_member_permissions: [PermissionFlagsBits.SendMessages],
+    default_permissions: [
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.EmbedLinks,
+        PermissionFlagsBits.Connect,
+        PermissionFlagsBits.Speak
+    ],
+    dm_permission: false,
+    nsfw: false,
+    only_owner: false,
+    only_slash: true,
+    only_message: true,
+    options: [
+        {
+            name: "station",
+            description: defaultLanguage.options.station,
+            type: ApplicationCommandOptionType.String,
+            autocomplete: true,
+            required: false
+        },
         {
             name: "ephemeral",
             description: ephemeral.description,
@@ -55,29 +63,7 @@ options.push(
             ],
             required: false
         }
-    )
-);
-
-module.exports = {
-    name: "play",
-    description: defaultLanguage.description,
-    category: "music",
-    type: ApplicationCommandType.ChatInput,
-    cooldown: 5,
-    aliases: ["p"],
-    default_member_permissions: [PermissionFlagsBits.SendMessages],
-    default_permission: [
-        PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.EmbedLinks,
-        PermissionFlagsBits.Connect,
-        PermissionFlagsBits.Speak
     ],
-    dm_permission: false,
-    nsfw: false,
-    only_owner: false,
-    only_slash: true,
-    only_message: true,
-    options: options.map(a => JSON.parse(a)),
 
     /**
      * 

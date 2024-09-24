@@ -18,6 +18,7 @@ module.exports = async function (interaction) {
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang),
+      member = interaction.guild.members.cache.get(interaction.member.id),
       channel = interaction.member?.voice?.channel;
 
 
@@ -52,11 +53,11 @@ module.exports = async function (interaction) {
         log: language.replies.userDeaf
       });
 
-    if (channel.id !== radio.data.channelId)
-      return await sendError({
-        interaction,
-        log: language.replies.notMatchedVoice
-      });
+    // if (channel.id !== radio.data.channelId)
+    //   return await sendError({
+    //     interaction,
+    //     log: language.replies.notMatchedVoice
+    //   });
 
     if (interaction.guild.members.me?.voice?.mute)
       return await sendError({

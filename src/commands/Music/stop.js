@@ -18,7 +18,7 @@ module.exports = {
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
   default_member_permissions: [PermissionFlagsBits.SendMessages],
-  default_permission: [
+  default_permissions: [
     PermissionFlagsBits.SendMessages,
     PermissionFlagsBits.EmbedLinks,
     PermissionFlagsBits.Connect,

@@ -157,7 +157,7 @@
             },
             "replies": {
                 "onlyPanel": "This command can only be used in the channel <#{channel}>.",
-                "invalidQuery": "-# **This station is not approved! Please select one of the stations below:\n```json\n{stations}```**",
+                "invalidQuery": "-# **This station is not approved! Please select one of the stations below:**\n```json\n{stations}```",
                 "play": "-# **Station `{song}` successfully selected.**"
             }
         },

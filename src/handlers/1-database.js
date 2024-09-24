@@ -17,6 +17,7 @@ const
  */
 module.exports = async (client) => {
   try {
+    let driver;
     switch (config.source.database.type) {
       case "sql": {
         const {
