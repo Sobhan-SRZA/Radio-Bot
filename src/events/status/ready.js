@@ -24,7 +24,7 @@ module.exports = async (client) => {
             db = client.db,
             guild = client.guilds.cache.get(config.discord.support.id),
             channel = client.channels.cache.get(config.discord.support.stats_channel),
-            databaseName = `status.${channel.guild.id}`;
+            databaseName = `status.${channel?.guild?.id}`;
 
         if (guild && channel) {
             setInterval(async () => {

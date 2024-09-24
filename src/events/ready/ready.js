@@ -1,5 +1,5 @@
 const
-  { ActivityType, Routes, REST } = require("discord.js"),
+  { ActivityType, Routes, REST, PermissionsBitField, PermissionOverwrites } = require("discord.js"),
   clc = require("cli-color"),
   post = require("../../functions/post"),
   error = require("../../functions/error"),
@@ -22,6 +22,11 @@ module.exports = async client => {
       commands = client.commands.filter(a => a.only_slash),
       rest = new REST().setToken(config.discord.token);
 
+    commands.forEach(command => {
+      command.default_member_permissions = new PermissionsBitField(command.default_member_permissions);
+      command.default_permissions = new PermissionsBitField(command.default_permissions);
+      return commands;
+    });
     // Remove all of last commands
     // await client.application.commands.set([]); // Old way
     // await rest.put(
@@ -59,14 +64,14 @@ module.exports = async client => {
     // Change Bot Status
     setInterval(function () {
       const
-        Presence = chooseRandom(config.discord.status.presence),
-        Activity = chooseRandom(config.discord.status.activity),
-        Type = chooseRandom(config.discord.status.type),
+        Presence = chooseRandom(config.discord.status.presence) || "",
+        Activity = chooseRandom(config.discord.status.activity) || "",
+        Type = chooseRandom(config.discord.status.type) || null,
         stateName = replaceValues(Activity, {
           servers: client.guilds.cache.size.toLocaleString(),
           members: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),
           prefix: config.discord.prefix
-        });
+        }) || null;
 
       client.user.setPresence({
         status: Presence,

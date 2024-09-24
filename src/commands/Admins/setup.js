@@ -40,7 +40,7 @@ module.exports = {
         PermissionFlagsBits.ManageGuild,
         PermissionFlagsBits.SendMessages
     ],
-    default_permission: [
+    default_permissions: [
         PermissionFlagsBits.ManageChannels,
         PermissionFlagsBits.SendMessages,
         PermissionFlagsBits.EmbedLinks
