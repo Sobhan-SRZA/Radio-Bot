@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node ."
   },
-  "keywords": [],
-  "author": "",
+  "author": "Sobhan-SRZA (mr.sinre) && Persian Caesar",
   "license": "BSD-3-Clause",
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
