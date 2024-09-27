@@ -1,9 +1,13 @@
 const
-  { PermissionsBitField, ApplicationCommandOptionType, Collection } = require("discord.js"),
+  {
+    ApplicationCommandOptionType,
+    Collection
+  } = require("discord.js"),
   error = require("./error"),
   selectLanguage = require("./selectLanguage"),
   config = require("../../config"),
-  sendError = require("./sendError");
+  sendError = require("./sendError"),
+  replaceValues = require("./replaceValues");
 
 /**
  *
@@ -48,6 +52,8 @@ module.exports = async function (interaction, command, prefix = null) {
 
     timestamps.set(interaction.member.id, Date.now());
     setTimeout(() => timestamps.delete(interaction.member.id), cooldownAmount);
+    
+    return void import("discord.js").InteractionResponse;
   } catch (e) {
     error(e);
   }

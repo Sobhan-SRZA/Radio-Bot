@@ -17,7 +17,9 @@ const
   replaceValues = require("../../functions/replaceValues"),
   selectLanguage = require("../../functions/selectLanguage"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
-  defaultLanguage = selectLanguage(config.source.default_language).commands.help;
+  defaultLanguage = selectLanguage(config.source.default_language).commands.help,
+  editResponse = require("../../functions/editResponse"),
+  helpCommandDescription = require("../../functions/helpCommandDescription");
 
 module.exports = {
   name: "help",
@@ -27,7 +29,7 @@ module.exports = {
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
   default_member_permissions: [PermissionFlagsBits.SendMessages],
-  bot_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
+  default_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
   dm_permission: false,
   nsfw: false,
   only_owner: false,
@@ -60,9 +62,8 @@ module.exports = {
    * @returns 
    */
   run: async (client, interaction, args) => {
-    const timeout = 1000 * 60 * 1,
+    const timeout = 1000 * 60 * 2,
       category = new Map(),
-      commands = new Map(),
       menu_options = [],
       db = client.db,
       databaseNames = {
@@ -114,9 +115,7 @@ module.exports = {
           }
         )
       );
-      commands.set(a, client.commands.filter(a => a.category === a));
     });
-
     const helpMenu = new StringSelectMenuBuilder()
       .setCustomId("help_menu")
       .setMaxValues(1)
@@ -129,13 +128,15 @@ module.exports = {
       .setCustomId("home_page");
 
     const message = await response(interaction, {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
       components: [
         new ActionRowBuilder()
-          .addComponents(helpMenu.setDisabled(false)),
+          .addComponents(helpMenu.setDisabled(false))
+          .toJSON(),
 
         new ActionRowBuilder()
           .addComponents(homeButton.setDisabled(true))
+          .toJSON()
       ],
       fetchReply: true
     });
@@ -153,63 +154,37 @@ module.exports = {
 
         if (int.isStringSelectMenu()) {
           if (int.customId === "help_menu") {
-            int.values.forEach(async (value) => {
-              const embed = new EmbedBuilder()
-                .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-                .setAuthor({
-                  name: `${client.user.username} ${language.replies.embed.author}`
-                })
-                .setTitle(`${firstUpperCase(value)}`)
-                .setFooter({
-                  text: `${language.replies.embed.footer} ${author.user.tag}`,
-                  iconURL: author.user.displayAvatarURL({ dynamic: true })
-                })
-                .setColor(data.color.theme)
+            await int.deferUpdate({ fetchReply: true });
+            const value = int.values[0];
+            const string = await helpCommandDescription(interaction, language, value, prefix);
+            const embed = new EmbedBuilder()
+              .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+              .setAuthor({
+                name: `${client.user.username} ${language.replies.embed.author}`
+              })
+              .setTitle(`${firstUpperCase(value)}`)
+              .setFooter({
+                text: `${language.replies.embed.footer} ${author.user.tag}`,
+                iconURL: author.user.displayAvatarURL({ dynamic: true })
+              })
+              .setColor(data.color.theme)
 
-              let description = "";
-              client.commands
-                .filter(a => a.category === value)
-                .forEach(async (cmd) => {
-                  const command = (await client.application.commands.fetch()).find(a => a.name === cmd.name);
-                  if (cmd.only_slash && cmd.options && cmd.options.some(a => a.type === 1))
-                    cmd.options.forEach((option) => {
-                      description +=
-                        `**${cmd.only_slash ?
-                          `</${cmd.name} ${option.name}:${command.id}>` : ""}${cmd.only_message ?
-                            `${prefix}${cmd.name} ${option.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
-                              `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${option.description}\`**`;
-                    });
+            embed.setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
+            return await int.editReply({
+              embeds: [embed.toJSON()],
+              components: [
+                new ActionRowBuilder()
+                  .addComponents(
+                    helpMenu
+                      .setDisabled(false)
+                      .setOptions(menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
+                  )
+                  .toJSON(),
 
-                  else description +=
-                    `**${cmd.only_slash ?
-                      `</${cmd.name}:${command.id}>` : ""}${cmd.only_message ?
-                        `${prefix}${cmd.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
-                          `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${cmd.description}\`**`;
-
-
-                  description +=
-                    `**${cmd.only_slash ?
-                      `</${cmd.name}:${command.id}>` : ""}${cmd.only_slash && cmd.only_message ? " | " : ""}${cmd.only_message ?
-                        `${prefix}${cmd.name} ${cmd.usage ? cmd.usage : ""}` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
-                          `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""}\n${language.replies.description} \`${cmd.description}\`**`;
-
-                });
-
-              embed.setDescription(`${description.length < 1 ? language.replies.noCommands : description}`);
-              return int.update({
-                embeds: [embed],
-                components: [
-                  new ActionRowBuilder()
-                    .addComponents(
-                      helpMenu
-                        .setDisabled(false)
-                        .setOptions(menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
-                    ),
-
-                  new ActionRowBuilder()
-                    .addComponents(homeButton.setDisabled(false))
-                ]
-              });
+                new ActionRowBuilder()
+                  .addComponents(homeButton.setDisabled(false))
+                  .toJSON()
+              ]
             });
           }
         }
@@ -224,20 +199,25 @@ module.exports = {
 
     });
     collector.on("end", async () => {
-      return await message.edit({
-        components: [
-          new ActionRowBuilder()
-            .addComponents(helpMenu.setDisabled(true)),
+      return await editResponse({
+        interaction,
+        message,
+        data: {
+          components: [
+            new ActionRowBuilder()
+              .addComponents(helpMenu.setDisabled(true))
+              .toJSON(),
 
-          new ActionRowBuilder()
-            .addComponents(homeButton.setDisabled(true))
-        ]
+            new ActionRowBuilder()
+              .addComponents(homeButton.setDisabled(true))
+              .toJSON()
+          ]
+        }
       });
     })
     setTimeout(() => {
       return collector.stop();
     }, timeout);
-
   }
 }
 /**

@@ -1,5 +1,10 @@
 const
-  { ActivityType, Routes, REST } = require("discord.js"),
+  {
+    ActivityType,
+    Routes,
+    REST,
+    PermissionsBitField
+  } = require("discord.js"),
   clc = require("cli-color"),
   post = require("../../functions/post"),
   error = require("../../functions/error"),
@@ -22,12 +27,20 @@ module.exports = async client => {
       commands = client.commands.filter(a => a.only_slash),
       rest = new REST().setToken(config.discord.token);
 
+    commands.forEach(command => {
+      command.default_member_permissions = new PermissionsBitField(command.default_member_permissions);
+      command.default_permissions = new PermissionsBitField(command.default_permissions);
+      return commands;
+    });
+
     // Remove all of last commands
     // await client.application.commands.set([]); // Old way
     // await rest.put(
     //   Routes.applicationCommands(client.user.id),
     //   { body: [] }
     // );
+
+    // Start to upload all commands to api
     let data;
     post(
       replaceValues(defaultLanguage.replies.uploadSlashCmd, {
@@ -58,10 +71,12 @@ module.exports = async client => {
 
     // Change Bot Status
     setInterval(function () {
+      if (config.discord.status.activity.length < 1) return;
+
       const
-        Presence = chooseRandom(config.discord.status.presence),
+        Presence = chooseRandom(config.discord.status.presence || ["online"]),
         Activity = chooseRandom(config.discord.status.activity),
-        Type = chooseRandom(config.discord.status.type),
+        Type = chooseRandom(config.discord.status.type || ["Custom"]),
         stateName = replaceValues(Activity, {
           servers: client.guilds.cache.size.toLocaleString(),
           members: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),

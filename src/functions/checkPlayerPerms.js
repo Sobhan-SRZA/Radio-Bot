@@ -18,11 +18,12 @@ module.exports = async function (interaction) {
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang),
+      member = interaction.guild.members.cache.get(interaction.member.id),
       channel = interaction.member?.voice?.channel;
-
 
     if (!channel)
       return await sendError({
+        isUpdateNeed: true,
         interaction,
         log: language.replies.noChannelError
 
@@ -30,40 +31,47 @@ module.exports = async function (interaction) {
 
     if (!channel.viewable)
       return await sendError({
+        isUpdateNeed: true,
         interaction,
         log: language.replies.noPermToView
       });
 
     if (!channel.joinable)
       return await sendError({
+        isUpdateNeed: true,
         interaction,
         log: language.replies.noPermToConnect
       });
 
     if (channel.full)
       return await sendError({
+        isUpdateNeed: true,
         interaction,
         log: language.replies.channelFull
       });
 
     if (member.voice.deaf)
       return await sendError({
+        isUpdateNeed: true,
         interaction,
         log: language.replies.userDeaf
       });
 
-    if (channel.id !== radio.data.channelId)
-      return await sendError({
-        interaction,
-        log: language.replies.notMatchedVoice
-      });
+    // if (channel.id !== radio.data.channelId)
+    //   return await sendError({
+    //     isUpdateNeed: true,
+    //     interaction,
+    //     log: language.replies.notMatchedVoice
+    //   });
 
     if (interaction.guild.members.me?.voice?.mute)
       return await sendError({
+        isUpdateNeed: true,
         interaction,
         log: language.replies.clientMute
       });
 
+      return void import("discord.js").InteractionResponse;
   } catch (e) {
     error(e);
   }

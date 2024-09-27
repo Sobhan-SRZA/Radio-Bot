@@ -4,7 +4,8 @@ const
         createAudioPlayer,
         createAudioResource,
         NoSubscriberBehavior,
-        StreamType
+        StreamType,
+        getVoiceConnection
     } = require("@discordjs/voice"),
     chooseRandom = require("./chooseRandom"),
     audioPlayer = new Map(),
@@ -95,6 +96,18 @@ module.exports = class {
     }
 
     /**
+     * @param {string} guildId
+     * @returns {boolean}
+     */
+    isConnection(guildId) {
+        if (getVoiceConnection(guildId))
+            return true;
+
+        else
+            false;
+    }
+
+    /**
      * @returns {number}
      */
     get volume() {
@@ -151,11 +164,13 @@ module.exports = class {
      * @returns {void}
      */
     stop() {
-        const connection = joinVoiceChannel(this.data);
+        const connection = getVoiceConnection(this.data.guildId);
         const player = audioPlayer.get(this.data.guildId);
-        player.stop();
+        try {
+            player.stop();
+            audioPlayer.delete(this.data.guildId);
+        } catch { }
         connection.destroy();
-        audioPlayer.delete(this.data.guildId);
         return this;
     }
 

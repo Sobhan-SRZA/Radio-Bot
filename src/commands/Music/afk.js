@@ -22,7 +22,7 @@ module.exports = {
   cooldown: 5,
   usage: "[channel | id]",
   default_member_permissions: [PermissionFlagsBits.SendMessages],
-  bot_permissions: [
+  default_permissions: [
     PermissionFlagsBits.SendMessages,
     PermissionFlagsBits.EmbedLinks,
     PermissionFlagsBits.Connect,

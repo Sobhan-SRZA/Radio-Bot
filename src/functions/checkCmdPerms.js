@@ -33,13 +33,13 @@ module.exports = async function (interaction, command, prefix = null) {
       const value = keys.find(b => PermissionsBitField.Flags[b] === a);
       map.set(a, value);
     });
-    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.bot_permissions || []))
+    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.default_permissions || []))
       return await sendError({
         interaction,
         data: {
           content: replaceValues(language.botPerm, {
             mention_command: mentionCommand,
-            bot_perms: command.bot_permissions
+            bot_perms: command.default_permissions
               .map(a => `"${map.get(a)}"`)
               .join(", ")
           })
@@ -59,6 +59,7 @@ module.exports = async function (interaction, command, prefix = null) {
         }
       });
 
+      return void import("discord.js").InteractionResponse;
   } catch (e) {
     error(e);
   }

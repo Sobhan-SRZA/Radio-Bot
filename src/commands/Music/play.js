@@ -18,28 +18,36 @@ const
         name: `${a}`,
         value: `${a}`
     })).map(a => JSON.parse(a)),
-    config = require("../../../config"),
-    chunkArray = require("../../functions/chunkArray"),
-    options = [],
-    checkPlayerPerms = require("../../functions/checkPlayerPerms");
+    checkPlayerPerms = require("../../functions/checkPlayerPerms"),
+    chooseRandom = require("../../functions/chooseRandom");
 
-chunkArray(choices, 25)
-    .forEach((array, index) => {
-        options.push(
-            JSON.stringify(
-                {
-                    name: `station-${++index}`,
-                    description: defaultLanguage.options.station,
-                    type: ApplicationCommandOptionType.String,
-                    choices: array,
-                    required: false
-                }
-            )
-        )
-    });
-
-options.push(
-    JSON.stringify(
+module.exports = {
+    name: "play",
+    description: defaultLanguage.description,
+    category: "music",
+    type: ApplicationCommandType.ChatInput,
+    cooldown: 5,
+    aliases: ["p"],
+    default_member_permissions: [PermissionFlagsBits.SendMessages],
+    default_permissions: [
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.EmbedLinks,
+        PermissionFlagsBits.Connect,
+        PermissionFlagsBits.Speak
+    ],
+    dm_permission: false,
+    nsfw: false,
+    only_owner: false,
+    only_slash: true,
+    only_message: true,
+    options: [
+        {
+            name: "station",
+            description: defaultLanguage.options.station,
+            type: ApplicationCommandOptionType.String,
+            autocomplete: true,
+            required: false
+        },
         {
             name: "ephemeral",
             description: ephemeral.description,
@@ -56,29 +64,7 @@ options.push(
             ],
             required: false
         }
-    )
-);
-
-module.exports = {
-    name: "play",
-    description: defaultLanguage.description,
-    category: "music",
-    type: ApplicationCommandType.ChatInput,
-    cooldown: 5,
-    aliases: ["p"],
-    default_member_permissions: [PermissionFlagsBits.SendMessages],
-    bot_permissions: [
-        PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.EmbedLinks,
-        PermissionFlagsBits.Connect,
-        PermissionFlagsBits.Speak
     ],
-    dm_permission: false,
-    nsfw: false,
-    only_owner: false,
-    only_slash: true,
-    only_message: true,
-    options: options.map(a => JSON.parse(a)),
 
     /**
      * 
@@ -110,7 +96,7 @@ module.exports = {
                         })
                     });
 
-            if (!choices.map(a => a.name).includes(query))
+            if (!query)
                 return await sendError({
                     isUpdateNeed: true,
                     interaction,
@@ -120,14 +106,31 @@ module.exports = {
                 });
 
             // Check perms
-            await checkPlayerPerms(interaction);
+            checkPlayerPerms(interaction);
 
-            const player = new radio(interaction);
-            await player.radio(radiostation[query]);
-            await db.set(databaseNames.station, query);
+            // Start to playe
+            const firstChoice = chooseRandom(
+                choices
+                    .filter(a =>
+                        a.name.toLowerCase().startsWith(query.toLowerCase()
+                        )
+                    )
+                    .map(a =>
+                        a.name
+                    )
+            );
+            const player = new radio()
+                .setData({
+                    guildId: interaction.guildId,
+                    channelId: interaction.member.voice.channelId,
+                    adapterCreator: interaction.guild.voiceAdapterCreator
+                });
+
+            await player.radio(radiostation[firstChoice]);
+            await db.set(databaseNames.station, firstChoice);
             return await response(interaction, {
                 content: replaceValues(language.replies.play, {
-                    song: query
+                    song: firstChoice
                 })
             });
         } catch (e) {
