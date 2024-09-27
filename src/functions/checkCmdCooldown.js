@@ -52,6 +52,8 @@ module.exports = async function (interaction, command, prefix = null) {
 
     timestamps.set(interaction.member.id, Date.now());
     setTimeout(() => timestamps.delete(interaction.member.id), cooldownAmount);
+    
+    return void import("discord.js").InteractionResponse;
   } catch (e) {
     error(e);
   }

@@ -59,6 +59,7 @@ module.exports = async function (interaction, command, prefix = null) {
         }
       });
 
+      return void import("discord.js").InteractionResponse;
   } catch (e) {
     error(e);
   }

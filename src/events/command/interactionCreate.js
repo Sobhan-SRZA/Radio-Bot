@@ -54,10 +54,10 @@ module.exports = async (client, interaction) => {
 
 
         // Check command perms
-        await checkCmdPerms(interaction, command);
+        checkCmdPerms(interaction, command);
 
         // Command cooldown
-        await checkCmdCooldown(interaction, command);
+        checkCmdCooldown(interaction, command);
 
         // Command Handler 
         await interaction.deferReply({

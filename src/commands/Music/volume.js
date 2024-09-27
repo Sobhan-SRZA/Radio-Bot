@@ -1,5 +1,3 @@
-const sendError = require("../../functions/sendError");
-
 const
   {
     ApplicationCommandOptionType,
@@ -14,7 +12,9 @@ const
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   replaceValues = require("../../functions/replaceValues"),
   defaultLanguage = selectLanguage(config.source.default_language).commands.volume,
-  response = require("../../functions/response");
+  response = require("../../functions/response"),
+  checkPlayerPerms = require("../../functions/checkPlayerPerms"),
+  sendError = require("../../functions/sendError");
 
 module.exports = {
   name: "volume",
@@ -40,8 +40,8 @@ module.exports = {
       description: defaultLanguage.options.input,
       type: ApplicationCommandOptionType.Number,
       required: false,
-      minValue: 1,
-      maxValue: 200
+      min_value: 1,
+      max_value: 200
     },
     {
       name: "ephemeral",
@@ -78,7 +78,7 @@ module.exports = {
       language = selectLanguage(lang).commands.volume;
 
     // Check perms
-    await checkPlayerPerms(interaction);
+    checkPlayerPerms(interaction);
 
     // Stop The Player
     const queue = new radio(interaction);

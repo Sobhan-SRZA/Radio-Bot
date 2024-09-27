@@ -106,7 +106,7 @@ module.exports = {
                 });
 
             // Check perms
-            await checkPlayerPerms(interaction);
+            checkPlayerPerms(interaction);
 
             // Start to playe
             const firstChoice = chooseRandom(

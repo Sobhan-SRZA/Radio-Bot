@@ -71,6 +71,7 @@ module.exports = async function (interaction) {
         log: language.replies.clientMute
       });
 
+      return void import("discord.js").InteractionResponse;
   } catch (e) {
     error(e);
   }

@@ -70,20 +70,22 @@ module.exports = async (client, message) => {
     // Command Handler
     if (command && command.only_message) {
 
-      // Check Perms
+      // Start to Typing
+      await message.channel.sendTyping();
 
       // Filter Owners Commands
       if (command.only_owner)
         if (!config.discord.support.owners.includes(message.author.id)) return;
 
       if (message.guild)
-        await checkCmdPerms(message, command, prefix);
+
+        // Check Perms
+        checkCmdPerms(message, command, prefix);
 
       // Cooldown
-      await checkCmdCooldown(message, command, prefix);
+      checkCmdCooldown(message, command, prefix);
 
       // Command Handler
-      message.channel.sendTyping();
       command.run(client, message, args);
     }
   } catch (e) {

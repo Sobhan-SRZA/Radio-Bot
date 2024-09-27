@@ -32,12 +32,15 @@ module.exports = async client => {
       command.default_permissions = new PermissionsBitField(command.default_permissions);
       return commands;
     });
+
     // Remove all of last commands
     // await client.application.commands.set([]); // Old way
     // await rest.put(
     //   Routes.applicationCommands(client.user.id),
     //   { body: [] }
     // );
+
+    // Start to upload all commands to api
     let data;
     post(
       replaceValues(defaultLanguage.replies.uploadSlashCmd, {
