@@ -84,7 +84,17 @@ module.exports = {
                     language: `language.${interaction.guild.id}`
                 },
                 lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-                language = selectLanguage(lang).commands.play;
+                language = selectLanguage(lang).commands.play,
+                firstChoice = chooseRandom(
+                    choices
+                        .filter(a =>
+                            a.name.toLowerCase().startsWith(query?.toLowerCase()
+                            )
+                        )
+                        .map(a =>
+                            a.name
+                        )
+                );;
 
             if (await db.has(databaseNames.panel))
                 if (interaction.channel.id !== (await db.get(databaseNames.panel)).channel)
@@ -96,7 +106,7 @@ module.exports = {
                         })
                     });
 
-            if (!query)
+            if (!query || !firstChoice)
                 return await sendError({
                     isUpdateNeed: true,
                     interaction,
@@ -109,16 +119,6 @@ module.exports = {
             checkPlayerPerms(interaction);
 
             // Start to playe
-            const firstChoice = chooseRandom(
-                choices
-                    .filter(a =>
-                        a.name.toLowerCase().startsWith(query.toLowerCase()
-                        )
-                    )
-                    .map(a =>
-                        a.name
-                    )
-            );
             const player = new radio()
                 .setData({
                     guildId: interaction.guildId,
@@ -126,9 +126,9 @@ module.exports = {
                     adapterCreator: interaction.guild.voiceAdapterCreator
                 });
 
-            await player.radio(radiostation[firstChoice]);
-            await db.set(databaseNames.station, firstChoice);
-            return await response(interaction, {
+            player.radio(radiostation[firstChoice]);
+            db.set(databaseNames.station, firstChoice);
+            return response(interaction, {
                 content: replaceValues(language.replies.play, {
                     song: firstChoice
                 })
