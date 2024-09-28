@@ -49,12 +49,17 @@ module.exports = async function ({
           .random(1)[0]
           .createInvite(inviteData);
     } catch { };
-    const owner = await guild?.fetchOwner();
+    let owner;
+    try {
+      owner = (await guild?.fetchOwner())?.user;
+      if (!owner)
+        owner = await client.users.cache.get(guild?.ownerId);
+    } catch { }
     const embed = new EmbedBuilder()
       .setAuthor(
         {
-          name: owner?.user?.tag,
-          iconURL: owner?.user?.displayAvatarURL({ dynamic: true })
+          name: owner?.tag,
+          iconURL: owner?.displayAvatarURL({ dynamic: true })
         }
       )
       .setDescription(description.replace("{guilds}", client.guilds.cache.size.toLocaleString()))

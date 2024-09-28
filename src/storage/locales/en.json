@@ -1,26 +1,26 @@
 {
     "replies": {
-        "onlyOwner": "```diff\n- Are you bored? This command isn't for you! Don't touch it!```",
-        "botPerm": "-# **I (the bot) don't have the necessary permissions to execute the {mention_command} command!!\nRequired Permissions: [{bot_perms}]**",
-        "userPerm": "-# **You don't have the necessary permissions to use the {mention_command} command!!\nRequired Permissions: [{user_perms}]**",
+        "onlyOwner": "```diff\n- Bored? This command is not for you! Don't touch it!```",
+        "botPerm": "-# **I (the bot) don’t have the required permissions to execute the command {mention_command}!\nRequired permissions: [{bot_perms}]**",
+        "userPerm": "-# **You don’t have the required permissions to use the command {mention_command}!\nRequired permissions: [{user_perms}]**",
         "error": "Unfortunately, an error occurred.",
-        "cooldown": "-# **You have been temporarily blocked from using the {mention_command} command due to excessive use. You can try again after <t:{expired_timestamp}:R>.**",
+        "cooldown": "-# **Due to excessive usage, you are temporarily banned from using the {mention_command} command. You can use it again after <t:{expired_timestamp}:R>.**",
         "ephemeral": {
-            "description": "Do you want this message to stay hidden?",
+            "description": "Do you want to keep this message hidden?",
             "choices": {
                 "yes": "Yes",
                 "no": "No"
-            } 
+            }
         },
-        "noChannelError": "```diff\n- You must be connected to a voice channel.```",
-        "notMatchedVoice": "```diff\n- Your voice channel doesn't match mine. Please join the channel I'm in.```",
-        "noPermToView": "```diff\n- I can't view the channel. Please give me the 'View Channel' permission.```",
-        "noPermToConnect": "```diff\n- I can't connect to the channel. Please give me the 'Connect' permission.```",
+        "noChannelError": "```diff\n- You need to connect to a voice channel.```",
+        "notMatchedVoice": "```diff\n- Your voice channel does not match mine. Please join the channel I’m in.```",
+        "noPermToView": "```diff\n- I cannot view the channel. Please grant me the 'View Channel' permission.```",
+        "noPermToConnect": "```diff\n- I cannot connect to the channel. Please grant me the 'Connect to Channel' permission.```",
         "channelFull": "```diff\n- This voice channel is full!```",
-        "userDeaf": "```diff\n- You can't use this command while you're muted.```",
-        "clientMute": "```diff\n- Please unmute me first and then try again.```",
-        "guildCreate": "-# **I was just added to a new server, and I'm now a member of `{guilds}` servers.**",
-        "guildDelete": "-# **I was removed from a server. I'm still a member of `{guilds}` other servers.**",
+        "userDeaf": "```diff\n- You cannot use this command while you are deafened.```",
+        "clientMute": "```diff\n- Please unmute me first before trying again.```",
+        "guildCreate": "-# **I’ve recently joined a new server, now I’m in `{guilds}` servers.**",
+        "guildDelete": "-# **I’ve been removed from a server, but I’m still in `{guilds}` servers.**",
         "errorEmbed": {
             "title": "An error occurred!",
             "name": "Name:",
@@ -28,96 +28,115 @@
             "httpStatus": "HTTP Status:",
             "timestamp": "Timestamp:"
         },
-        "webhookBug": "There was an issue sending the error to the Discord webhook!!",
-        "mainErrorLog": "Main Error:",
-        "ipError": "Unfortunately, your IP has been blocked by Discord. It's recommended to switch to a new IP.",
-        "loginError": "An error occurred. Your bot token might be incorrect, or some of your bot's permissions might be disabled :(",
-        "noTokenError": "You haven't entered your bot token in the config.js or .env file!!",
-        "guildAlert": "-# **The total number of servers I'm a member of is `{guilds}`.**",
+        "webhookBug": "There’s an issue sending errors to the Discord webhook!",
+        "mainErrorLog": "Main error:",
+        "ipError": "Unfortunately, your IP has been blocked by Discord. It’s recommended to use a new IP.",
+        "loginError": "An error occurred. Either your bot token is incorrect or some bot permissions have been disabled :(",
+        "noTokenError": "You haven’t entered your bot token in the config.js or .env file!",
+        "guildAlert": "-# **The total number of servers I’m in is now `{guilds}`.**",
         "guild": {
             "owner": "Owner:",
             "guild": "Server:",
             "createdAt": "Created on:"
         },
-        "loadDatabase": "Database successfully connected!! (Type: {type})",
-        "databaseError": "Failed to connect to the database!! (Type: {type})",
-        "loadCommands": "{cmdCount} {type} commands loaded!!",
-        "loadCommandError": "Failed to load the command:",
-        "loadEvents": "{count} events loaded!!",
+        "loadDatabase": "The database connected successfully! (Type: {type})",
+        "databaseError": "The database failed to connect! (Type: {type})",
+        "loadCommands": "{cmdCount} {type} commands loaded successfully!",
+        "loadCommandError": "Command failed to load:",
+        "loadEvents": "{count} events loaded successfully!",
         "status": {
             "title": "Bot Status",
-            "guilds": "Total Servers:",
-            "users": "Total Users:",
+            "guilds": "Total servers:",
+            "users": "Total users:",
             "commands": "Commands:",
-            "ping": "Response Time:",
+            "ping": "Response time:",
             "uptime": "Uptime:",
             "memory": "Memory:",
             "cpu": "CPU:",
-            "version": "Bot Version:",
+            "version": "Bot version:",
             "refresh": "Refresh",
-            "invite": "Invite Me",
-            "vote": "Vote for Me"
+            "invite": "Invite me",
+            "vote": "Vote for me"
         },
         "loadBot": "Logging into the bot...",
-        "loadHandlers": "{count} handlers loaded!!",
-        "uploadSlashCmd": "Started refreshing {count} application (/) commands.",
-        "sucessUploadSlashCmd": "Successfully reloaded {count} application (/) commands.",
-        "alertBotIsOnline": "Discord Bot is online!",
-        "botIsOnline": "{name} is now online :)"
+        "loadHandlers": "{count} handlers loaded successfully!",
+        "uploadSlashCmd": "Updating {count} slash (/) commands.",
+        "sucessUploadSlashCmd": "{count} slash (/) commands successfully reloaded.",
+        "alertBotIsOnline": "Discord bot is online!",
+        "botIsOnline": "{name} is now online :)",
+        "buttons": {
+            "buttonNo": "No",
+            "buttonYes": "Yes"
+        }
     },
     "commands": {
         "setup": {
-            "description": "Register server settings in the database.",
+            "description": "Save server settings to the database.",
             "subCommands": {
                 "panel": {
-                    "description": "Create a radio player control panel.",
+                    "description": "Create a radio control panel.",
                     "options": {
-                        "channel": "Select the desired channel."
+                        "channel": "Please select your desired channel."
                     },
                     "replies": {
-                        "panelTitle": "Radio Player",
-                        "panelMenu": "Select your desired channel.",
-                        "success": "AFK successfully activated in this server.",
-                        "doDeleteChannel": "-# **To set up the panel in your desired channel, make sure to select it. The channel <#{channel}> has been set for the panel. If you want to remove it, click one of the buttons below.**",
-                        "noChannel": "```diff\n- You must mention a text channel.```",
-                        "buttonYes": "Yes",
-                        "buttonNo": "No",
-                        "deleteChannel": "Channel successfully removed from the database."
+                        "panelTitle": "Radio Control",
+                        "panelMenu": "Select your preferred network.",
+                        "success": "-# **The radio control panel was successfully set up in the <#{channel}> channel.**",
+                        "doDeleteChannel": "-# **To set up the panel in a new channel, please select the desired channel. The current channel <#{channel}> is already registered for the panel. If you wish to delete it, use the buttons below.**",
+                        "noChannel": "```diff\n- Please mention a text channel.```",
+                        "deleteChannel": "-# **The channel was successfully removed from the database.**"
                     }
                 },
                 "prefix": {
-                    "description": "Set a custom prefix in the server's database.",
+                    "description": "Set a custom prefix for bot commands.",
                     "options": {
                         "input": "Enter your desired prefix."
                     },
-                    "replies": {}
+                    "replies": {
+                        "doDeletePrefix": "-# **The current command prefix for this server is `{prefix}`. To change it, please enter a new prefix. To revert to the default, use the buttons below.**",
+                        "deletePrefix": "-# **The bot's prefix has been reset to the default (`{prefix}`).**",
+                        "noPrefix": "```diff\n- Please enter your desired prefix!```",
+                        "success": "-# **The bot's prefix has been successfully changed to {prefix}!**"
+                    }
+                },
+                "language": {
+                    "description": "Set the bot's language.",
+                    "options": {
+                        "input": "Select your desired language."
+                    },
+                    "replies": {
+                        "doDeleteLanguage": "-# **To change the bot's language, select a new one. To revert to the default language, use the buttons below.**",
+                        "deleteLanguage": "-# **The bot's language has been reset to the default (`{language}`).**",
+                        "noLanguage": "```diff\n- Please enter your desired language!```",
+                        "success": "-# **The bot's language has been successfully changed to `{language}`!**"
+                    }
                 }
             }
         },
         "help": {
-            "description": "Bot commands",
+            "description": "Display bot commands",
             "replies": {
-                "invalidUser": "This button is for {author} only, and you do not have permission to use it.\nFor using the buttons, it's better to call the command \"{mention_command}\".",
-                "noPlayerError": "No player has been activated in this server. Please create a player.",
-                "notMatchedVoice": "Your voice channel does not match with mine. Please join the channel I am in.",
-                "success": "Music player panel successfully registered in channel {channel}.",
+                "invalidUser": "This button is for {author} only, and you are not authorized to use it.\nTo use the buttons, run the command \"{mention_command}\".",
+                "noPlayerError": "No player is active on this server. Please create a player.",
+                "notMatchedVoice": "Your voice channel does not match mine. Please join the channel I'm in.",
+                "success": "The music playback panel was successfully set up in the {channel} channel.",
                 "embed": {
-                    "author": "Bot Help",
+                    "author": "Bot Guide",
                     "footer": "Requested by",
-                    "field1": "About Me:",
-                    "value1": ">>> Hi! I am {username}.\nI am an entertainment and management bot that helps admins manage the server more easily, while also helping members to have fun and solve their issues.",
+                    "field1": "About me:",
+                    "value1": ">>> Hello! I'm {username}, an entertainment and management bot that helps admins manage servers better and entertain members.",
                     "field2": "View my commands:",
-                    "value2": ">>> You can click the menu below this message to see all of my commands and view the commands for each section."
+                    "value2": ">>> To see all the commands, click on the menu below this message."
                 },
-                "menu": "Click on me!",
-                "button": "Home Page",
-                "aliases": "Aliases:",
+                "menu": "Click to view!",
+                "s": "Home",
+                "aliases": "Other names:",
                 "description": "Description:",
-                "noCommands": "`No commands found for this category.`"
+                "noCommands": "`No commands found in this category.`"
             }
         },
         "ping": {
-            "description": "Bot ping",
+            "description": "Display the bot's ping",
             "replies": {
                 "pinging": "Processing...",
                 "ping": "Pong!",
@@ -133,59 +152,61 @@
             }
         },
         "afk": {
-            "description": "Activate AFK mode for the server's voice channel.",
+            "description": "Enable AFK mode for the server’s voice channel.",
             "options": {
-                "channel": "Select the desired channel."
+                "channel": "Please select your desired voice channel."
             },
             "replies": {
-                "noChannelError": "```diff\n- You must mention a voice channel or join one of the channels.```",
-                "noPlayerError": "```diff\n- No player has been activated in this server. Please create a player.```",
-                "notMatchedVoice": "```diff\n- Your voice channel does not match with mine. Please join the channel I am in.```",
-                "success": "Music player panel successfully registered in channel {channel}."
+                "noChannelError": "```diff\n- Please mention a voice channel or join one.```",
+                "noPlayerError": "```diff\n- No player is active on this server. Please create a player.```",
+                "notMatchedVoice": "```diff\n- Your voice channel does not match mine. Please join the channel I’m in.```",
+                "success": "The music playback panel was successfully set up in the {channel} channel.",
+                "doDeleteChannel": "-# **To change the AFK channel, please mention the new one. To remove it from the database, use the buttons below.**",
+                "deleteChannel": "-# **The channel was successfully removed from the database.**"
             }
         },
         "pause": {
-            "description": "Pause the player.",
+            "description": "Pause radio playback.",
             "replies": {
-                "paused": "Player successfully paused."
+                "paused": "The player was successfully paused."
             }
         },
         "play": {
-            "description": "Play music in the voice channel.",
+            "description": "Play a radio station in the voice channel.",
             "options": {
-                "station": "Select one of the stations."
+                "station": "Please select one of the stations."
             },
             "replies": {
-                "onlyPanel": "This command can only be used in the channel <#{channel}>.",
-                "invalidQuery": "-# **This station is not approved! Please select one of the stations below:**\n```json\n{stations}```",
-                "play": "-# **Station `{song}` successfully selected.**"
+                "onlyPanel": "This command can only be used in the <#{channel}> channel.",
+                "invalidQuery": "-# **The selected station is invalid! Please choose from the stations below:**\n```json\n{stations}```",
+                "play": "-# **The station `{song}` was successfully played.**"
             }
         },
         "stop": {
-            "description": "Stop and remove the player in the voice channel.",
+            "description": "Stop and remove the player from the voice channel.",
             "replies": {
-                "stopped": "Player successfully removed."
+                "stopped": "The player was successfully stopped and removed."
             }
         },
         "volume": {
-            "description": "Check or change the player's volume.",
+            "description": "Set or display the player’s volume.",
             "options": {
-                "input": "Select a volume level between 0 and 200."
+                "input": "Please select a volume level between 0 and 200."
             },
             "replies": {
-                "currentVolume": "The player's current volume is `{volume}%`.",
-                "footer": "Use the '/volume <1-200>' command to change the volume.",
-                "invalidInput": "```diff\n- Invalid input. Please select a number between 0 and 200.```",
-                "success": "Player volume changed to `{volume}%`."
+                "currentVolume": "The current player volume is `{volume}%`.",
+                "footer": "To change the volume, use the command '/volume <1-200>'.",
+                "invalidInput": "```diff\n- Invalid input. Please enter a number between 0 and 200.```",
+                "success": "The player’s volume was successfully changed to `{volume}%`."
             }
         },
         "setactivity": {
-            "description": "Temporarily change the bot's status.",
+            "description": "Temporarily change the bot’s status.",
             "replies": {
-                "invalidStatus": "```diff\n- Invalid input!\n+ Correct input: status:[statusName]\n+ statusName can be: [{status}]```",
-                "invalidActivity": "```diff\n- Invalid input!\n+ Correct input: type:[typeName]\n+ typeName can be: [{activity}]```",
-                "activityName": "Hello World",
-                "success": "✅| Bot status temporarily changed.\n```js\n{data}```"
+                "invalidStatus": "```diff\n- Invalid status!\n+ Correct input: status:[status name]\n+ Status name can be one of the following: [{status}]```",
+                "invalidActivity": "```diff\n- Invalid activity!\n+ Correct input: type:[activity name]\n+ Activity type can be one of the following: [{activity}]```",
+                "activityName": "Hello, World",
+                "success": "✅| The bot's status has been temporarily changed.\n```js\n{data}```"
             }
         }
     }

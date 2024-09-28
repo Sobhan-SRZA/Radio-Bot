@@ -41,7 +41,6 @@ module.exports = {
         PermissionFlagsBits.SendMessages
     ],
     default_permissions: [
-        PermissionFlagsBits.ManageChannels,
         PermissionFlagsBits.SendMessages,
         PermissionFlagsBits.EmbedLinks
     ],
@@ -108,6 +107,37 @@ module.exports = {
                     required: false
                 }
             ]
+        },
+        {
+            name: "language",
+            description: defaultLanguage.subCommands.language.description,
+            type: ApplicationCommandOptionType.Subcommand,
+            usage: "[string]",
+            options: [
+                {
+                    name: "input",
+                    description: defaultLanguage.subCommands.language.options.input,
+                    type: ApplicationCommandOptionType.String,
+                    autocomplete: true,
+                    required: false
+                },
+                {
+                    name: "ephemeral",
+                    description: ephemeral.description,
+                    type: ApplicationCommandOptionType.String,
+                    choices: [
+                        {
+                            name: ephemeral.choices.yes,
+                            value: "true"
+                        },
+                        {
+                            name: ephemeral.choices.no,
+                            value: "false"
+                        }
+                    ],
+                    required: false
+                }
+            ]
         }
     ],
 
@@ -134,11 +164,9 @@ module.exports = {
 
             switch (interaction.user ? interaction.options.getSubcommand() : args[0]) {
                 case "panel": {
-                    let channel;
-                    if (interaction.user)
-                        channel = interaction.options.getChannel("channel");
-                    else
-                        channel = interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[1]);
+                    const channel = interaction.user ?
+                        interaction.options.getChannel("channel") :
+                        interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[1]);
 
                     if (!channel && await db.has(databaseNames.panel)) {
                         const radioPanel = await db.get(databaseNames.panel);
@@ -166,13 +194,13 @@ module.exports = {
                                             new ButtonBuilder()
                                                 .setCustomId("setup-accept")
                                                 .setEmoji("✅")
-                                                .setLabel(language.subCommands.panel.replies.buttonYes)
+                                                .setLabel(selectLanguage(lang).replies.buttons.buttonYes)
                                                 .setStyle(ButtonStyle.Success),
 
                                             new ButtonBuilder()
                                                 .setCustomId("setup-cancel")
                                                 .setEmoji("❌")
-                                                .setLabel(language.subCommands.panel.replies.buttonNo)
+                                                .setLabel(selectLanguage(lang).replies.buttons.buttonNo)
                                                 .setStyle(ButtonStyle.Secondary)
                                         )
                                 ]
@@ -237,7 +265,163 @@ module.exports = {
 
                         await db.set(databaseNames.panel, { channel: channel.id, message: message.id });
                         return await response(interaction, {
-                            content: replaceValues(language.subCommands.panel.replies.success, { channel })
+                            content: replaceValues(language.subCommands.panel.replies.success, { channel: channel.id })
+                        });
+                    }
+                    break;
+                }
+
+                case "prefix": {
+                    const newPrefix = interaction.user ? interaction.options.getString("input") : args[0];
+                    if (!newPrefix && await db.has(databaseNames.prefix)) {
+                        const lastPrefix = await db.get(databaseNames.prefix);
+                        const message = await sendError({
+                            interaction,
+                            isUpdateNeed: true,
+                            data: {
+                                embeds: [
+                                    new EmbedBuilder()
+                                        .setColor(copyRight.color.red)
+                                        .setFooter(
+                                            {
+                                                text: copyRight.footer.footerText,
+                                                iconURL: copyRight.footer.footerIcon
+                                            }
+                                        )
+                                        .setTitle(selectLanguage(lang).replies.error)
+                                        .setDescription(`${replaceValues(language.subCommands.prefix.replies.doDeletePrefix, {
+                                            prefix: lastPrefix
+                                        })}`)
+                                ],
+                                components: [
+                                    new ActionRowBuilder()
+                                        .addComponents(
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-accept")
+                                                .setEmoji("✅")
+                                                .setLabel(selectLanguage(lang).replies.buttons.buttonYes)
+                                                .setStyle(ButtonStyle.Success),
+
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-cancel")
+                                                .setEmoji("❌")
+                                                .setLabel(selectLanguage(lang).replies.buttons.buttonNo)
+                                                .setStyle(ButtonStyle.Secondary)
+                                        )
+                                ]
+                            }
+                        });
+                        const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
+                        collector.on("collect", async (button) => {
+                            switch (button.customId) {
+                                case "setup-accept": {
+                                    await button.deferUpdate();
+                                    await db.delete(databaseNames.prefix);
+                                    return await button.editReply({
+                                        content: replaceValues(language.subCommands.prefix.replies.deletePrefix, { prefix: config.discord.prefix }),
+                                        embeds: [],
+                                        components: []
+                                    });
+                                };
+                                case "setup-cancel": {
+                                    collector.stop();
+                                };
+                            }
+                        });
+                        collector.on("end", async () => {
+                            return await deleteResponse({ interaction, message: message });
+                        });
+                    }
+
+                    else if (!newPrefix)
+                        return await sendError({
+                            interaction,
+                            isUpdateNeed: true,
+                            log: language.subCommands.prefix.replies.noPrefix
+                        })
+
+                    else {
+                        await db.set(databaseNames.prefix, newPrefix);
+                        return await response(interaction, {
+                            content: replaceValues(language.subCommands.prefix.replies.success, { prefix: newPrefix })
+                        });
+                    }
+                    break;
+                }
+
+                case "language": {
+                    const newlanguage = interaction.user ? interaction.options.getString("input") : args.join(" ");
+                    if (!newlanguage && await db.has(databaseNames.language)) {
+                        const lastlanguage = await db.get(databaseNames.language);
+                        const message = await sendError({
+                            interaction,
+                            isUpdateNeed: true,
+                            data: {
+                                embeds: [
+                                    new EmbedBuilder()
+                                        .setColor(copyRight.color.red)
+                                        .setFooter(
+                                            {
+                                                text: copyRight.footer.footerText,
+                                                iconURL: copyRight.footer.footerIcon
+                                            }
+                                        )
+                                        .setTitle(selectLanguage(lang).replies.error)
+                                        .setDescription(`${replaceValues(language.subCommands.language.replies.doDeleteLanguage, {
+                                            language: lastlanguage
+                                        })}`)
+                                ],
+                                components: [
+                                    new ActionRowBuilder()
+                                        .addComponents(
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-accept")
+                                                .setEmoji("✅")
+                                                .setLabel(selectLanguage(lang).replies.buttons.buttonYes)
+                                                .setStyle(ButtonStyle.Success),
+
+                                            new ButtonBuilder()
+                                                .setCustomId("setup-cancel")
+                                                .setEmoji("❌")
+                                                .setLabel(selectLanguage(lang).replies.buttons.buttonNo)
+                                                .setStyle(ButtonStyle.Secondary)
+                                        )
+                                ]
+                            }
+                        });
+                        const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
+                        collector.on("collect", async (button) => {
+                            switch (button.customId) {
+                                case "setup-accept": {
+                                    await button.deferUpdate();
+                                    await db.delete(databaseNames.language);
+                                    return await button.editReply({
+                                        content: replaceValues(language.subCommands.language.replies.deleteLanguage, { language: config.source.default_language }),
+                                        embeds: [],
+                                        components: []
+                                    });
+                                };
+                                case "setup-cancel": {
+                                    collector.stop();
+                                };
+                            }
+                        });
+                        collector.on("end", async () => {
+                            return await deleteResponse({ interaction, message: message });
+                        });
+                    }
+
+                    else if (!newlanguage)
+                        return await sendError({
+                            interaction,
+                            isUpdateNeed: true,
+                            log: language.subCommands.language.replies.nolanguage
+                        })
+
+                    else {
+                        await db.set(databaseNames.language, newlanguage);
+                        return await response(interaction, {
+                            content: replaceValues(language.subCommands.language.replies.success, { language: newlanguage })
                         });
                     }
                     break;

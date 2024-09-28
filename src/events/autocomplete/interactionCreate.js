@@ -1,6 +1,7 @@
 const
   error = require("../../functions/error"),
   radiostation = require("../../storage/radiostation.json"),
+  languages = require("../../storage/languages.json"),
   choices = Object.keys(radiostation)
     .map((a) => JSON.stringify({
       name: `${a}`,
@@ -11,7 +12,7 @@ const
 /**
  * 
  * @param {import("discord.js").Client} client 
- * @param {import("discord.js").CommandInteraction} interaction 
+ * @param {import("discord.js").AutocompleteInteraction} interaction 
  * @returns {void}
  */
 module.exports = async (client, interaction) => {
@@ -23,6 +24,23 @@ module.exports = async (client, interaction) => {
         const focusedValue = interaction.options.getFocused();
         const firstChoice = choices.filter(a => a.name.toLowerCase().startsWith(focusedValue.toLowerCase()));
         return await interaction.respond(firstChoice.slice(0, 25)).catch(a => a);
+        break;
+      }
+
+      case "setup": {
+        switch (interaction.options.getSubcommand()) {
+          case "language": {
+            const focusedValue = interaction.options.getFocused();
+            const firstChoice = Object.values(languages).filter(a => a.toLowerCase().startsWith(focusedValue.toLowerCase()));
+            return await interaction.respond(firstChoice.slice(0, 25)).catch(a => a);
+            break;
+          }
+
+          default: {
+            break;
+          }
+        }
+        break;
       }
     }
   } catch (e) {

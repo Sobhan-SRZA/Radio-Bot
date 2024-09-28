@@ -31,13 +31,13 @@ module.exports = async (client, message) => {
     if (config.source.one_guild && message.guild.id !== config.discord.support.id) return;
 
     // Custom commands
-    // if (await db.has(databaseNames.customCommand)) {
-    //   const customCmd = await db.get(databaseNames.customCommand)
-    //   customCmd.forEach(async command => {
-    //     if (message.content.includes(command.name))
-    //       return await message.reply(command.data);
-    //   });
-    // };
+    if (await db.has(databaseNames.customCommand)) {
+      const customCmd = await db.get(databaseNames.customCommand)
+      customCmd.forEach(async command => {
+        if (message.content.includes(command.name))
+          return await message.reply(command.data);
+      });
+    };
 
     // Select Guild Language
     const
@@ -80,10 +80,10 @@ module.exports = async (client, message) => {
       if (message.guild)
 
         // Check Perms
-        checkCmdPerms(message, command, prefix);
+        await checkCmdPerms(message, command, prefix);
 
       // Cooldown
-      checkCmdCooldown(message, command, prefix);
+      await checkCmdCooldown(message, command, prefix);
 
       // Command Handler
       command.run(client, message, args);
