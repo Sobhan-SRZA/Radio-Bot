@@ -27,13 +27,13 @@ module.exports = async function (interaction, command, prefix = null) {
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
-        `\`${prefix + command.name}\`` : `</${command.name}${interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ?
-          ` ${interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${interaction.id}>`;
+        `\`${prefix + command.name}\`` : `</${command.name}${await interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ?
+          ` ${await interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${interaction.id}>`;
 
     if (!client.cooldowns.has(command.name))
-      client.cooldowns.set(command.name, new Collection());
+      await client.cooldowns.set(command.name, new Collection());
 
-    const timestamps = client.cooldowns.get(command.name);
+    const timestamps = await client.cooldowns.get(command.name);
     const defaultCooldownDuration = 3;
     const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
     if (timestamps.has(interaction.member.id)) {
@@ -53,7 +53,7 @@ module.exports = async function (interaction, command, prefix = null) {
     timestamps.set(interaction.member.id, Date.now());
     setTimeout(() => timestamps.delete(interaction.member.id), cooldownAmount);
     
-    return void import("discord.js").InteractionResponse;
+    return void true;
   } catch (e) {
     error(e);
   }

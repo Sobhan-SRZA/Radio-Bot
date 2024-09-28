@@ -54,13 +54,13 @@ module.exports = async (client, interaction) => {
 
 
         // Check command perms
-        checkCmdPerms(interaction, command);
+        await checkCmdPerms(interaction, command);
 
         // Command cooldown
-        checkCmdCooldown(interaction, command);
+        await checkCmdCooldown(interaction, command);
 
         // Command Handler 
-        await interaction.deferReply({
+        interaction.deferReply({
           ephemeral: interaction.options.getString("ephemeral") === "true" ? true : false,
           fetchReply: true
         });

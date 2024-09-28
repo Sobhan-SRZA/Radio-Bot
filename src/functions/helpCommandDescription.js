@@ -10,7 +10,14 @@ const error = require("./error");
  */
 module.exports = async function (interaction, language, value, prefix) {
   try {
-    const commands = await interaction.client.application.commands.fetch({ guildId: interaction.guildId });
+    const commands = await interaction.client.application.commands.fetch(
+      {
+        cache: true,
+        withLocalizations: false,
+        force: true,
+        guildId: interaction.guildId
+      }
+    );
     const description = [];
     await interaction.client.commands
       .filter(a => a.category === value)

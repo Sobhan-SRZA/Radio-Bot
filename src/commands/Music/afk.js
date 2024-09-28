@@ -26,6 +26,7 @@ module.exports = {
     PermissionFlagsBits.SendMessages,
     PermissionFlagsBits.EmbedLinks,
     PermissionFlagsBits.Connect,
+    PermissionFlagsBits.ManageGuild,
     PermissionFlagsBits.Speak
   ],
   dm_permission: false,
@@ -75,7 +76,8 @@ module.exports = {
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).commands.afk,
-      memberChannelId = interaction.member?.voice?.channelId;
+      memberChannelId = interaction.member?.voice?.channelId,
+      queue = new radio();
 
     let channel = interaction.user ? interaction.options.getChannel("channel") : interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[0]);
     if (!channel && memberChannelId)
@@ -88,21 +90,72 @@ module.exports = {
         log: language.replies.noChannelError
       });
 
-    let queue;
-    try {
-      queue = new radio()
-        .setData({
-          channelId: channel.id,
-          guildId: interaction.guildId,
-          adapterCreator: interaction.guild.voiceAdapterCreator
-        });
-    } catch {
+    if (!channel && await db.has(databaseNames.afk)) {
+      const afkChannel = await db.get(databaseNames.afk);
+      const message = await sendError({
+        interaction,
+        isUpdateNeed: true,
+        data: {
+          embeds: [
+            new EmbedBuilder()
+              .setColor(copyRight.color.red)
+              .setFooter(
+                {
+                  text: copyRight.footer.footerText,
+                  iconURL: copyRight.footer.footerIcon
+                }
+              )
+              .setTitle(selectLanguage(lang).replies.error)
+              .setDescription(`${replaceValues(language.replies.doDeleteChannel, {
+                channel: afkChannel
+              })}`)
+          ],
+          components: [
+            new ActionRowBuilder()
+              .addComponents(
+                new ButtonBuilder()
+                  .setCustomId("setup-accept")
+                  .setEmoji("✅")
+                  .setLabel(selectLanguage(lang).replies.buttons.buttonYes)
+                  .setStyle(ButtonStyle.Success),
+
+                new ButtonBuilder()
+                  .setCustomId("setup-cancel")
+                  .setEmoji("❌")
+                  .setLabel(selectLanguage(lang).replies.buttons.buttonNo)
+                  .setStyle(ButtonStyle.Secondary)
+              )
+          ]
+        }
+      });
+      const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
+      collector.on("collect", async (button) => {
+        switch (button.customId) {
+          case "setup-accept": {
+            await button.deferUpdate();
+            await db.delete(databaseNames.panel);
+            return await button.editReply({
+              content: language.replies.deleteChannel,
+              embeds: [],
+              components: []
+            });
+          };
+          case "setup-cancel": {
+            collector.stop();
+          };
+        }
+      });
+      collector.on("end", async () => {
+        return await deleteResponse({ interaction, message: message });
+      });
+    }
+
+    if (!queue.isConnection(interaction.guildId))
       return await sendError({
         interaction,
         isUpdateNeed: true,
         log: language.replies.noPlayerError
       });
-    }
 
     await db.set(databaseNames.afk, channel.id);
     return await response(interaction, {
