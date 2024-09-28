@@ -60,11 +60,12 @@ module.exports = async (client, interaction) => {
         await checkCmdCooldown(interaction, command);
 
         // Command Handler 
-        interaction.deferReply({
+        await interaction.deferReply({
           ephemeral: interaction.options.getString("ephemeral") === "true" ? true : false,
           fetchReply: true
         });
-        command.run(client, interaction, args);
+        await db.add("totalCommandsUsed", 1);
+        return command.run(client, interaction, args);
       }
     }
   } catch (e) {

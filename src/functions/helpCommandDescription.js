@@ -2,50 +2,39 @@ const error = require("./error");
 
 /**
  * 
- * @param {import("discord.js").CommandInteraction} interaction 
- * @param {import("../../storage/locales/per.json").commands.help} language 
+ * @param {Map} commands 
+ * @param {any} language 
  * @param {string} value 
  * @param {string} prefix 
  * @returns {string}
  */
-module.exports = async function (interaction, language, value, prefix) {
+module.exports = async function (commands, language, value, prefix) {
   try {
-    const commands = await interaction.client.application.commands.fetch(
-      {
-        cache: true,
-        withLocalizations: false,
-        force: true,
-        guildId: interaction.guildId
-      }
-    );
     const description = [];
-    await interaction.client.commands
+    await commands
       .filter(a => a.category === value)
-      .forEach(async (cmd) => {
-        const command = commands.find(a => {
-          return a.name === cmd.name
-        });
-        const string = `**${cmd.only_slash ?
-          `</${cmd.name}:${command?.id}>` : ""
-          }${cmd.only_slash && cmd.only_message ?
+      .forEach(async (command) => {
+        const string = `**${command.only_slash ?
+          `</${command.name}:${command?.id}>` : ""
+          }${command.only_slash && command.only_message ?
             " | " : ""
-          }${cmd.only_message ?
-            `${prefix}${cmd.name} ${cmd.usage ? cmd.usage : ""}` : ""
-          }${cmd.aliases && cmd.aliases.length > 0 ?
-            `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
-          }\n${language.replies.description} \`${cmd.description}\`**`;
+          }${command.only_message ?
+            `${prefix}${command.name} ${command.usage ? command.usage : ""}` : ""
+          }${command.aliases && command.aliases.length > 0 ?
+            `\n${language.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
+          }\n${language.replies.description} \`${command.description}\`**`;
 
-        if (cmd.options && cmd.options.some(a => a.type === 1))
-          await cmd.options
+        if (command.options && command.options.some(a => a.type === 1))
+          await command.options
             .forEach((option) => {
-              const string = `**${cmd.only_slash ?
-                `</${cmd.name} ${option.name}:${command?.id}>` : ""
-                }${cmd.only_slash && cmd.only_message ?
+              const string = `**${command.only_slash ?
+                `</${command.name} ${option.name}:${command?.id}>` : ""
+                }${command.only_slash && command.only_message ?
                   " | " : ""
-                }${cmd.only_message ?
-                  `${prefix}${cmd.name} ${option.name} ${cmd.usage ? cmd.usage : ""
-                  }` : ""}${cmd.aliases && cmd.aliases.length > 0 ?
-                    `\n${language.replies.aliases} [${cmd.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
+                }${command.only_message ?
+                  `${prefix}${command.name} ${option.name} ${command.usage ? command.usage : ""
+                  }` : ""}${command.aliases && command.aliases.length > 0 ?
+                    `\n${language.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
                 }\n${language.replies.description} \`${option.description}\`**`;
 
               description.push(string);

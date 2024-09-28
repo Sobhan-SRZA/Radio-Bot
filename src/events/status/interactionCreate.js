@@ -1,7 +1,9 @@
 const
-  { EmbedBuilder } = require("discord.js"),
-  embed = require("../../storage/embed"),
-  error = require("../../functions/error");
+  {
+    EmbedBuilder
+  } = require("discord.js"),
+  error = require("../../functions/error"),
+  statusEmbedBuilder = require("../../functions/statusEmbedBuilder");
 
 /**
  * 
@@ -13,15 +15,10 @@ module.exports = async (client, interaction) => {
   try {
     if (!interaction.isButton()) return;
 
-    if (interaction.customId === "botUpdates") {
-      await interaction.deferReply({ fetchReply: true, ephemeral: true });
+    if (interaction.customId === "refreshStatus") {
+      await interaction.deferUpdate({ fetchReply: true });
       return await interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle(`${embed.emotes.default.update}| Bot New Updates`)
-            .setDescription(embed.update)
-            .setColor(embed.color.theme)
-        ]
+        embeds: [EmbedBuilder.from(await statusEmbedBuilder(client))]
       });
     };
   } catch (e) {

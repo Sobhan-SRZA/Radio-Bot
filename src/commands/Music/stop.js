@@ -53,7 +53,7 @@ module.exports = {
    * @param {import("discord.js").Client} client 
    * @param {import("discord.js").CommandInteraction} interaction 
    * @param {Array<string>} args 
-   * @returns 
+   * @returns {void}
    */
   run: async (client, interaction, args) => {
     const

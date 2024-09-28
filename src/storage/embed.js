@@ -1,4 +1,5 @@
 module.exports = {
+  update:"__New bot's version is here!__\n### Version 0.0.0 - Initial Release 🛠️\n- **Basic bot setup** with essential commands.\n- Integrated **voice channel functionality** for playing radio.\n- Added **AFK management** and **status updates**.\n- Configurable **.env file** for easy setup.\n- Initial **database options**: JSON, MySQL, MongoDB.",
   footer: {
     footerIcon: "https://cdn.discordapp.com/avatars/865630940361785345/d0c85fbbdb0ee9f105336a041904e7d8.png?size=4096",
     footerText: "©️ Persian Caesar"
@@ -36,6 +37,10 @@ module.exports = {
       error: "⚠️",
       heartbeat: "💓",
       timer: "⏱️",
+      multipleMusicalNotes: "🎶",
+      admins:"💻",
+      misc:"🔍",
+      music:"🎧",
       clock: "⏰",
       badage: "📛",
       entry: "⛔",

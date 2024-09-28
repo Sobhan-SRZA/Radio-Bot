@@ -66,8 +66,17 @@
         "botIsOnline": "{name} is now online :)",
         "buttons": {
             "buttonNo": "No",
-            "buttonYes": "Yes"
-        }
+            "buttonYes": "Yes",
+            "update": "Bot Updates"
+        },
+        "modals": {
+            "reportModalTitle": "Report",
+            "reportModalLabel": "What would you like to report?",
+            "reportModalPlaceholder": "Example: Hi, when I used the bot, the help command didn't work.",
+            "reportEmbedDescription": "**Report:**\n{message}\n\n-# **From {user}**",
+            "sendReport": "```diff\n+ Your report has been successfully sent to the developers and will be reviewed within a few days.```"
+        },
+        "sendPrefix": "My prefix in this server is: {prefix}"
     },
     "commands": {
         "setup": {
@@ -107,11 +116,14 @@
                     "replies": {
                         "doDeleteLanguage": "-# **To change the bot's language, select a new one. To revert to the default language, use the buttons below.**",
                         "deleteLanguage": "-# **The bot's language has been reset to the default (`{language}`).**",
-                        "noLanguage": "```diff\n- Please enter your desired language!```",
+                        "noLanguage": "-# **Please enter your desired language!**\n```json\n{languages}```",
                         "success": "-# **The bot's language has been successfully changed to `{language}`!**"
                     }
                 }
             }
+        },
+        "about": {
+            "description": "Displays information about the bot"
         },
         "help": {
             "description": "Display bot commands",
@@ -124,15 +136,34 @@
                     "author": "Bot Guide",
                     "footer": "Requested by",
                     "field1": "About me:",
-                    "value1": ">>> Hello! I'm {username}, an entertainment and management bot that helps admins manage servers better and entertain members.",
+                    "value1": ">>> Hello! I'm **{username} {emote}**\nI'm an advanced radio bot designed for voice channels, providing users with a wide variety of high-quality online radio stations to enjoy. Whether you're looking to relax or manage your server's music experience, Padio has you covered!",
                     "field2": "View my commands:",
                     "value2": ">>> To see all the commands, click on the menu below this message."
                 },
                 "menu": "Click to view!",
-                "s": "Home",
+                "buttons": {
+                    "home": "Home"
+                },
                 "aliases": "Other names:",
                 "description": "Description:",
                 "noCommands": "`No commands found in this category.`"
+            }
+        },
+        "invite": {
+            "description": "Get the invite link for the bot.",
+            "replies": {
+                "embedFooter": "Make sure to configure the permissions properly if using the No Role invite!",
+                "embedDescription": "Choose one of the invite links below based on your preferences:",
+                "embedTitle": "Invite {username} to your server!",
+                "fields": {
+                    "links": "Where to find {username}:",
+                    "noRole": "No Role Invite",
+                    "suggest": "Suggested Invite"
+                },
+                "values": {
+                    "suggest": "[Invite {username} with all permissions]({link})",
+                    "noRole": "[Invite without requesting any permissions]({link})"
+                }
             }
         },
         "ping": {
@@ -149,6 +180,12 @@
                 "values": {
                     "pinging": "Host speed:"
                 }
+            }
+        },
+        "report": {
+            "description": "Report bot malfunction and bugs",
+            "replies": {
+                "reportButton": "Submit Report"
             }
         },
         "afk": {
