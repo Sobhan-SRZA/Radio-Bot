@@ -1,31 +1,29 @@
-
 const
   {
+    EmbedBuilder,
     ApplicationCommandType,
+    ApplicationCommandOptionType,
     PermissionFlagsBits,
-    ApplicationCommandOptionType
+    ButtonBuilder,
+    ActionRowBuilder,
+    ButtonStyle
   } = require("discord.js"),
-  radio = require("../../functions/player"),
   response = require("../../functions/response"),
-  selectLanguage = require("../../functions/selectLanguage"),
   config = require("../../../config"),
+  selectLanguage = require("../../functions/selectLanguage"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
-  defaultLanguage = selectLanguage(config.source.default_language).commands.pause,
-  checkPlayerPerms = require("../../functions/checkPlayerPerms");
+  defaultLanguage = selectLanguage(config.source.default_language).commands.about,
+  statusEmbedBuilder = require("../../functions/statusEmbedBuilder"),
+  embed = require("../../storage/embed");
 
 module.exports = {
-  name: "pause",
+  name: "about",
   description: defaultLanguage.description,
-  category: "music",
+  category: "misc",
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
   default_member_permissions: [PermissionFlagsBits.SendMessages],
-  default_permissions: [
-    PermissionFlagsBits.SendMessages,
-    PermissionFlagsBits.EmbedLinks,
-    PermissionFlagsBits.Connect,
-    PermissionFlagsBits.Speak
-  ],
+  default_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
   dm_permission: false,
   nsfw: false,
   only_owner: false,
@@ -54,7 +52,7 @@ module.exports = {
    * 
    * @param {import("discord.js").Client} client 
    * @param {import("discord.js").CommandInteraction} interaction 
-   * @param {Array<string>} args 
+   * @param {Array} args 
    * @returns {void}
    */
   run: async (client, interaction, args) => {
@@ -64,26 +62,34 @@ module.exports = {
         language: `language.${interaction.guild.id}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-      language = selectLanguage(lang).commands.pause;
+      language = selectLanguage(lang),
+      embeds = [
+        EmbedBuilder.from(await statusEmbedBuilder(client, language))
+      ],
 
-    // Check perms
-    await checkPlayerPerms(interaction);
-
-    // Pause Player
-    const queue = new radio(interaction);
-    queue.pause();
+      components = [
+        new ActionRowBuilder()
+          .addComponents(
+            new ButtonBuilder()
+              .setEmoji(embed.emotes.default.update)
+              .setCustomId("botUpdates")
+              .setLabel(language.replies.buttons.update)
+              .setStyle(ButtonStyle.Primary)
+          )
+      ];
 
     return await response(interaction, {
-      content: language.replies.paused
+      embeds,
+      components
     });
-  },
-};
+  }
+}
 /**
- * @copyright
- * Coded by Sobhan-SRZA (mr.sinre) | https://github.com/Sobhan-SRZA
- * @copyright
- * Work for Persian Caesar | https://dsc.gg/persian-caesar
- * @copyright
- * Please Mention Us "Persian Caesar", When Have Problem With Using This Code!
- * @copyright
- */
+* @copyright
+* Coded by Sobhan-SRZA (mr.sinre) | https://github.com/Sobhan-SRZA
+* @copyright
+* Work for Persian Caesar | https://dsc.gg/persian-caesar
+* @copyright
+* Please Mention Us "Persian Caesar", When Have Problem With Using This Code!
+* @copyright
+*/

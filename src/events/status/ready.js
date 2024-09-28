@@ -56,7 +56,7 @@ module.exports = async (client) => {
                                 .setStyle(ButtonStyle.Link)
                                 .setLabel(defaultLanguage.replies.status.vote)
                                 .setEmoji(data.emotes.default.topgg)
-                                .setURL(`${replaceValues(config.discord.topgg, { clientId: client.user.id })}`)
+                                .setURL(`https://top.gg/bot/${client.user.id}/vote`)
                         )
                 ];
 

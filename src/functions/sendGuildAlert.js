@@ -23,9 +23,12 @@ module.exports = async function ({
   description = defaultLanguage.replies.guildAlert
 }) {
   try {
-    let channel;
-    let invite;
-    let messageData = {};
+    let
+      channel,
+      owner,
+      invite,
+      messageData = {};
+
     const inviteData = {
       reason: "Invite the developers",
       maxAge: 0
@@ -49,7 +52,6 @@ module.exports = async function ({
           .random(1)[0]
           .createInvite(inviteData);
     } catch { };
-    let owner;
     try {
       owner = (await guild?.fetchOwner())?.user;
       if (!owner)

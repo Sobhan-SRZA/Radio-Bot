@@ -14,7 +14,6 @@ const
   selectLanguage = require("../../functions/selectLanguage"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   defaultLanguage = selectLanguage(config.source.default_language).commands.ping;
-;
 
 module.exports = {
   name: "ping",
@@ -53,7 +52,7 @@ module.exports = {
    * @param {import("discord.js").Client} client 
    * @param {import("discord.js").CommandInteraction} interaction 
    * @param {Array} args 
-   * @returns 
+   * @returns {void}
    */
   run: async (client, interaction, args) => {
     const
@@ -73,15 +72,14 @@ module.exports = {
         .setColor(embed.color.theme)
         .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
         .setFooter({
-          text:embed.footer.footerText,
-          iconURL:embed.footer.footerIcon,
+          text: embed.footer.footerText,
+          iconURL: embed.footer.footerIcon,
         })
         .setTitle(`${embed.emotes.default.ping} ${language.replies.ping}`)
         .setFields(
           [
             {
               name: `\u200b`,
-              // name: `${embed.emotes.default.server}| ${language.replies.fields.pinging}`,
               value: `**${embed.emotes.default.heartbeat}| ${language.replies.values.pinging} \`${Math.round(client.ws.ping)}\` ms**`,
               inline: true
             },

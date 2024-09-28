@@ -7,7 +7,8 @@ const
     StringSelectMenuBuilder,
     ButtonBuilder,
     ApplicationCommandOptionType,
-    PermissionFlagsBits
+    PermissionFlagsBits,
+    Collection
   } = require("discord.js"),
   config = require("../../../config"),
   data = require("../../storage/embed"),
@@ -59,12 +60,13 @@ module.exports = {
    * @param {import("discord.js").Client} client 
    * @param {import("discord.js").CommandInteraction} interaction 
    * @param {Array} args 
-   * @returns 
+   * @returns {void}
    */
   run: async (client, interaction, args) => {
     const timeout = 1000 * 60 * 2,
       category = new Map(),
       menu_options = [],
+      commands = new Collection(),
       db = client.db,
       databaseNames = {
         prefix: `prefix.${interaction.guildId}`,
@@ -89,7 +91,8 @@ module.exports = {
             {
               name: language.replies.embed.field1,
               value: replaceValues(language.replies.embed.value1, {
-                username: client.user.username
+                username: client.user.username,
+                emote: data.emotes.default.multipleMusicalNotes
               }),
               inline: false
             },
@@ -102,6 +105,13 @@ module.exports = {
         )
         .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
 
+    await client.commands.forEach(async command => {
+      const appCommand = await (await client.application.commands.fetch({ cache: true })).find(a => a.name === command.name);
+      await commands.set(command.name, {
+        id: appCommand?.id,
+        ...command
+      });
+    });
     client.commands.filter(a => !a.only_owner).forEach(a => category.set(a.category, a.category));
     if (config.discord.support.owners.some(r => r.includes(author.user.id)))
       onlyOwner.forEach(a => category.set(a.category, a.category));
@@ -111,33 +121,16 @@ module.exports = {
         JSON.stringify(
           {
             label: `${firstUpperCase(a.toString())}`,
-            value: `${a.toString()}`
+            value: `${a.toString()}`,
+            emoji: data.emotes.default[a]
           }
         )
       );
     });
-    const helpMenu = new StringSelectMenuBuilder()
-      .setCustomId("help_menu")
-      .setMaxValues(1)
-      .setPlaceholder(language.replies.menu)
-      .addOptions(menu_options.map(a => JSON.parse(a)));
-
-    const homeButton = new ButtonBuilder()
-      .setStyle(ButtonStyle.Success)
-      .setLabel(language.replies.button)
-      .setCustomId("home_page");
 
     const message = await response(interaction, {
       embeds: [embed.toJSON()],
-      components: [
-        new ActionRowBuilder()
-          .addComponents(helpMenu.setDisabled(false))
-          .toJSON(),
-
-        new ActionRowBuilder()
-          .addComponents(homeButton.setDisabled(true))
-          .toJSON()
-      ],
+      components: await await components(language, true, false, menu_options.map(a => JSON.parse(a))),
       fetchReply: true
     });
     const collector = await message.createMessageComponentCollector({ time: timeout });
@@ -156,13 +149,13 @@ module.exports = {
           if (int.customId === "help_menu") {
             await int.deferUpdate({ fetchReply: true });
             const value = int.values[0];
-            const string = await helpCommandDescription(interaction, language, value, prefix);
+            const string = await helpCommandDescription(commands, language, value, prefix);
             const embed = new EmbedBuilder()
               .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
               .setAuthor({
                 name: `${client.user.username} ${language.replies.embed.author}`
               })
-              .setTitle(`${firstUpperCase(value)}`)
+              .setTitle(`${data.emotes.default[value]}| ${firstUpperCase(value)} [${client.commands.filter(a => a.category === value).size}]`)
               .setFooter({
                 text: `${language.replies.embed.footer} ${author.user.tag}`,
                 iconURL: author.user.displayAvatarURL({ dynamic: true })
@@ -172,24 +165,13 @@ module.exports = {
             embed.setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
             return await int.editReply({
               embeds: [embed.toJSON()],
-              components: [
-                new ActionRowBuilder()
-                  .addComponents(
-                    helpMenu
-                      .setDisabled(false)
-                      .setOptions(menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
-                  )
-                  .toJSON(),
-
-                new ActionRowBuilder()
-                  .addComponents(homeButton.setDisabled(false))
-                  .toJSON()
-              ]
+              components: await components(language, false, false, menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
             });
           }
         }
       } else
         return await sendError({
+          isUpdateNeed: true,
           interaction,
           log: replaceValues(language.replies.invalidUser, {
             mention_command: `</${client.application.commands.cache.find(c => c.name === "help").name}:${client.application.commands.cache.find(c => c.name === "help").id}>`,
@@ -203,21 +185,48 @@ module.exports = {
         interaction,
         message,
         data: {
-          components: [
-            new ActionRowBuilder()
-              .addComponents(helpMenu.setDisabled(true))
-              .toJSON(),
-
-            new ActionRowBuilder()
-              .addComponents(homeButton.setDisabled(true))
-              .toJSON()
-          ]
+          components: await components(language, true, true, menu_options.map(a => JSON.parse(a)))
         }
       });
     })
     setTimeout(() => {
       return collector.stop();
     }, timeout);
+
+    // Functions
+    /**
+     * 
+     * @param {object} language 
+     * @param {boolean} disableHomePage 
+     * @param {boolean} disableMenu 
+     * @param {array} options 
+     * @returns {array}
+     */
+    async function components(language, disableHomePage, disableMenu, options) {
+      return [
+        new ActionRowBuilder()
+          .addComponents(
+            new ButtonBuilder()
+              .setStyle(ButtonStyle.Success)
+              .setLabel(language.replies.buttons.home)
+              .setEmoji(data.emotes.default.home)
+              .setDisabled(disableHomePage)
+              .setCustomId("home_page")
+          )
+          .toJSON(),
+
+        new ActionRowBuilder()
+          .addComponents(
+            new StringSelectMenuBuilder()
+              .setCustomId("help_menu")
+              .setMaxValues(1)
+              .setPlaceholder(language.replies.menu)
+              .setDisabled(disableMenu)
+              .addOptions(options)
+          )
+          .toJSON()
+      ]
+    }
   }
 }
 /**

@@ -6,7 +6,8 @@ const
   config = require("../../../config"),
   selectLanguage = require("../../functions/selectLanguage"),
   checkCmdPerms = require("../../functions/checkCmdPerms"),
-  checkCmdCooldown = require("../../functions/checkCmdCooldown");
+  checkCmdCooldown = require("../../functions/checkCmdCooldown"),
+  replaceValues = require("../../functions/replaceValues");
 
 /**
  *
@@ -20,7 +21,6 @@ module.exports = async (client, message) => {
       db = client.db,
       databaseNames = {
         prefix: `prefix.${message.guildId}`,
-        customCommand: `commands.${message.guildId}`,
         language: `language.${message.guildId}`
       };
 
@@ -29,15 +29,6 @@ module.exports = async (client, message) => {
 
     // Filter all guilds
     if (config.source.one_guild && message.guild.id !== config.discord.support.id) return;
-
-    // Custom commands
-    if (await db.has(databaseNames.customCommand)) {
-      const customCmd = await db.get(databaseNames.customCommand)
-      customCmd.forEach(async command => {
-        if (message.content.includes(command.name))
-          return await message.reply(command.data);
-      });
-    };
 
     // Select Guild Language
     const
@@ -52,10 +43,19 @@ module.exports = async (client, message) => {
         `^(<@!?${client.user.id}>|${stringPrefix.toString().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\s*`
       );
 
+    // Send prefix to channel
+    if (message.mentions.has(client.user)) {
+      return await message.reply({
+        content: replaceValues(language.sendPrefix, {
+          prefix: stringPrefix
+        })
+      });
+    }
+
     if (!prefixRegex.test(message.content.toLowerCase())) return;
 
     const [prefix] = message.content.toLowerCase().match(prefixRegex);
-    if (message.content.indexOf(prefix) !== 0) return;
+    if (message.content.toLowerCase().indexOf(prefix) !== 0) return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const commandName = args.shift().toLowerCase();
@@ -86,7 +86,8 @@ module.exports = async (client, message) => {
       await checkCmdCooldown(message, command, prefix);
 
       // Command Handler
-      command.run(client, message, args);
+      await db.add("totalCommandsUsed", 1);
+      return command.run(client, message, args);
     }
   } catch (e) {
     error(e)

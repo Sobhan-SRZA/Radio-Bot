@@ -26,22 +26,6 @@ module.exports = async (client, interaction) => {
         return await interaction.respond(firstChoice.slice(0, 25)).catch(a => a);
         break;
       }
-
-      case "setup": {
-        switch (interaction.options.getSubcommand()) {
-          case "language": {
-            const focusedValue = interaction.options.getFocused();
-            const firstChoice = Object.values(languages).filter(a => a.toLowerCase().startsWith(focusedValue.toLowerCase()));
-            return await interaction.respond(firstChoice.slice(0, 25)).catch(a => a);
-            break;
-          }
-
-          default: {
-            break;
-          }
-        }
-        break;
-      }
     }
   } catch (e) {
     error(e);

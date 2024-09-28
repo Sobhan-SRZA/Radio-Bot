@@ -35,9 +35,8 @@ module.exports = async client => {
 
     // Remove all of last commands
     // await client.application.commands.set([]); // Old way
-    // await rest.put(
-    //   Routes.applicationCommands(client.user.id),
-    //   { body: [] }
+    // await rest.delete(
+    //   Routes.applicationCommands(client.user.id)
     // );
 
     // Start to upload all commands to api
@@ -49,18 +48,32 @@ module.exports = async client => {
       "S"
     );
     if (config.source.one_guild) {
+      // Create commands
       // data = await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
       data = await rest.post(
         Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
         { body: commands }
       );
+
+      // Update commands
+      // data = await rest.patch(
+      //   Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
+      //   { body: commands }
+      // );
     }
     else {
+      // Create commands
       // data = await client.application.commands.set(commands); // Old way
       data = await rest.put(
         Routes.applicationCommands(client.user.id),
         { body: commands }
       );
+
+      // Update commands
+      // data = await rest.patch(
+      //   Routes.applicationCommands(client.user.id),
+      //   { body: commands }
+      // );
     };
     post(
       replaceValues(defaultLanguage.replies.sucessUploadSlashCmd, {

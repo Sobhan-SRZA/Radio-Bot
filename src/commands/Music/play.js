@@ -14,10 +14,6 @@ const
     defaultLanguage = selectLanguage(config.source.default_language).commands.play,
     ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
     sendError = require("../../functions/sendError"),
-    choices = Object.keys(radiostation).map((a) => JSON.stringify({
-        name: `${a}`,
-        value: `${a}`
-    })).map(a => JSON.parse(a)),
     checkPlayerPerms = require("../../functions/checkPlayerPerms"),
     chooseRandom = require("../../functions/chooseRandom");
 
@@ -71,7 +67,7 @@ module.exports = {
      * @param {import("discord.js").Client} client 
      * @param {import("discord.js").CommandInteraction} interaction 
      * @param {Array<string>} args 
-     * @returns 
+     * @returns {void}
      */
     run: async (client, interaction, args) => {
         try {
@@ -86,15 +82,12 @@ module.exports = {
                 lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
                 language = selectLanguage(lang).commands.play,
                 firstChoice = chooseRandom(
-                    choices
+                    Object
+                        .keys(radiostation)
                         .filter(a =>
-                            a.name.toLowerCase().startsWith(query?.toLowerCase()
-                            )
+                            a.toLowerCase().startsWith(query?.toLowerCase())
                         )
-                        .map(a =>
-                            a.name
-                        )
-                );;
+                );
 
             if (await db.has(databaseNames.panel))
                 if (interaction.channel.id !== (await db.get(databaseNames.panel)).channel)
@@ -111,7 +104,7 @@ module.exports = {
                     isUpdateNeed: true,
                     interaction,
                     log: replaceValues(language.replies.invalidQuery, {
-                        stations: JSON.stringify(choices.map(a => a.name))
+                        stations: JSON.stringify(Object.keys(radiostation)).toString()
                     })
                 });
 

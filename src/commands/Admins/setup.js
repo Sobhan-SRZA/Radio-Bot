@@ -21,12 +21,14 @@ const
     ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
     defaultLanguage = selectLanguage(config.source.default_language).commands.setup,
     radiostation = require("../../storage/radiostation.json"),
+    languages = require("../../storage/languages.json"),
     chunkArray = require("../../functions/chunkArray"),
     replaceValues = require("../../functions/replaceValues"),
     choices = Object.keys(radiostation).map((a) => JSON.stringify({
         label: `${a}`,
         value: `${a}`
-    })).map(a => JSON.parse(a));
+    })).map(a => JSON.parse(a)),
+    chooseRandom = require("../../functions/chooseRandom");
 
 module.exports = {
     name: "setup",
@@ -118,7 +120,15 @@ module.exports = {
                     name: "input",
                     description: defaultLanguage.subCommands.language.options.input,
                     type: ApplicationCommandOptionType.String,
-                    autocomplete: true,
+                    choices: Object
+                        .keys(languages)
+                        .map(a =>
+                            JSON.stringify({
+                                name: languages[a],
+                                value: a
+                            })
+                        )
+                        .map(a => JSON.parse(a)),
                     required: false
                 },
                 {
@@ -272,7 +282,7 @@ module.exports = {
                 }
 
                 case "prefix": {
-                    const newPrefix = interaction.user ? interaction.options.getString("input") : args[0];
+                    const newPrefix = interaction.user ? interaction.options.getString("input") : args[1];
                     if (!newPrefix && await db.has(databaseNames.prefix)) {
                         const lastPrefix = await db.get(databaseNames.prefix);
                         const message = await sendError({
@@ -350,7 +360,15 @@ module.exports = {
                 }
 
                 case "language": {
-                    const newlanguage = interaction.user ? interaction.options.getString("input") : args.join(" ");
+                    const
+                        newlanguage = interaction.user ? interaction.options.getString("input") : args.slice(1).join(" "),
+                        firstChoice = chooseRandom(
+                            Object.keys(languages)
+                                .filter(a =>
+                                    a.startsWith(newlanguage) || languages[a].toLowerCase().startsWith(newlanguage?.toLowerCase())
+                                )
+                        );
+
                     if (!newlanguage && await db.has(databaseNames.language)) {
                         const lastlanguage = await db.get(databaseNames.language);
                         const message = await sendError({
@@ -411,17 +429,19 @@ module.exports = {
                         });
                     }
 
-                    else if (!newlanguage)
+                    else if (!newlanguage || !firstChoice)
                         return await sendError({
                             interaction,
                             isUpdateNeed: true,
-                            log: language.subCommands.language.replies.nolanguage
+                            log: replaceValues(language.subCommands.language.replies.noLanguage, {
+                                languages: JSON.stringify(Object.values(languages))
+                            })
                         })
 
                     else {
-                        await db.set(databaseNames.language, newlanguage);
+                        await db.set(databaseNames.language, firstChoice);
                         return await response(interaction, {
-                            content: replaceValues(language.subCommands.language.replies.success, { language: newlanguage })
+                            content: replaceValues(language.subCommands.language.replies.success, { language: languages[firstChoice] })
                         });
                     }
                     break;

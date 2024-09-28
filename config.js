@@ -30,7 +30,7 @@ module.exports = {
     },
     noperms_invite: "https://discord.com/api/oauth2/authorize?scope=bot+applications.commands&client_id={clientId}", // Discord bot invite link with no permission.
     admin_invite: "https://discord.com/api/oauth2/authorize?scope=bot+applications.commands&client_id={clientId}&permissions=8", // Discord bot invite link with administrator permission.
-    default_invite: "https://discord.com/api/oauth2/authorize?scope=bot+applications.commands&client_id={clientId}&redirect_uri=https://discord.gg/AfkuXgCKAQ&response_type=code&permissions=395674250441", // Discord bot invite link with recommended permission.
+    default_invite: "https://discord.com/api/oauth2/authorize?scope=bot+applications.commands&client_id={clientId}&permissions=3230729", // Discord bot invite link with recommended permission.
     support: {
       invite: process.env.support_url || "https://discord.gg/AfkuXgCKAQ", // Support server invite link.
       id: process.env.support_id || "", // Support server Id.
@@ -47,7 +47,7 @@ module.exports = {
       },
       owners: JSON.parse(process.env.owners || "[]") || [] // Source owners.
     },
-    topgg: "https://top.gg/bot/{clientId}/vote" // Addess of bot topgg page.
+    discordbotlist: "https://discordbotlist.com/bots/padio" // Addess of bot discordbotlist page.
   }
 }
 /**
