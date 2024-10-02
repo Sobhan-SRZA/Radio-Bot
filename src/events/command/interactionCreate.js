@@ -60,12 +60,12 @@ module.exports = async (client, interaction) => {
         await checkCmdCooldown(interaction, command);
 
         // Command Handler 
-        if (interaction.options.getString("ephemeral"))
+        if (command.options.find(a => a.name === "ephemeral"))
           await interaction.deferReply({
             ephemeral: interaction.options.getString("ephemeral") === "true" ? true : false,
             fetchReply: true
           });
-          
+
         await db.add("totalCommandsUsed", 1);
         return command.run(client, interaction, args);
       }

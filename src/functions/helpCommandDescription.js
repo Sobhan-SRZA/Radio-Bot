@@ -21,8 +21,8 @@ module.exports = async function (commands, language, value, prefix) {
           }${command.only_message ?
             `${prefix}${command.name} ${command.usage ? command.usage : ""}` : ""
           }${command.aliases && command.aliases.length > 0 ?
-            `\n${language.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
-          }\n${language.replies.description} \`${language.commands[command.name].description /* command.description */}\`**`;
+            `\n${language.commands.help.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
+          }\n${language.commands.help.replies.description} \`${language.commands[command.name].description /* command.description */}\`**`;
 
         if (command.options && command.options.some(a => a.type === 1))
           await command.options
@@ -34,8 +34,8 @@ module.exports = async function (commands, language, value, prefix) {
                 }${command.only_message ?
                   `${prefix}${command.name} ${option.name} ${command.usage ? command.usage : ""
                   }` : ""}${command.aliases && command.aliases.length > 0 ?
-                    `\n${language.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
-                }\n${language.replies.description} \`${language.commands[command.name].subCommands[option.name].description /* option.description */}\`**`;
+                    `\n${language.commands.help.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
+                }\n${language.commands.help.replies.description} \`${language.commands[command.name].subCommands[option.name].description /* option.description */}\`**`;
 
               description.push(string);
             });
