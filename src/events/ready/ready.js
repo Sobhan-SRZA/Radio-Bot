@@ -145,7 +145,6 @@ module.exports = async client => {
       `\n` +
       clc.blueBright("Memory: ") +
       clc.cyanBright(
-        `**\`**`
           `${Math.round(
             (
               (os.totalmem() - os.freemem()) / 1024 / 1024
