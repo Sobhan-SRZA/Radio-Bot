@@ -91,8 +91,8 @@ module.exports = async client => {
           usedCommands: (await client.db.get("totalCommandsUsed")).toLocaleString(),
           joiendVoiceChannels: client.guilds.cache.reduce((count, guild) => {
             return count + guild.channels.cache.filter(channel =>
-              channel.isVoiceBased && channel.members.has(client.user.id)
-            ).size;
+              channel?.isVoiceBased() && channel?.members?.has(client.user.id)
+            )?.size;
           }, 0)
         });
 
