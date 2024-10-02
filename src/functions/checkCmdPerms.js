@@ -20,9 +20,7 @@ module.exports = async function (interaction, command, prefix = null) {
         language: `language.${interaction.guild.id}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-      language = selectLanguage(lang).replies;
-
-    const
+      language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
         `\`${prefix + command.name}\`` : `</${command.name}${interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ?
           ` ${interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${interaction.id}>`,
@@ -59,7 +57,7 @@ module.exports = async function (interaction, command, prefix = null) {
         }
       });
 
-      return void true;
+    return void true;
   } catch (e) {
     error(e);
   }

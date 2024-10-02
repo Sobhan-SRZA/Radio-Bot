@@ -8,10 +8,10 @@ const error = require("./error");
 module.exports = async function ({ interaction, message = null, data }) {
   try {
     if (interaction.user)
-      return await interaction.editReply(data);
+      return await interaction.editReply(data).catch(e => e);
 
     else
-      return await message.edit(data);
+      return await message.edit(data).catch(e => e);
   } catch (e) {
     error(e);
   }
