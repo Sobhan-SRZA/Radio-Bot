@@ -26,7 +26,8 @@ module.exports = async client => {
     // Load Slash Commands
     const
       commands = client.commands.filter(a => a.only_slash),
-      rest = new REST().setToken(config.discord.token);
+      rest = new REST()
+        .setToken(config.discord.token);
 
     commands.forEach(command => {
       command.default_member_permissions = new PermissionsBitField(command.default_member_permissions);
@@ -51,15 +52,7 @@ module.exports = async client => {
     if (config.source.one_guild) {
       // Create commands
       // data = await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
-      // data = await rest.post(
-      //   Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
-      //   {
-      //     body: commands
-      //   }
-      // );
-
-      // Update commands
-      data = await rest.patch(
+      data = await rest.post(
         Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
         {
           body: commands
@@ -69,15 +62,7 @@ module.exports = async client => {
     else {
       // Create commands
       // data = await client.application.commands.set(commands); // Old way
-      // data = await rest.put(
-      //   Routes.applicationCommands(client.user.id),
-      //   {
-      //     body: commands
-      //   }
-      // );
-
-      // Update commands
-      data = await rest.patch(
+      data = await rest.put(
         Routes.applicationCommands(client.user.id),
         {
           body: commands
