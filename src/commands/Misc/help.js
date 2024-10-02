@@ -149,7 +149,7 @@ module.exports = {
           if (int.customId === "help_menu") {
             await int.deferUpdate({ fetchReply: true });
             const value = int.values[0];
-            const string = await helpCommandDescription(commands, language, value, prefix);
+            const string = await helpCommandDescription(commands, selectLanguage(lang), value, prefix);
             const embed = new EmbedBuilder()
               .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
               .setAuthor({

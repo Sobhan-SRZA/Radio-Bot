@@ -3,7 +3,7 @@ const error = require("./error");
 /**
  * 
  * @param {Map} commands 
- * @param {any} language 
+ * @param {import("../storage/locales/en.json")} language 
  * @param {string} value 
  * @param {string} prefix 
  * @returns {string}
@@ -22,7 +22,7 @@ module.exports = async function (commands, language, value, prefix) {
             `${prefix}${command.name} ${command.usage ? command.usage : ""}` : ""
           }${command.aliases && command.aliases.length > 0 ?
             `\n${language.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
-          }\n${language.replies.description} \`${command.description}\`**`;
+          }\n${language.replies.description} \`${language.commands[command.name].description /* command.description */}\`**`;
 
         if (command.options && command.options.some(a => a.type === 1))
           await command.options
@@ -35,7 +35,7 @@ module.exports = async function (commands, language, value, prefix) {
                   `${prefix}${command.name} ${option.name} ${command.usage ? command.usage : ""
                   }` : ""}${command.aliases && command.aliases.length > 0 ?
                     `\n${language.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
-                }\n${language.replies.description} \`${option.description}\`**`;
+                }\n${language.replies.description} \`${language.commands[command.name].subCommands[option.name].description /* option.description */}\`**`;
 
               description.push(string);
             });
