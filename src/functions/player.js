@@ -96,6 +96,13 @@ module.exports = class {
     }
 
     /**
+     * @returns {getVoiceConnection}
+     */
+    get connection() {
+        return getVoiceConnection(this.data.guildId);
+    }
+
+    /**
      * @param {string} guildId
      * @returns {boolean}
      */
@@ -112,7 +119,7 @@ module.exports = class {
      */
     get volume() {
         const player = audioPlayer.get(this.data.guildId);
-        return player.state.resource.volume.volume;
+        return Number(player.state.resource.volume.volume);
     }
 
     /**
@@ -127,7 +134,7 @@ module.exports = class {
 
         const connection = joinVoiceChannel(this.data);
         connection.subscribe(player);
-        return this.volume;
+        return Number(this.volume);
     }
 
     /**
@@ -142,6 +149,23 @@ module.exports = class {
 
         else
             player.pause();
+
+        // if (!this.isPaused())
+        //     player.pause();
+
+        connection.subscribe(player);
+        return this;
+    }
+
+    /**
+     * 
+     * @returns {void}
+     */
+    resume() {
+        const connection = joinVoiceChannel(this.data);
+        const player = audioPlayer.get(this.data.guildId);
+        if (this.isPaused())
+            player.unpause();
 
         connection.subscribe(player);
         return this;
@@ -243,4 +267,4 @@ module.exports = class {
  * @copyright
  * Please Mention Us "Persian Caesar", When Have Problem With Using This Code!
  * @copyright
-*/
+ */

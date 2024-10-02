@@ -8,12 +8,12 @@ const error = require("./error");
 module.exports = async function ({ interaction, message = null }) {
   try {
     if (interaction.user)
-      return await interaction.deleteReply();
+      return await interaction.deleteReply().catch(e => e);
 
     else
       if (message.deletable && interaction.deletable) {
-        await interaction.delete();
-        return await message.delete();
+        await interaction.delete().catch(e => e);
+        return await message.delete().catch(e => e);
       }
 
   } catch (e) {

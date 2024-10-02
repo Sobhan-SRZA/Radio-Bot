@@ -26,7 +26,6 @@ module.exports = async function (interaction) {
         isUpdateNeed: true,
         interaction,
         log: language.replies.noChannelError
-
       });
 
     if (!channel.viewable)

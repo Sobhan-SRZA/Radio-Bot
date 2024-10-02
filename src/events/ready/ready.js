@@ -6,6 +6,7 @@ const
     PermissionsBitField
   } = require("discord.js"),
   clc = require("cli-color"),
+  os = require("os"),
   post = require("../../functions/post"),
   error = require("../../functions/error"),
   logger = require("../../functions/logger"),
@@ -50,30 +51,38 @@ module.exports = async client => {
     if (config.source.one_guild) {
       // Create commands
       // data = await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
-      data = await rest.post(
-        Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
-        { body: commands }
-      );
+      // data = await rest.post(
+      //   Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
+      //   {
+      //     body: commands
+      //   }
+      // );
 
       // Update commands
-      // data = await rest.patch(
-      //   Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
-      //   { body: commands }
-      // );
+      data = await rest.patch(
+        Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
+        {
+          body: commands
+        }
+      );
     }
     else {
       // Create commands
       // data = await client.application.commands.set(commands); // Old way
-      data = await rest.put(
-        Routes.applicationCommands(client.user.id),
-        { body: commands }
-      );
+      // data = await rest.put(
+      //   Routes.applicationCommands(client.user.id),
+      //   {
+      //     body: commands
+      //   }
+      // );
 
       // Update commands
-      // data = await rest.patch(
-      //   Routes.applicationCommands(client.user.id),
-      //   { body: commands }
-      // );
+      data = await rest.patch(
+        Routes.applicationCommands(client.user.id),
+        {
+          body: commands
+        }
+      );
     };
     post(
       replaceValues(defaultLanguage.replies.sucessUploadSlashCmd, {
@@ -83,7 +92,7 @@ module.exports = async client => {
     );
 
     // Change Bot Status
-    setInterval(function () {
+    setInterval(async function () {
       if (config.discord.status.activity.length < 1) return;
 
       const
@@ -93,7 +102,13 @@ module.exports = async client => {
         stateName = replaceValues(Activity, {
           servers: client.guilds.cache.size.toLocaleString(),
           members: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),
-          prefix: config.discord.prefix
+          prefix: config.discord.prefix,
+          usedCommands: (await client.db.get("totalCommandsUsed")).toLocaleString(),
+          joiendVoiceChannels: client.guilds.cache.reduce((count, guild) => {
+            return count + guild.channels.cache.filter(channel =>
+              channel.isVoiceBased && channel.members.has(client.user.id)
+            ).size;
+          }, 0)
         });
 
       client.user.setPresence({
@@ -141,15 +156,30 @@ module.exports = async client => {
       clc.cyanBright(`${process.version}`) +
       `\n` +
       clc.blueBright("Plattform: ") +
-      clc.cyanBright(`${process.platform} ${process.arch}`) +
+      clc.cyanBright(`${process.platform} ${process.arch} | ${os.cpus().map((i) => `${i.model}`)[0]} | ${String(os.loadavg()[0])}%`) +
       `\n` +
       clc.blueBright("Memory: ") +
       clc.cyanBright(
-        `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB / ${(
-          process.memoryUsage().rss /
-          1024 /
-          1024
-        ).toFixed(2)} MB`
+        `**\`**`
+          `${Math.round(
+            (
+              (os.totalmem() - os.freemem()) / 1024 / 1024
+            )
+              .toFixed(2)
+          )
+            .toLocaleString()
+          }/${Math.round(
+            (
+              (os.totalmem()) / 1024 / 1024)
+              .toFixed(2)
+          )
+            .toLocaleString()
+          } MB | ${(
+            (
+              (os.totalmem() - os.freemem()) / os.totalmem()
+            ) * 100)
+            .toFixed(2)
+          }%`
       )
     );
   } catch (e) {

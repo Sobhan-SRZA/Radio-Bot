@@ -53,17 +53,11 @@ module.exports = async function ({
           .createInvite(inviteData);
     } catch { };
     try {
-      owner = (await guild?.fetchOwner())?.user;
+      owner = (await guild.fetchOwner()).user;
       if (!owner)
-        owner = await client.users.cache.get(guild?.ownerId);
+        owner = await client.users.cache.get(guild.ownerId);
     } catch { }
     const embed = new EmbedBuilder()
-      .setAuthor(
-        {
-          name: owner?.tag,
-          iconURL: owner?.displayAvatarURL({ dynamic: true })
-        }
-      )
       .setDescription(description.replace("{guilds}", client.guilds.cache.size.toLocaleString()))
       .addFields(
         [
@@ -93,6 +87,20 @@ module.exports = async function ({
         }
       )
       .setTimestamp(Date.now());
+
+    if (owner?.tag)
+      embed.setAuthor(
+        {
+          name: owner?.tag,
+        }
+      )
+
+    if (owner?.displayAvatarURL())
+      embed.setAuthor(
+        {
+          iconURL: owner?.displayAvatarURL({ dynamic: true })
+        }
+      )
 
     messageData.embeds = [embed];
     return await channel.send(messageData);
