@@ -14,7 +14,6 @@ const
   config = require("../../../config"),
   embed = require("../../storage/embed"),
   selectLanguage = require("../../functions/selectLanguage"),
-  ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   defaultLanguage = selectLanguage(config.source.default_language).commands.report;
 
 module.exports = {
@@ -30,24 +29,6 @@ module.exports = {
   only_owner: false,
   only_slash: true,
   only_message: true,
-  options: [
-    {
-      name: "ephemeral",
-      description: ephemeral.description,
-      type: ApplicationCommandOptionType.String,
-      choices: [
-        {
-          name: ephemeral.choices.yes,
-          value: "true"
-        },
-        {
-          name: ephemeral.choices.no,
-          value: "false"
-        }
-      ],
-      required: false
-    }
-  ],
 
   /**
    * 
