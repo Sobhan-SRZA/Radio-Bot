@@ -25,7 +25,7 @@ module.exports = {
   cooldown: 5,
   default_member_permissions: [PermissionFlagsBits.SendMessages],
   default_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
-  dm_permission: false,
+  dm_permission: true,
   nsfw: false,
   only_owner: false,
   only_slash: true,

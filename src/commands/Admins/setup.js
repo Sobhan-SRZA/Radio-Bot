@@ -46,8 +46,11 @@ module.exports = {
         PermissionFlagsBits.SendMessages,
         PermissionFlagsBits.EmbedLinks
     ],
-    only_message: true,
+    dm_permission: false,
+    nsfw: false,
+    only_owner: false,
     only_slash: true,
+    only_message: true,
     options: [
         {
             name: "panel",
