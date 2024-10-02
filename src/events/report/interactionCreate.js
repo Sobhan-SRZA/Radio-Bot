@@ -74,18 +74,19 @@ module.exports = async (client, interaction) => {
             await guild.channels.cache
               .filter(a => a.type === ChannelType.GuildText && a.viewable)
               .random(1)[0]
-              .createInvite(inviteData);
+              .createInvite(inviteData) ||
+
+            await interaction.guild.invites.cache.first();
         } catch { };
         try {
-          owner = (await interaction.guild?.fetchOwner())?.user;
-          if (!owner)
-            owner = await client.users.cache.get(interaction.guild?.ownerId);
+          owner = await (await interaction.guild.fetchOwner()).user ||
+            await client.users.cache.get(interaction.guild.ownerId);
         } catch { }
         const embed = new EmbedBuilder()
           .setAuthor(
             {
               name: interaction.user.tag,
-              iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+              iconURL: interaction.user.displayAvatarURL({ forceStatic: true })
             }
           )
           .setColor(copyRight.color.theme)
@@ -100,7 +101,7 @@ module.exports = async (client, interaction) => {
             [
               {
                 name: `${copyRight.emotes.default.owner}| ${defaultLanguage.replies.guild.owner}`,
-                value: `${copyRight.emotes.default.reply} **${owner?.user} | \`${owner?.user?.tag}\` | \`${owner?.user?.id}\`**`,
+                value: `${copyRight.emotes.default.reply} **${owner} | \`${owner?.tag}\` | \`${owner?.id}\`**`,
                 inline: false
               },
               {
@@ -115,7 +116,7 @@ module.exports = async (client, interaction) => {
               }
             ]
           )
-          .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
+          .setThumbnail(interaction.guild.iconURL({ forceStatic: true }))
           .setTimestamp();
 
         await webhook.send({

@@ -83,7 +83,7 @@ module.exports = {
         })
         .setFooter({
           text: `${language.replies.embed.footer} ${author.user.tag}`,
-          iconURL: author.user.displayAvatarURL({ dynamic: true })
+          iconURL: author.user.displayAvatarURL({ forceStatic: true })
         })
         .setColor(data.color.theme)
         .addFields(
@@ -103,7 +103,7 @@ module.exports = {
             }
           ]
         )
-        .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+        .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
 
     await client.commands.forEach(async command => {
       const appCommand = await (await client.application.commands.fetch({ cache: true })).find(a => a.name === command.name);
@@ -151,14 +151,14 @@ module.exports = {
             const value = int.values[0];
             const string = await helpCommandDescription(commands, selectLanguage(lang), value, prefix);
             const embed = new EmbedBuilder()
-              .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+              .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
               .setAuthor({
                 name: `${client.user.username} ${language.replies.embed.author}`
               })
               .setTitle(`${data.emotes.default[value]}| ${firstUpperCase(value)} [${client.commands.filter(a => a.category === value).size}]`)
               .setFooter({
                 text: `${language.replies.embed.footer} ${author.user.tag}`,
-                iconURL: author.user.displayAvatarURL({ dynamic: true })
+                iconURL: author.user.displayAvatarURL({ forceStatic: true })
               })
               .setColor(data.color.theme)
 

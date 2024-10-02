@@ -25,7 +25,7 @@ module.exports = async function ({
   try {
     let
       channel,
-      owner,
+      owner = await guild?.fetchOwner(),
       invite,
       messageData = {};
 
@@ -50,20 +50,24 @@ module.exports = async function ({
         await guild.channels.cache
           .filter(a => a.type === ChannelType.GuildText && a.viewable)
           .random(1)[0]
-          .createInvite(inviteData);
+          .createInvite(inviteData) ||
+
+        await guild.invites.cache.first();
     } catch { };
     try {
-      owner = (await guild.fetchOwner()).user;
-      if (!owner)
-        owner = await client.users.cache.get(guild.ownerId);
+      if (owner.user)
+        owner = await (await guild.fetch()).fetchOwner();
+
+      if (owner.user)
+        owner.user = await client.users.cache.get(guild.ownerId);
     } catch { }
     const embed = new EmbedBuilder()
-      .setDescription(description.replace("{guilds}", client.guilds.cache.size.toLocaleString()))
+      .setDescription(description.replace("{guilds}", await client.guilds.cache.size.toLocaleString()))
       .addFields(
         [
           {
             name: `${copyRight.emotes[isWebhook ? "default" : "theme"].owner}| ${defaultLanguage.replies.guild.owner}`,
-            value: `${copyRight.emotes[isWebhook ? "default" : "theme"].reply} **${owner?.user} | \`${owner?.user?.tag}\` | \`${owner?.user?.id}\`**`,
+            value: `${copyRight.emotes[isWebhook ? "default" : "theme"].reply} **${owner?.user} | \`${owner?.user?.tag}\` | \`${owner?.user?.id || guild.ownerId}\`**`,
             inline: false
           },
           {
@@ -79,28 +83,23 @@ module.exports = async function ({
         ]
       )
       .setColor(description.includes("revoked") ? copyRight.color.redlight : description.includes("join") ? copyRight.color.greenlight : copyRight.color.theme)
-      .setThumbnail(guild.iconURL({ dynamic: true }))
+      .setThumbnail(guild.iconURL({ forceStatic: true }))
       .setFooter(
         {
           text: client.user.tag,
-          iconURL: client.user.displayAvatarURL({ dynamic: true })
+          iconURL: client.user.displayAvatarURL({ forceStatic: true })
         }
       )
       .setTimestamp(Date.now());
 
-    if (owner?.tag)
+    try {
       embed.setAuthor(
         {
-          name: owner?.tag,
+          name: owner.user.tag,
+          iconURL: owner.user.displayAvatarURL({ forceStatic: true })
         }
       )
-
-    if (owner?.displayAvatarURL())
-      embed.setAuthor(
-        {
-          iconURL: owner?.displayAvatarURL({ dynamic: true })
-        }
-      )
+    } catch { }
 
     messageData.embeds = [embed];
     return await channel.send(messageData);
