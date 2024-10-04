@@ -21,56 +21,77 @@ module.exports = async function (interaction) {
       member = interaction.guild.members.cache.get(interaction.member.id),
       channel = interaction.member?.voice?.channel;
 
-    if (!channel)
-      return await sendError({
+    if (!channel) {
+      await sendError({
         isUpdateNeed: true,
         interaction,
         log: language.replies.noChannelError
       });
 
-    if (!channel.viewable)
-      return await sendError({
+      return true;
+    }
+
+    if (!channel.viewable) {
+      await sendError({
         isUpdateNeed: true,
         interaction,
         log: language.replies.noPermToView
       });
 
-    if (!channel.joinable)
-      return await sendError({
+      return true;
+    };
+
+    if (!channel.joinable) {
+      await sendError({
         isUpdateNeed: true,
         interaction,
         log: language.replies.noPermToConnect
       });
 
-    if (channel.full)
-      return await sendError({
+      return true;
+    }
+
+    if (channel.full) {
+      await sendError({
         isUpdateNeed: true,
         interaction,
         log: language.replies.channelFull
       });
 
-    if (member.voice.deaf)
-      return await sendError({
+      return true;
+    }
+
+    if (member.voice.deaf) {
+      await sendError({
         isUpdateNeed: true,
         interaction,
         log: language.replies.userDeaf
       });
 
-    // if (channel.id !== radio.data.channelId)
-    //   return await sendError({
+      return true;
+    };
+
+    // if (channel.id !== radio.data.channelId) {
+    //   await sendError({
     //     isUpdateNeed: true,
     //     interaction,
     //     log: language.replies.notMatchedVoice
     //   });
 
-    if (interaction.guild.members.me?.voice?.mute)
-      return await sendError({
+    //   return true;
+    // }
+
+    if (interaction.guild.members.me?.voice?.mute) {
+      await sendError({
         isUpdateNeed: true,
         interaction,
         log: language.replies.clientMute
       });
 
-      return void true;
+      return true;
+    }
+
+    return false;
   } catch (e) {
     error(e);
   }

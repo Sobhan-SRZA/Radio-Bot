@@ -44,13 +44,12 @@ module.exports = async (client, message) => {
       );
 
     // Send prefix to channel
-    if (message.mentions.has(client.user)) {
+    if (message.content === client.user.toString())
       return await message.reply({
         content: replaceValues(language.sendPrefix, {
           prefix: stringPrefix
         })
       });
-    }
 
     if (!prefixRegex.test(message.content.toLowerCase())) return;
 
@@ -80,10 +79,12 @@ module.exports = async (client, message) => {
       if (message.guild)
 
         // Check Perms
-        await checkCmdPerms(message, command, prefix);
+        if (await checkCmdPerms(message, command, stringPrefix))
+          return;
 
       // Cooldown
-      await checkCmdCooldown(message, command, prefix);
+      if (await checkCmdCooldown(message, command, stringPrefix))
+        return;
 
       // Command Handler
       await db.add("totalCommandsUsed", 1);

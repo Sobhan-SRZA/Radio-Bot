@@ -29,7 +29,8 @@ module.exports = async (client, interaction) => {
         language = selectLanguage(lang);
 
       // Check perms
-      await checkPlayerPerms(interaction);
+      if (await checkPlayerPerms(interaction))
+        return;
 
       // Start to play station
       const radio = new player(interaction);

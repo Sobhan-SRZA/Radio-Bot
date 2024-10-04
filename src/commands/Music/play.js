@@ -109,7 +109,8 @@ module.exports = {
                 });
 
             // Check perms
-            checkPlayerPerms(interaction);
+            if (await checkPlayerPerms(interaction))
+                return;
 
             // Start to playe
             const player = new radio()
