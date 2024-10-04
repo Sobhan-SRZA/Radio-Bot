@@ -1,5 +1,8 @@
 const
-  { PermissionsBitField, ApplicationCommandOptionType } = require("discord.js"),
+  {
+    PermissionsBitField,
+    ApplicationCommandOptionType
+  } = require("discord.js"),
   error = require("./error"),
   selectLanguage = require("./selectLanguage"),
   config = require("../../config"),
@@ -32,8 +35,8 @@ module.exports = async function (interaction, command, prefix = null) {
       const value = keys.find(b => PermissionsBitField.Flags[b] === a);
       map.set(a, value);
     });
-    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.default_permissions || []))
-      return await sendError({
+    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.default_permissions || [])) {
+      await sendError({
         interaction,
         data: {
           content: replaceValues(language.botPerm, {
@@ -45,8 +48,11 @@ module.exports = async function (interaction, command, prefix = null) {
         }
       });
 
-    if (!interaction.member.permissions.has(command.default_member_permissions || []))
-      return await sendError({
+      return true;
+    };
+
+    if (!interaction.member.permissions.has(command.default_member_permissions || [])) {
+      await sendError({
         interaction,
         data: {
           content: replaceValues(language.userPerm, {
@@ -58,7 +64,10 @@ module.exports = async function (interaction, command, prefix = null) {
         }
       });
 
-    return void true;
+      return true;
+    };
+
+    return false;
   } catch (e) {
     error(e);
   }

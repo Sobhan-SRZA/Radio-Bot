@@ -40,20 +40,22 @@ module.exports = async function (interaction, command, prefix = null) {
       const expirationTime = timestamps.get(interaction.member.id) + cooldownAmount;
       if (Date.now() < expirationTime) {
         const expiredTimestamp = Math.round(expirationTime / 1000);
-        return await sendError({
+        await sendError({
           interaction: interaction,
           log: replaceValues(language.cooldown, {
             mention_command: mentionCommand,
             expired_timestamp: expiredTimestamp
           })
         });
+
+        return true;
       };
     };
 
     timestamps.set(interaction.member.id, Date.now());
     setTimeout(() => timestamps.delete(interaction.member.id), cooldownAmount);
-    
-    return void true;
+
+    return false;
   } catch (e) {
     error(e);
   }

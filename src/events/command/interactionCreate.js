@@ -54,10 +54,12 @@ module.exports = async (client, interaction) => {
 
 
         // Check command perms
-        await checkCmdPerms(interaction, command);
+        if (await checkCmdPerms(interaction, command))
+          return;
 
         // Command cooldown
-        await checkCmdCooldown(interaction, command);
+        if (await checkCmdCooldown(interaction, command))
+          return;
 
         // Command Handler 
         if (command.options && command.options?.find(a => a.name === "ephemeral"))
