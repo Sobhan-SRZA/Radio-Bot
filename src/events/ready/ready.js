@@ -29,12 +29,6 @@ module.exports = async client => {
       rest = new REST()
         .setToken(config.discord.token);
 
-    commands.forEach(command => {
-      command.default_member_permissions = new PermissionsBitField(command.default_member_permissions);
-      command.default_permissions = new PermissionsBitField(command.default_permissions);
-      return commands;
-    });
-
     // Remove all of last commands
     // await client.application.commands.set([]); // Old way
     // await rest.delete(
@@ -52,7 +46,7 @@ module.exports = async client => {
     if (config.source.one_guild) {
       // Create commands
       // data = await client.guilds.cache.get(config.discord.support.id).commands.set(commands); // Old way
-      data = await rest.post(
+      data = await rest.put(
         Routes.applicationGuildCommands(client.user.id, config.discord.support.id),
         {
           body: commands
@@ -145,25 +139,25 @@ module.exports = async client => {
       `\n` +
       clc.blueBright("Memory: ") +
       clc.cyanBright(
-          `${Math.round(
-            (
-              (os.totalmem() - os.freemem()) / 1024 / 1024
-            )
-              .toFixed(2)
+        `${Math.round(
+          (
+            (os.totalmem() - os.freemem()) / 1024 / 1024
           )
-            .toLocaleString()
-          }/${Math.round(
-            (
-              (os.totalmem()) / 1024 / 1024)
-              .toFixed(2)
-          )
-            .toLocaleString()
-          } MB | ${(
-            (
-              (os.totalmem() - os.freemem()) / os.totalmem()
-            ) * 100)
             .toFixed(2)
-          }%`
+        )
+          .toLocaleString()
+        }/${Math.round(
+          (
+            (os.totalmem()) / 1024 / 1024)
+            .toFixed(2)
+        )
+          .toLocaleString()
+        } MB | ${(
+          (
+            (os.totalmem() - os.freemem()) / os.totalmem()
+          ) * 100)
+          .toFixed(2)
+        }%`
       )
     );
   } catch (e) {

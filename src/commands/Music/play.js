@@ -2,7 +2,8 @@ const
     {
         ApplicationCommandType,
         ApplicationCommandOptionType,
-        PermissionFlagsBits
+        PermissionFlagsBits,
+        PermissionsBitField
     } = require("discord.js"),
     radio = require("../../functions/player"),
     radiostation = require("../../storage/radiostation.json"),
@@ -24,13 +25,14 @@ module.exports = {
     type: ApplicationCommandType.ChatInput,
     cooldown: 5,
     aliases: ["p"],
-    default_member_permissions: [PermissionFlagsBits.SendMessages],
-    default_permissions: [
-        PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.EmbedLinks,
-        PermissionFlagsBits.Connect,
-        PermissionFlagsBits.Speak
-    ],
+    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_bot_permissions: new PermissionsBitField([
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.EmbedLinks,
+      PermissionFlagsBits.Connect,
+      PermissionFlagsBits.ManageGuild,
+      PermissionFlagsBits.Speak
+    ]),
     dm_permission: false,
     nsfw: false,
     only_owner: false,

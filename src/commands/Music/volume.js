@@ -3,7 +3,8 @@ const
     ApplicationCommandOptionType,
     ApplicationCommandType,
     EmbedBuilder,
-    PermissionFlagsBits
+    PermissionFlagsBits,
+    PermissionsBitField
   } = require("discord.js"),
   radio = require("../../functions/player"),
   data = require("../../storage/embed"),
@@ -22,13 +23,14 @@ module.exports = {
   category: "music",
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  default_member_permissions: [PermissionFlagsBits.SendMessages],
-  default_permissions: [
+  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+  default_bot_permissions: new PermissionsBitField([
     PermissionFlagsBits.SendMessages,
     PermissionFlagsBits.EmbedLinks,
     PermissionFlagsBits.Connect,
+    PermissionFlagsBits.ManageGuild,
     PermissionFlagsBits.Speak
-  ],
+  ]),
   dm_permission: false,
   nsfw: false,
   only_owner: false,

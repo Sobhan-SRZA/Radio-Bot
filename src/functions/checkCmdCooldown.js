@@ -27,8 +27,8 @@ module.exports = async function (interaction, command, prefix = null) {
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
-        `\`${prefix + command.name}\`` : `</${command.name}${await interaction.options.data.some(a => a.type === ApplicationCommandOptionType.Subcommand) ?
-          ` ${await interaction.options.data.find(a => a.type === ApplicationCommandOptionType.Subcommand).name}` : ""}:${interaction.id}>`;
+        `\`${prefix + command.name}\`` : `</${command.name}${await interaction.options.data.some(a => a.type === 1) ?
+          ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${interaction.id}>`;
 
     if (!client.cooldowns.has(command.name))
       await client.cooldowns.set(command.name, new Collection());
