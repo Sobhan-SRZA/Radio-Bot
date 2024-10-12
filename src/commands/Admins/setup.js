@@ -9,7 +9,8 @@ const
         ButtonBuilder,
         ButtonStyle,
         ComponentType,
-        PermissionFlagsBits
+        PermissionFlagsBits,
+        PermissionsBitField
     } = require("discord.js"),
     error = require("../../functions/error"),
     deleteResponse = require("../../functions/deleteResponse"),
@@ -37,15 +38,15 @@ module.exports = {
     aliases: ["set", "st"],
     type: ApplicationCommandType.ChatInput,
     cooldown: 10,
-    default_member_permissions: [
+    default_member_permissions: new PermissionsBitField([
         PermissionFlagsBits.ManageChannels,
         PermissionFlagsBits.ManageGuild,
         PermissionFlagsBits.SendMessages
-    ],
-    default_permissions: [
+    ]),
+    default_bot_permissions: new PermissionsBitField([
         PermissionFlagsBits.SendMessages,
         PermissionFlagsBits.EmbedLinks
-    ],
+    ]),
     dm_permission: false,
     nsfw: false,
     only_owner: false,

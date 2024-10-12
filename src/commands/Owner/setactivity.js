@@ -1,7 +1,8 @@
 const
   {
     ActivityType,
-    PermissionFlagsBits
+    PermissionFlagsBits,
+    PermissionsBitField
   } = require("discord.js"),
   error = require("../../functions/error"),
   response = require("../../functions/response"),
@@ -18,8 +19,8 @@ module.exports = {
   description: defaultLanguage.description,
   category: "owner",
   cooldown: 5,
-  default_member_permissions: [PermissionFlagsBits.SendMessages],
-  default_permissions: [PermissionFlagsBits.SendMessages],
+  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+  default_bot_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
   dm_permission: true,
   nsfw: false,
   only_owner: true,

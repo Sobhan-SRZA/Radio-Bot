@@ -35,7 +35,7 @@ module.exports = async (client, interaction) => {
       if (command && command.only_slash) {
         const args = [];
         for (let option of interaction.options.data) {
-          if (option.type === ApplicationCommandOptionType.Subcommand) {
+          if (option.type === 1) {
             if (option.name) args.push(option.name);
 
             option.options?.forEach((x) => {

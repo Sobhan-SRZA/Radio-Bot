@@ -8,7 +8,8 @@ const
     ButtonBuilder,
     ApplicationCommandOptionType,
     PermissionFlagsBits,
-    Collection
+    Collection,
+    PermissionsBitField
   } = require("discord.js"),
   config = require("../../../config"),
   data = require("../../storage/embed"),
@@ -29,8 +30,11 @@ module.exports = {
   aliases: ["h"],
   type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  default_member_permissions: [PermissionFlagsBits.SendMessages],
-  default_permissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks],
+  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+  default_bot_permissions: new PermissionsBitField([
+    PermissionFlagsBits.SendMessages,
+    PermissionFlagsBits.EmbedLinks
+  ]),
   dm_permission: true,
   nsfw: false,
   only_owner: false,

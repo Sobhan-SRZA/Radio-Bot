@@ -45,7 +45,8 @@ module.exports = async function ({
       channel = guildChannel;
 
     try {
-      invite = await guild.widgetChannel?.createInvite(inviteData) ||
+      invite = await guild.invites?.cache?.find(a => a.inviterId === client.user.id) ||
+        await guild.widgetChannel?.createInvite(inviteData) ||
         await guild.rulesChannel?.createInvite(inviteData) ||
         await guild.channels.cache
           .filter(a => a.type === ChannelType.GuildText && a.viewable)
