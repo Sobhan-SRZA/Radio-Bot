@@ -62,7 +62,7 @@ module.exports = async (client, interaction) => {
           return;
 
         // Command Handler 
-        if (command.options && command.options?.find(a => a.name === "ephemeral"))
+        if (command.options && command.options?.find(a => a.name === "ephemeral") || command.options && command.options.filter(a => a.type === 1).find(a => a.options?.find(b => b.name === "ephemeral")))
           await interaction.deferReply({
             ephemeral: interaction.options.getString("ephemeral") === "true" ? true : false,
             fetchReply: true
