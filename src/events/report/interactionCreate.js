@@ -59,12 +59,12 @@ module.exports = async (client, interaction) => {
     else if (interaction.isModalSubmit()) {
       if (interaction.customId === "reportModal") {
         await interaction.deferReply({ ephemeral: true });
-        const webhook = new WebhookClient({ url: config.discord.support.webhook.url });
-        const message = interaction.fields.getTextInputValue("reportModalMessage");
-        let
-          owner,
+        const
+          webhook = new WebhookClient({ url: config.discord.support.webhook.url }),
+          message = interaction.fields.getTextInputValue("reportModalMessage"),
           invite = await createORgetInvite(interaction.guild);
 
+        let owner;
         try {
           owner = await (await interaction.guild.fetchOwner()).user ||
             await client.users.cache.get(interaction.guild.ownerId);
