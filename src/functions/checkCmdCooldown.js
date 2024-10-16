@@ -27,13 +27,13 @@ module.exports = async function (interaction, command, prefix = null) {
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
-        `\`${prefix + command.name}\`` : `</${command.name}${await interaction.options.data.some(a => a.type === 1) ?
+        `\`${prefix + command.data.name}\`` : `</${command.data.name}${await interaction.options.data.some(a => a.type === 1) ?
           ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${interaction.id}>`;
 
-    if (!client.cooldowns.has(command.name))
-      await client.cooldowns.set(command.name, new Collection());
+    if (!client.cooldowns.has(command.data.name))
+      await client.cooldowns.set(command.data.name, new Collection());
 
-    const timestamps = await client.cooldowns.get(command.name);
+    const timestamps = await client.cooldowns.get(command.data.name);
     const defaultCooldownDuration = 3;
     const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
     if (timestamps.has(interaction.member.id)) {

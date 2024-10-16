@@ -17,39 +17,41 @@ const
   defaultLanguage = selectLanguage(config.source.default_language).commands.ping;
 
 module.exports = {
-  name: "ping",
-  description: defaultLanguage.description,
+  data: {
+    name: "ping",
+    description: defaultLanguage.description,
+    type: ApplicationCommandType.ChatInput,
+    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_bot_permissions: new PermissionsBitField([
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.EmbedLinks
+    ]),
+    dm_permission: true,
+    nsfw: false,
+    options: [
+      {
+        name: "ephemeral",
+        description: ephemeral.description,
+        type: ApplicationCommandOptionType.String,
+        choices: [
+          {
+            name: ephemeral.choices.yes,
+            value: "true"
+          },
+          {
+            name: ephemeral.choices.no,
+            value: "false"
+          }
+        ],
+        required: false
+      }
+    ]
+  },
   category: "misc",
-  type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
-  default_bot_permissions: new PermissionsBitField([
-    PermissionFlagsBits.SendMessages,
-    PermissionFlagsBits.EmbedLinks
-  ]),
-  dm_permission: true,
-  nsfw: false,
   only_owner: false,
   only_slash: true,
   only_message: true,
-  options: [
-    {
-      name: "ephemeral",
-      description: ephemeral.description,
-      type: ApplicationCommandOptionType.String,
-      choices: [
-        {
-          name: ephemeral.choices.yes,
-          value: "true"
-        },
-        {
-          name: ephemeral.choices.no,
-          value: "false"
-        }
-      ],
-      required: false
-    }
-  ],
 
   /**
    * 

@@ -2,7 +2,7 @@ const error = require("./error");
 
 /**
  * 
- * @param {Map} commands 
+ * @param {import("discord.js").Collection<string, import("../commands/Admins/setup")>} commands 
  * @param {import("../storage/locales/en.json")} language 
  * @param {string} value 
  * @param {string} prefix 
@@ -15,27 +15,27 @@ module.exports = async function (commands, language, value, prefix) {
       .filter(a => a.category === value)
       .forEach(async (command) => {
         const string = `**${command.only_slash ?
-          `</${command.name}:${command?.id}>` : ""
+          `</${command.data.name}:${command.data?.id}>` : ""
           }${command.only_slash && command.only_message ?
             " | " : ""
           }${command.only_message ?
-            `${prefix}${command.name} ${command.usage ? command.usage : ""}` : ""
+            `${prefix}${command.data.name} ${command.usage ? command.usage : ""}` : ""
           }${command.aliases && command.aliases.length > 0 ?
             `\n${language.commands.help.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
-          }\n${language.commands.help.replies.description} \`${language.commands[command.name].description /* command.description */}\`**`;
+          }\n${language.commands.help.replies.description} \`${language.commands[command.data.name].description /* command.description */}\`**`;
 
-        if (command.options && command.options.some(a => a.type === 1))
-          await command.options
+        if (command.data.options && command.data.options.some(a => a.type === 1))
+          await command.data.options
             .forEach((option) => {
               const string = `**${command.only_slash ?
-                `</${command.name} ${option.name}:${command?.id}>` : ""
+                `</${command.data.name} ${option.name}:${command.data?.id}>` : ""
                 }${command.only_slash && command.only_message ?
                   " | " : ""
                 }${command.only_message ?
-                  `${prefix}${command.name} ${option.name} ${command.usage ? command.usage : ""
+                  `${prefix}${command.data.name} ${option.name} ${command.usage ? command.usage : ""
                   }` : ""}${command.aliases && command.aliases.length > 0 ?
                     `\n${language.commands.help.replies.aliases} [${command.aliases.map(a => `\`${a}\``).join(", ")}]` : ""
-                }\n${language.commands.help.replies.description} \`${language.commands[command.name].subCommands[option.name].description /* option.description */}\`**`;
+                }\n${language.commands.help.replies.description} \`${language.commands[command.data.name].subCommands[option.name].description /* option.description */}\`**`;
 
               description.push(string);
             });

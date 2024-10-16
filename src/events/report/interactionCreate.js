@@ -1,3 +1,5 @@
+const createORgetInvite = require("../../functions/createORgetInvite");
+
 const
   {
     EmbedBuilder,
@@ -13,7 +15,7 @@ const
   copyRight = require("../../storage/embed"),
   config = require("../../../config"),
   defaultLanguage = selectLanguage(config.source.default_language),
-  sendError = require("../../functions/sendError"),
+  database = require("../../functions/database"),
   replaceValues = require("../../functions/replaceValues");
 
 
@@ -26,16 +28,12 @@ const
 module.exports = async (client, interaction) => {
   try {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         language: `language.${interaction.guild.id}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-      language = selectLanguage(lang),
-      inviteData = {
-        reason: "Invite the developers",
-        maxAge: 0
-      };
+      language = selectLanguage(lang);
 
     if (interaction.isButton()) {
       if (interaction.customId === "reportButton") {
@@ -61,23 +59,12 @@ module.exports = async (client, interaction) => {
     else if (interaction.isModalSubmit()) {
       if (interaction.customId === "reportModal") {
         await interaction.deferReply({ ephemeral: true });
-        const webhook = new WebhookClient({ url: config.discord.support.webhook.url });
-        const message = interaction.fields.getTextInputValue("reportModalMessage");
-        let
-          owner,
-          invite;
+        const
+          webhook = new WebhookClient({ url: config.discord.support.webhook.url }),
+          message = interaction.fields.getTextInputValue("reportModalMessage"),
+          invite = await createORgetInvite(interaction.guild);
 
-        try {
-          invite = await interaction.channel.createInvite(inviteData) ||
-            await guild.widgetChannel?.createInvite(inviteData) ||
-            await guild.rulesChannel?.createInvite(inviteData) ||
-            await guild.channels.cache
-              .filter(a => a.type === ChannelType.GuildText && a.viewable)
-              .random(1)[0]
-              .createInvite(inviteData) ||
-
-            await interaction.guild.invites.cache.first();
-        } catch { };
+        let owner;
         try {
           owner = await (await interaction.guild.fetchOwner()).user ||
             await client.users.cache.get(interaction.guild.ownerId);

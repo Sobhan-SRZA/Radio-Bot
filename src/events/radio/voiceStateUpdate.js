@@ -1,5 +1,6 @@
 const
     error = require("../../functions/error"),
+    database = require("../../functions/database"),
     radiostation = require("../../storage/radiostation.json"),
     player = new (require("../../functions/player"))();
 
@@ -13,7 +14,7 @@ const
 module.exports = async (client, oldState, newState) => {
     try {
         const
-            db = client.db,
+            db = new database(client.db),
             databaseNames = {
                 afk: `radioAFK.${oldState.guild.id}`,
                 station: `radioStation.${oldState.guild.id}`

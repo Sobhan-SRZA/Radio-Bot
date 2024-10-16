@@ -12,17 +12,19 @@ const
   config = require("../../../config"),
   selectLanguage = require("../../functions/selectLanguage"),
   replaceValues = require("../../functions/replaceValues"),
-  defaultLanguage = selectLanguage(config.source.default_language).commands.setactivity;
+  language = selectLanguage(config.source.default_language).commands.setactivity;
 
 module.exports = {
-  name: "setactivity",
-  description: defaultLanguage.description,
+  data: {
+    name: "setactivity",
+    description: language.description,
+    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_bot_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    dm_permission: true,
+    nsfw: false
+  },
   category: "owner",
   cooldown: 5,
-  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
-  default_bot_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
-  dm_permission: true,
-  nsfw: false,
   only_owner: true,
   only_slash: false,
   only_message: true,
@@ -44,13 +46,7 @@ module.exports = {
         types = {
           status: ["dnd", "online", "idle", "invisible"],
           activity: Object.keys(ActivityType).filter(a => isNaN(a)).map(a => a.toLowerCase())
-        },
-        db = client.db,
-        databaseNames = {
-          language: `language.${message.guild.id}`
-        },
-        lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
-        language = selectLanguage(lang).commands.setactivity;
+        };
 
       if (!types.status.includes(status))
         return await sendError({

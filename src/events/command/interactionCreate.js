@@ -1,11 +1,9 @@
 const
-  {
-    ApplicationCommandOptionType
-  } = require("discord.js"),
   error = require("../../functions/error"),
   config = require("../../../config"),
   sendError = require("../../functions/sendError"),
   selectLanguage = require("../../functions/selectLanguage"),
+  database = require("../../functions/database"),
   checkCmdPerms = require("../../functions/checkCmdPerms"),
   checkCmdCooldown = require("../../functions/checkCmdCooldown");
 
@@ -18,7 +16,7 @@ const
 module.exports = async (client, interaction) => {
   try {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         language: `language.${interaction.guild.id}`
       },
@@ -62,7 +60,7 @@ module.exports = async (client, interaction) => {
           return;
 
         // Command Handler 
-        if (command.options && command.options?.find(a => a.name === "ephemeral") || command.options && command.options.filter(a => a.type === 1).find(a => a.options?.find(b => b.name === "ephemeral")))
+        if (command.data.options && (command.data.options?.find(a => a.name === "ephemeral") || command.data.options?.filter(a => a.type === 1)?.find(a => a.options?.find(b => b.name === "ephemeral"))))
           await interaction.deferReply({
             ephemeral: interaction.options.getString("ephemeral") === "true" ? true : false,
             fetchReply: true

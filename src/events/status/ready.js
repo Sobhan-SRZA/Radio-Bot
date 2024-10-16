@@ -9,6 +9,7 @@ const
     config = require("../../../config"),
     data = require("../../storage/embed"),
     statusEmbedBuilder = require("../../functions/statusEmbedBuilder"),
+    database = require("../../functions/database"),
     selectLanguage = require("../../functions/selectLanguage"),
     defaultLanguage = selectLanguage(config.source.default_language),
     replaceValues = require("../../functions/replaceValues");
@@ -21,7 +22,7 @@ const
 module.exports = async (client) => {
     try {
         const
-            db = client.db,
+            db = new database(client.db),
             guild = client.guilds.cache.get(config.discord.support.id),
             channel = client.channels.cache.get(config.discord.support.stats_channel),
             databaseName = `status.${channel?.guild?.id}`;

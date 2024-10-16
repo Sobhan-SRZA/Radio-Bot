@@ -8,7 +8,6 @@ const
     ButtonBuilder,
     ApplicationCommandOptionType,
     PermissionFlagsBits,
-    Collection,
     PermissionsBitField
   } = require("discord.js"),
   config = require("../../../config"),
@@ -24,40 +23,42 @@ const
   helpCommandDescription = require("../../functions/helpCommandDescription");
 
 module.exports = {
-  name: "help",
-  description: defaultLanguage.description,
+  data: {
+    name: "help",
+    description: defaultLanguage.description,
+    type: ApplicationCommandType.ChatInput,
+    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_bot_permissions: new PermissionsBitField([
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.EmbedLinks
+    ]),
+    dm_permission: true,
+    nsfw: false,
+    options: [
+      {
+        name: "ephemeral",
+        description: ephemeral.description,
+        type: ApplicationCommandOptionType.String,
+        choices: [
+          {
+            name: ephemeral.choices.yes,
+            value: "true"
+          },
+          {
+            name: ephemeral.choices.no,
+            value: "false"
+          }
+        ],
+        required: false
+      }
+    ]
+  },
   category: "misc",
   aliases: ["h"],
-  type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
-  default_bot_permissions: new PermissionsBitField([
-    PermissionFlagsBits.SendMessages,
-    PermissionFlagsBits.EmbedLinks
-  ]),
-  dm_permission: true,
-  nsfw: false,
   only_owner: false,
   only_slash: true,
   only_message: true,
-  options: [
-    {
-      name: "ephemeral",
-      description: ephemeral.description,
-      type: ApplicationCommandOptionType.String,
-      choices: [
-        {
-          name: ephemeral.choices.yes,
-          value: "true"
-        },
-        {
-          name: ephemeral.choices.no,
-          value: "false"
-        }
-      ],
-      required: false
-    }
-  ],
 
   /**
    * 
@@ -70,7 +71,6 @@ module.exports = {
     const timeout = 1000 * 60 * 2,
       category = new Map(),
       menu_options = [],
-      commands = new Collection(),
       db = client.db,
       databaseNames = {
         prefix: `prefix.${interaction.guildId}`,
@@ -81,6 +81,7 @@ module.exports = {
       author = interaction.guild.members.cache.get(interaction.member.id),
       onlyOwner = client.commands.filter(a => a.only_owner),
       prefix = await db.has(databaseNames.prefix) ? await db.get(databaseNames.prefix) : config.discord.prefix,
+      help = client.commands.get("help"),
       embed = new EmbedBuilder()
         .setAuthor({
           name: `${client.user.username} ${language.replies.embed.author}`
@@ -109,13 +110,6 @@ module.exports = {
         )
         .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
 
-    await client.commands.forEach(async command => {
-      const appCommand = await (await client.application.commands.fetch({ cache: true })).find(a => a.name === command.name);
-      await commands.set(command.name, {
-        id: appCommand?.id,
-        ...command
-      });
-    });
     client.commands.filter(a => !a.only_owner).forEach(a => category.set(a.category, a.category));
     if (config.discord.support.owners.some(r => r.includes(author.user.id)))
       onlyOwner.forEach(a => category.set(a.category, a.category));
@@ -152,21 +146,22 @@ module.exports = {
         if (int.isStringSelectMenu()) {
           if (int.customId === "help_menu") {
             await int.deferUpdate({ fetchReply: true });
-            const value = int.values[0];
-            const string = await helpCommandDescription(commands, selectLanguage(lang), value, prefix);
-            const embed = new EmbedBuilder()
-              .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
-              .setAuthor({
-                name: `${client.user.username} ${language.replies.embed.author}`
-              })
-              .setTitle(`${data.emotes.default[value]}| ${firstUpperCase(value)} [${client.commands.filter(a => a.category === value).size}]`)
-              .setFooter({
-                text: `${language.replies.embed.footer} ${author.user.tag}`,
-                iconURL: author.user.displayAvatarURL({ forceStatic: true })
-              })
-              .setColor(data.color.theme)
+            const
+              value = int.values[0],
+              string = await helpCommandDescription(client.commands, selectLanguage(lang), value, prefix),
+              embed = new EmbedBuilder()
+                .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
+                .setAuthor({
+                  name: `${client.user.username} ${language.replies.embed.author}`
+                })
+                .setTitle(`${data.emotes.default[value]}| ${firstUpperCase(value)} [${client.commands.filter(a => a.category === value).size}]`)
+                .setFooter({
+                  text: `${language.replies.embed.footer} ${author.user.tag}`,
+                  iconURL: author.user.displayAvatarURL({ forceStatic: true })
+                })
+                .setColor(data.color.theme)
+                .setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
 
-            embed.setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
             return await int.editReply({
               embeds: [embed.toJSON()],
               components: await components(language, false, false, menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
@@ -178,7 +173,7 @@ module.exports = {
           isUpdateNeed: true,
           interaction,
           log: replaceValues(language.replies.invalidUser, {
-            mention_command: `</${client.application.commands.cache.find(c => c.name === "help").name}:${client.application.commands.cache.find(c => c.name === "help").id}>`,
+            mention_command: `</${help.data.name}:${help.data?.id}>`,
             author: author.user
           })
         })

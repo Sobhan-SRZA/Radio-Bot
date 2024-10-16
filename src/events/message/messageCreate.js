@@ -7,6 +7,7 @@ const
   selectLanguage = require("../../functions/selectLanguage"),
   checkCmdPerms = require("../../functions/checkCmdPerms"),
   checkCmdCooldown = require("../../functions/checkCmdCooldown"),
+  database = require("../../functions/database"),
   replaceValues = require("../../functions/replaceValues");
 
 /**
@@ -18,7 +19,7 @@ const
 module.exports = async (client, message) => {
   try {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         prefix: `prefix.${message.guildId}`,
         language: `language.${message.guildId}`

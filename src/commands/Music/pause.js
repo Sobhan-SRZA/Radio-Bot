@@ -15,42 +15,44 @@ const
   checkPlayerPerms = require("../../functions/checkPlayerPerms");
 
 module.exports = {
-  name: "pause",
-  description: defaultLanguage.description,
+  data: {
+    name: "pause",
+    description: defaultLanguage.description,
+    type: ApplicationCommandType.ChatInput,
+    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_bot_permissions: new PermissionsBitField([
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.EmbedLinks,
+      PermissionFlagsBits.Connect,
+      PermissionFlagsBits.ManageGuild,
+      PermissionFlagsBits.Speak
+    ]),
+    dm_permission: false,
+    nsfw: false,
+    options: [
+      {
+        name: "ephemeral",
+        description: ephemeral.description,
+        type: ApplicationCommandOptionType.String,
+        choices: [
+          {
+            name: ephemeral.choices.yes,
+            value: "true"
+          },
+          {
+            name: ephemeral.choices.no,
+            value: "false"
+          }
+        ],
+        required: false
+      }
+    ]
+  },
   category: "music",
-  type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
-  default_bot_permissions: new PermissionsBitField([
-    PermissionFlagsBits.SendMessages,
-    PermissionFlagsBits.EmbedLinks,
-    PermissionFlagsBits.Connect,
-    PermissionFlagsBits.ManageGuild,
-    PermissionFlagsBits.Speak
-  ]),
-  dm_permission: false,
-  nsfw: false,
   only_owner: false,
   only_slash: true,
   only_message: true,
-  options: [
-    {
-      name: "ephemeral",
-      description: ephemeral.description,
-      type: ApplicationCommandOptionType.String,
-      choices: [
-        {
-          name: ephemeral.choices.yes,
-          value: "true"
-        },
-        {
-          name: ephemeral.choices.no,
-          value: "false"
-        }
-      ],
-      required: false
-    }
-  ],
 
   /**
    * 
