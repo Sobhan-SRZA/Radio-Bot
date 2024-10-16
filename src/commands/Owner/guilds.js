@@ -16,6 +16,7 @@ const
   createORgetInvite = require("../../functions/createORgetInvite"),
   selectLanguage = require("../../functions/selectLanguage"),
   replaceValues = require("../../functions/replaceValues"),
+  config = require("../../../config"),
   language = selectLanguage(config.source.default_language).commands.guilds;
 
 module.exports = {
@@ -104,8 +105,8 @@ module.exports = {
                 {
                   name: language.replies.embed.date,
                   value: replaceValues(language.replies.embed.dateValue, {
-                    createAt: `<t:${Date.parse(guild.createdAt) / 1000}:D>(<t:${Date.parse(guild.createdAt) / 1000}:R>)`,
-                    joinedAt: `<t:${Date.parse(joinedAt) / 1000}:D>(<t:${Date.parse(joinedAt) / 1000}:R>`
+                    createdAt: `<t:${Date.parse(guild.createdAt) / 1000}:D>(<t:${Date.parse(guild.createdAt) / 1000}:R>)`,
+                    joinedAt: `<t:${Date.parse(joinedAt) / 1000}:D>(<t:${Date.parse(joinedAt) / 1000}:R>)`
                   })
                 }
               ]
@@ -114,12 +115,12 @@ module.exports = {
         if (guild.banner)
           embed.setImage(guild.bannerURL({ forceStatic: true }));
 
-        if (invite || invite.url)
+        if (invite && invite.url)
           embed.setURL(invite.url);
 
         return await response(message, {
           embeds: [embed],
-          components: [
+          components: invite && invite.url ? [
             new ActionRowBuilder()
               .addComponents(
                 new ButtonBuilder()
@@ -132,7 +133,7 @@ module.exports = {
                   .setURL(invite.url)
                   .setStyle(ButtonStyle.Link)
               )
-          ]
+          ] : []
         });
       }
 
@@ -150,7 +151,7 @@ module.exports = {
                     {
                       name: `${guild.name} (${guild.id}) | \`${(guild.memberCount).toLocaleString()}\` ${language.replies.embed.members}`,
                       value: `**${language.replies.embed.owner} \`${(await guild.fetchOwner()).user.tag}\`(\`${guild.ownerId}\`)\n${language.replies.embed.date} ${replaceValues(language.replies.embed.dateValue, {
-                        createAt: `<t:${Date.parse(guild.createdAt) / 1000}:D>(<t:${Date.parse(guild.createdAt) / 1000}:R>)`,
+                        createdAt: `<t:${Date.parse(guild.createdAt) / 1000}:D>(<t:${Date.parse(guild.createdAt) / 1000}:R>)`,
                         joinedAt: `<t:${Date.parse((await guild.members.fetchMe({ cache: true })).joinedAt) / 1000}:D>(<t:${Date.parse((await guild.members.fetchMe({ cache: true })).joinedAt) / 1000}:R>`
                       })}**`
                     }

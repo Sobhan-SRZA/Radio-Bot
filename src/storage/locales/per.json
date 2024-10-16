@@ -254,7 +254,7 @@
                     "guild": "سرور:",
                     "owner": "مالک:",
                     "date": "تاریخ:",
-                    "dateValue": "`ایجاد شده در {createdAt} | پیوسته در {joinedAt}`",
+                    "dateValue": "ایجاد شده در {createdAt} | پیوسته در {joinedAt}",
                     "page": "صفحه",
                     "allGuilds": "همه‌ی سرورها:",
                     "members": "اعضا"

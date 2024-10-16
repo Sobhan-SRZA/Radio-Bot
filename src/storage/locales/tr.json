@@ -254,7 +254,7 @@
                     "guild": "Sunucu:",
                     "owner": "Sahip:",
                     "date": "Tarih:",
-                    "dateValue": "`{createdAt} tarihinde oluşturuldu | {joinedAt} tarihinde katıldı`",
+                    "dateValue": "{createdAt} tarihinde oluşturuldu | {joinedAt} tarihinde katıldı",
                     "page": "Sayfa",
                     "allGuilds": "Tüm Sunucular:",
                     "members": "Üyeler"

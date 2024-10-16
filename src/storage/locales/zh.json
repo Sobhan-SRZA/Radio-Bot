@@ -254,7 +254,7 @@
                     "guild": "服务器：",
                     "owner": "所有者：",
                     "date": "日期：",
-                    "dateValue": "`创建于 {createdAt} | 加入于 {joinedAt}`",
+                    "dateValue": "创建于 {createdAt} | 加入于 {joinedAt}",
                     "page": "页面",
                     "allGuilds": "所有服务器：",
                     "members": "成员"

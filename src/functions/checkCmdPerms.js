@@ -26,17 +26,17 @@ module.exports = async function (interaction, command, prefix = null) {
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
-        `\`${prefix + command.name}\`` : `</${command.name}${interaction.options.data.some(a => a.type === 1) ?
+        `\`${prefix + command.data.name}\`` : `</${command.data.name}${interaction.options.data.some(a => a.type === 1) ?
           ` ${interaction.options.data.find(a => a.type === 1).name}` : ""}:${interaction.id}>`;
 
 
-    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.default_bot_permissions || [])) {
+    if (!interaction.channel.permissionsFor(interaction.client.user).has(command.data.default_bot_permissions || [])) {
       await sendError({
         interaction,
         data: {
           content: replaceValues(language.botPerm, {
             mention_command: mentionCommand,
-            bot_perms: new PermissionsBitField(command.default_bot_permissions)
+            bot_perms: new PermissionsBitField(command.data.default_bot_permissions)
               .toArray()
               .map(a => `"${a}"`)
               .join(", ")
@@ -47,13 +47,13 @@ module.exports = async function (interaction, command, prefix = null) {
       return true;
     };
 
-    if (!interaction.member.permissions.has(command.default_member_permissions || [])) {
+    if (!interaction.member.permissions.has(command.data.default_member_permissions || [])) {
       await sendError({
         interaction,
         data: {
           content: replaceValues(language.userPerm, {
             mention_command: `\`${mentionCommand}\``,
-            user_perms: new PermissionsBitField(command.default_member_permissions)
+            user_perms: new PermissionsBitField(command.data.default_member_permissions)
               .toArray()
               .map(a => `"${a}"`)
               .join(", ")

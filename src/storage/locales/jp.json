@@ -254,7 +254,7 @@
                     "guild": "サーバー:",
                     "owner": "オーナー:",
                     "date": "日付:",
-                    "dateValue": "`{createdAt} に作成 | {joinedAt} に参加`",
+                    "dateValue": "{createdAt} に作成 | {joinedAt} に参加",
                     "page": "ページ",
                     "allGuilds": "すべてのサーバー:",
                     "members": "メンバー"

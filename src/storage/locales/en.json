@@ -254,7 +254,7 @@
                     "guild": "Server:",
                     "owner": "Owner:",
                     "date": "Date:",
-                    "dateValue": "`Created at {createdAt} | Joined at {joinedAt}`",
+                    "dateValue": "Created at {createdAt} | Joined at {joinedAt}",
                     "page": "Page",
                     "allGuilds": "All Servers:",
                     "members": "Members"
