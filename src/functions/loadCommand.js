@@ -23,7 +23,7 @@ module.exports = async function (dirname, type, object) {
       for (const file of commandFiles) {
         const command = require(`${dirname}/${dirs}/${file}`);
         if (command[type])
-          object.set(command.name, command);
+          object.set(command.data.name, command);
 
         else {
           post(
