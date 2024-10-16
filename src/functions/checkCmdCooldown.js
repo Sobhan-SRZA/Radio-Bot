@@ -28,7 +28,7 @@ module.exports = async function (interaction, command, prefix = null) {
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
         `\`${prefix + command.data.name}\`` : `</${command.data.name}${await interaction.options.data.some(a => a.type === 1) ?
-          ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${interaction.id}>`;
+          ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
 
     if (!client.cooldowns.has(command.data.name))
       await client.cooldowns.set(command.data.name, new Collection());

@@ -59,7 +59,7 @@ module.exports = {
       if (!types.activity.includes(activityType))
         return await sendError({
           interaction: message,
-          log: replaceValues(language.replies.invalidStatus, {
+          log: replaceValues(language.replies.invalidActivity, {
             activity: types.activity.join(" | ")
           })
         });
@@ -69,7 +69,7 @@ module.exports = {
           {
             name: activityName ? activityName : language.replies.activityName,
             type: activityType ? ActivityType[firstUpperCase(activityType)] : 4,
-            state: ActivityType[firstUpperCase(activityType)] === 4 ? activityName : null,
+            state: activityName ? activityName : language.replies.activityName,
             url: url ? url : null
           }
         ],

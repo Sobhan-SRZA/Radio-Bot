@@ -27,7 +27,7 @@ module.exports = async function (interaction, command, prefix = null) {
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
         `\`${prefix + command.data.name}\`` : `</${command.data.name}${interaction.options.data.some(a => a.type === 1) ?
-          ` ${interaction.options.data.find(a => a.type === 1).name}` : ""}:${interaction.id}>`;
+          ` ${interaction.options.data.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
 
 
     if (!interaction.channel.permissionsFor(interaction.client.user).has(command.data.default_bot_permissions || [])) {
