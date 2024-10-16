@@ -42,7 +42,7 @@ module.exports = async client => {
     let data;
     post(
       replaceValues(defaultLanguage.replies.uploadSlashCmd, {
-        count: clc.cyanBright(commands.size)
+        count: clc.cyanBright(commands.length)
       }),
       "S"
     );
@@ -127,7 +127,7 @@ module.exports = async client => {
       `\n` +
       clc.blueBright("Commands: ") +
       clc.cyanBright(
-        `slashCommands[${commands.size}] & messageCommands[${client.commands.filter(a => a.only_message).size
+        `slashCommands[${commands.length}] & messageCommands[${client.commands.filter(a => a.only_message).size
         }]`
       ) +
       `\n` +
