@@ -5,6 +5,7 @@ const
   config = require("../../../config"),
   selectLanguage = require("../../functions/selectLanguage"),
   checkPlayerPerms = require("../../functions/checkPlayerPerms"),
+  database = require("../../functions/database"),
   replaceValues = require("../../functions/replaceValues");
 
 /**
@@ -20,7 +21,7 @@ module.exports = async (client, interaction) => {
     if (interaction.customId.startsWith("radioPanel")) {
       const
         choice = interaction.values[0],
-        db = client.db,
+        db = new database(client.db),
         databaseNames = {
           station: `radioStation.${interaction.guildId}`,
           language: `language.${interaction.guildId}`

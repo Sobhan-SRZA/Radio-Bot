@@ -16,50 +16,52 @@ const
   defaultLanguage = selectLanguage(config.source.default_language).commands.afk;
 
 module.exports = {
-  name: "afk",
-  description: defaultLanguage.description,
+  data: {
+    name: "afk",
+    description: defaultLanguage.description,
+    type: ApplicationCommandType.ChatInput,
+    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_bot_permissions: new PermissionsBitField([
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.EmbedLinks,
+      PermissionFlagsBits.Connect,
+      PermissionFlagsBits.ManageGuild,
+      PermissionFlagsBits.Speak
+    ]),
+    dm_permission: false,
+    nsfw: false,
+    options: [
+      {
+        name: "channel",
+        description: defaultLanguage.options.channel,
+        type: ApplicationCommandOptionType.Channel,
+        channel_types: [ChannelType.GuildVoice],
+        required: false
+      },
+      {
+        name: "ephemeral",
+        description: ephemeral.description,
+        type: ApplicationCommandOptionType.String,
+        choices: [
+          {
+            name: ephemeral.choices.yes,
+            value: "true"
+          },
+          {
+            name: ephemeral.choices.no,
+            value: "false"
+          }
+        ],
+        required: false
+      }
+    ]
+  },
   category: "music",
-  type: ApplicationCommandType.ChatInput,
   cooldown: 5,
   usage: "[channel | id]",
-  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
-  default_bot_permissions: new PermissionsBitField([
-    PermissionFlagsBits.SendMessages,
-    PermissionFlagsBits.EmbedLinks,
-    PermissionFlagsBits.Connect,
-    PermissionFlagsBits.ManageGuild,
-    PermissionFlagsBits.Speak
-  ]),
-  dm_permission: false,
-  nsfw: false,
   only_owner: false,
   only_slash: true,
   only_message: true,
-  options: [
-    {
-      name: "channel",
-      description: defaultLanguage.options.channel,
-      type: ApplicationCommandOptionType.Channel,
-      channel_types: [ChannelType.GuildVoice],
-      required: false
-    },
-    {
-      name: "ephemeral",
-      description: ephemeral.description,
-      type: ApplicationCommandOptionType.String,
-      choices: [
-        {
-          name: ephemeral.choices.yes,
-          value: "true"
-        },
-        {
-          name: ephemeral.choices.no,
-          value: "false"
-        }
-      ],
-      required: false
-    }
-  ],
 
   /**
    * 

@@ -1,7 +1,6 @@
 const
   {
     ApplicationCommandType,
-    ApplicationCommandOptionType,
     PermissionFlagsBits,
     TextInputBuilder,
     TextInputStyle,
@@ -18,18 +17,20 @@ const
   defaultLanguage = selectLanguage(config.source.default_language).commands.report;
 
 module.exports = {
-  name: "report",
-  description: defaultLanguage.description,
+  data: {
+    name: "report",
+    description: defaultLanguage.description,
+    type: ApplicationCommandType.ChatInput,
+    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_bot_permissions: new PermissionsBitField([
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.EmbedLinks
+    ]),
+    dm_permission: true,
+    nsfw: false
+  },
   category: "misc",
-  type: ApplicationCommandType.ChatInput,
   cooldown: 5,
-  default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
-  default_bot_permissions: new PermissionsBitField([
-    PermissionFlagsBits.SendMessages,
-    PermissionFlagsBits.EmbedLinks
-  ]),
-  dm_permission: true,
-  nsfw: false,
   only_owner: false,
   only_slash: true,
   only_message: true,

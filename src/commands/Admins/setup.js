@@ -32,128 +32,130 @@ const
     chooseRandom = require("../../functions/chooseRandom");
 
 module.exports = {
-    name: "setup",
-    description: defaultLanguage.description,
+    data: {
+        name: "setup",
+        description: defaultLanguage.description,
+        type: ApplicationCommandType.ChatInput,
+        default_member_permissions: new PermissionsBitField([
+            PermissionFlagsBits.ManageChannels,
+            PermissionFlagsBits.ManageGuild,
+            PermissionFlagsBits.SendMessages
+        ]),
+        default_bot_permissions: new PermissionsBitField([
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.EmbedLinks
+        ]),
+        dm_permission: false,
+        nsfw: false,
+        options: [
+            {
+                name: "panel",
+                description: defaultLanguage.subCommands.panel.description,
+                type: ApplicationCommandOptionType.Subcommand,
+                usage: "[channel | id]",
+                options: [
+                    {
+                        name: "channel",
+                        description: defaultLanguage.subCommands.panel.options.channel,
+                        type: ApplicationCommandOptionType.Channel,
+                        channel_types: [ChannelType.GuildText],
+                        required: false
+                    },
+                    {
+                        name: "ephemeral",
+                        description: ephemeral.description,
+                        type: ApplicationCommandOptionType.String,
+                        choices: [
+                            {
+                                name: ephemeral.choices.yes,
+                                value: "true"
+                            },
+                            {
+                                name: ephemeral.choices.no,
+                                value: "false"
+                            }
+                        ],
+                        required: false
+                    }
+                ]
+            },
+            {
+                name: "prefix",
+                description: defaultLanguage.subCommands.prefix.description,
+                type: ApplicationCommandOptionType.Subcommand,
+                usage: "[string]",
+                options: [
+                    {
+                        name: "input",
+                        description: defaultLanguage.subCommands.prefix.options.input,
+                        type: ApplicationCommandOptionType.String,
+                        required: false
+                    },
+                    {
+                        name: "ephemeral",
+                        description: ephemeral.description,
+                        type: ApplicationCommandOptionType.String,
+                        choices: [
+                            {
+                                name: ephemeral.choices.yes,
+                                value: "true"
+                            },
+                            {
+                                name: ephemeral.choices.no,
+                                value: "false"
+                            }
+                        ],
+                        required: false
+                    }
+                ]
+            },
+            {
+                name: "language",
+                description: defaultLanguage.subCommands.language.description,
+                type: ApplicationCommandOptionType.Subcommand,
+                usage: "[string]",
+                options: [
+                    {
+                        name: "input",
+                        description: defaultLanguage.subCommands.language.options.input,
+                        type: ApplicationCommandOptionType.String,
+                        choices: Object
+                            .keys(languages)
+                            .map(a =>
+                                JSON.stringify({
+                                    name: languages[a],
+                                    value: a
+                                })
+                            )
+                            .map(a => JSON.parse(a)),
+                        required: false
+                    },
+                    {
+                        name: "ephemeral",
+                        description: ephemeral.description,
+                        type: ApplicationCommandOptionType.String,
+                        choices: [
+                            {
+                                name: ephemeral.choices.yes,
+                                value: "true"
+                            },
+                            {
+                                name: ephemeral.choices.no,
+                                value: "false"
+                            }
+                        ],
+                        required: false
+                    }
+                ]
+            }
+        ]
+    },
     category: "admin",
     aliases: ["set", "st"],
-    type: ApplicationCommandType.ChatInput,
     cooldown: 10,
-    default_member_permissions: new PermissionsBitField([
-        PermissionFlagsBits.ManageChannels,
-        PermissionFlagsBits.ManageGuild,
-        PermissionFlagsBits.SendMessages
-    ]),
-    default_bot_permissions: new PermissionsBitField([
-        PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.EmbedLinks
-    ]),
-    dm_permission: false,
-    nsfw: false,
     only_owner: false,
     only_slash: true,
     only_message: true,
-    options: [
-        {
-            name: "panel",
-            description: defaultLanguage.subCommands.panel.description,
-            type: ApplicationCommandOptionType.Subcommand,
-            usage: "[channel | id]",
-            options: [
-                {
-                    name: "channel",
-                    description: defaultLanguage.subCommands.panel.options.channel,
-                    type: ApplicationCommandOptionType.Channel,
-                    channel_types: [ChannelType.GuildText],
-                    required: false
-                },
-                {
-                    name: "ephemeral",
-                    description: ephemeral.description,
-                    type: ApplicationCommandOptionType.String,
-                    choices: [
-                        {
-                            name: ephemeral.choices.yes,
-                            value: "true"
-                        },
-                        {
-                            name: ephemeral.choices.no,
-                            value: "false"
-                        }
-                    ],
-                    required: false
-                }
-            ]
-        },
-        {
-            name: "prefix",
-            description: defaultLanguage.subCommands.prefix.description,
-            type: ApplicationCommandOptionType.Subcommand,
-            usage: "[string]",
-            options: [
-                {
-                    name: "input",
-                    description: defaultLanguage.subCommands.prefix.options.input,
-                    type: ApplicationCommandOptionType.String,
-                    required: false
-                },
-                {
-                    name: "ephemeral",
-                    description: ephemeral.description,
-                    type: ApplicationCommandOptionType.String,
-                    choices: [
-                        {
-                            name: ephemeral.choices.yes,
-                            value: "true"
-                        },
-                        {
-                            name: ephemeral.choices.no,
-                            value: "false"
-                        }
-                    ],
-                    required: false
-                }
-            ]
-        },
-        {
-            name: "language",
-            description: defaultLanguage.subCommands.language.description,
-            type: ApplicationCommandOptionType.Subcommand,
-            usage: "[string]",
-            options: [
-                {
-                    name: "input",
-                    description: defaultLanguage.subCommands.language.options.input,
-                    type: ApplicationCommandOptionType.String,
-                    choices: Object
-                        .keys(languages)
-                        .map(a =>
-                            JSON.stringify({
-                                name: languages[a],
-                                value: a
-                            })
-                        )
-                        .map(a => JSON.parse(a)),
-                    required: false
-                },
-                {
-                    name: "ephemeral",
-                    description: ephemeral.description,
-                    type: ApplicationCommandOptionType.String,
-                    choices: [
-                        {
-                            name: ephemeral.choices.yes,
-                            value: "true"
-                        },
-                        {
-                            name: ephemeral.choices.no,
-                            value: "false"
-                        }
-                    ],
-                    required: false
-                }
-            ]
-        }
-    ],
 
     /**
      * 
@@ -469,7 +471,7 @@ module.exports = {
                         ))
                         .setTimestamp();
 
-                    setup.options.forEach(a => {
+                    setup.data.options.forEach(a => {
                         embed.addFields(
                             {
                                 name: `\`${prefix}setup ${a.name}\`${a.usage ? ` | ${a.usage}` : ""}:`,

@@ -1,7 +1,11 @@
 const
   { EmbedBuilder } = require("discord.js"),
   embed = require("../../storage/embed"),
-  error = require("../../functions/error");
+  error = require("../../functions/error"),
+  response = require("../../functions/response"),
+  database = require("../../functions/database"),
+  config = require("../../../config"),
+  selectLanguage = require("../../functions/selectLanguage");
 
 /**
  * 
@@ -12,10 +16,16 @@ const
 module.exports = async (client, interaction) => {
   try {
     if (!interaction.isButton()) return;
+    const
+      db = new database(client.db),
+      databaseNames = {
+        language: `language.${interaction.guild.id}`
+      },
+      lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
+      language = selectLanguage(lang).replies;
 
-    if (interaction.customId === "botUpdates") {
-      await interaction.deferReply({ fetchReply: true, ephemeral: true });
-      return await interaction.editReply({
+    if (interaction.customId === "botUpdates")
+      return await response(interaction, {
         embeds: [
           new EmbedBuilder()
             .setTitle(`${embed.emotes.default.update}| Bot New Updates`)
@@ -23,7 +33,14 @@ module.exports = async (client, interaction) => {
             .setColor(embed.color.theme)
         ]
       });
-    };
+
+    if (interaction.customId.startsWith("owner"))
+      if (!config.discord.support.owners.includes(interaction.user.id))
+        return await sendError({
+          interaction,
+          log: language.onlyOwner
+        });
+
   } catch (e) {
     error(e);
   }

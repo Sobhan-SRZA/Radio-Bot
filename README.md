@@ -24,16 +24,78 @@
 This is an advanced radio bot for Discord voice channels, allowing users to enjoy a wide variety of trending online radios with high quality and seamless performance.
 
 ## Features ✨
+- **Seamless Performance**: Enjoy lag-free, high-quality audio playback.
+- **Wide Variety of Radio Stations**: Stream trending online radio stations in high quality.
+- **Multilingual Support**: Padio supports multiple languages. 🌍
+  - English (Default)
+  - فارسی (Farsi)
+  - Türkçe (Turkish - Istanbul)
+  - 中文 (Chinese)
+  - 日本語 (Japanese)
+
+- **Customizable Prefix**: Tailor the bot to your server’s needs by setting a custom command prefix.
+- **User-Friendly Panel**: An intuitive panel for managing radio playback and settings from within Discord.
 - **Station Switching**: Change radio stations effortlessly! 🎵
-- **AFK Management**: Automatically rejoin specified AFK channels from the database. 
-- **Multilingual Support**: Language switching feature coming soon! 🌍
+- **AFK Channel Reconnection**: Automatically rejoin pre-configured AFK channels from the server’s database.
 - **High-Quality Streaming**: Experience smooth, lag-free audio. 
 - **Clean and Editable Code**: Well-structured for new developers to easily customize.
 - **Database Support**: Compatible with multiple databases like SQL, JSON, Docker, and MongoDB.
-- **User-Friendly Panel**: Simple Discord interface for easy management. 💻
 - **Audio Format Support**: Play audio from various formats such as OGG, MP3, MP4, MKV, and M4A (coming soon).
 
 --- 
+
+## All Commands 📜
+
+### 📠 | Admin Commands:
+- `/setup panel` | `p!setup panel`  
+  **Description**: Create a radio control panel for quick and easy management.
+  
+- `/setup prefix` | `p!setup prefix`  
+  **Description**: Set a custom prefix for bot commands.
+  
+- `/setup language` | `p!setup language`  
+  **Description**: Change the bot’s language to suit your server’s needs.
+
+### 🎧 | Music Commands:
+- `/afk` | `p!afk [channel | id]`  
+  **Description**: Enable AFK mode for a specified voice channel.
+
+- `/pause` | `p!pause`  
+  **Description**: Pause the current radio playback.
+
+- `/play` | `p!play`  
+  **Description**: Play a radio station in the voice channel.
+
+- `/stop` | `p!stop`  
+  **Description**: Stop the radio playback and remove the player from the voice channel.
+
+- `/volume` | `p!volume`  
+  **Description**: Adjust the player’s volume or display the current volume level.
+
+### 🔧 | Misc Commands:
+- `/about` | `p!about`  
+  **Description**: Displays information about the bot.
+  
+- `/help` | `p!help`  
+  **Description**: Display the list of available bot commands.
+  
+- `/invite` | `p!invite`  
+  **Description**: Get the invite link for the bot.
+  
+- `/ping` | `p!ping`  
+  **Description**: Display the bot’s ping.
+
+- `/report` | `p!report`  
+  **Description**: Report any issues or bugs related to the bot.
+
+### 👑 | Owner (For Developers) Commands:
+- `p!setactivity`  
+  **Description**: Temporarily change the bot’s status.
+
+- `p!guilds`  
+  **Description**: Display the list of servers the bot has joined.
+
+---
 
 ## Installation and Setup 📦
 
@@ -124,3 +186,41 @@ For support and assistance, join our [Discord server](https://discord.gg/AfkuXgC
 This project is licensed under the **BSD-3-Clause** License. Please give credit to "Persian Caesar" if you face issues using this code.
 
 ---
+
+## Contact 📞
+<div align="center">
+  <a href="http://sobhan.epizy.com" target="_blank">
+    <img align="left" src ="https://github.com/Sobhan-SRZA/Sobhan-SRZA/raw/main/source/social-media.png" width = 50% >
+  </a>
+  <a href="https://t.me/pc_clubs" target="_blank">
+    <img alt="Telegram" src="https://img.shields.io/static/v1?message=Telegram&logo=telegram&label=&color=229ED9&logoColor=white&labelColor=&style=flat" height="30" />
+  </a>
+  <a href="https://www.instagram.com/mr.sinre?igsh=cWk1aHdhaGRnOGg%3D&utm_source=qr" target="_blank">
+    <img alt="Instagram" src="https://img.shields.io/static/v1?message=Instagram&logo=instagram&label=&color=C13584&logoColor=white&labelColor=&style=flat" height="30" />
+  </a>
+  </a>
+  <a href="https://www.twitch.tv/sobhan_srza" target="_blank">
+    <img alt="Twitch" src="https://img.shields.io/static/v1?message=Twitch&logo=twitch&label=&color=6441A4&logoColor=white&labelColor=&style=flat" height="30" />
+  </a>
+  <a href="https://www.youtube.com/@mr_sinre?app=desktop&sub_confirmation=1" target="_blank">
+    <img alt="YouTube" src="https://img.shields.io/static/v1?message=YouTube&logo=youtube&label=&color=FF0000&logoColor=white&labelColor=&style=flat" height="30" />
+  </a>
+  <a href="https://github.com/Sobhan-SRZA" target="_blank">
+    <img alt="Github" src="https://img.shields.io/static/v1?message=Github&logo=github&label=&color=000000&logoColor=white&labelColor=&style=flat" height="30" />
+  </a>
+</p>
+<p align="left">
+  <a href="https://discord.gg/xh2S2h67UW" target="_blank"> 
+    <img src="https://discord.com/api/guilds/1054814674979409940/widget.png?style=banner2" alt="pc-development.png">
+  </a>
+</p>
+<p align="right">
+  <a href="https://discord.gg/54zDNTAymF" target="_blank"> 
+    <img src="https://discord.com/api/guilds/1181764925874507836/widget.png?style=banner2" alt="pc-club.png">
+  </a>
+</p>
+<p align="center">
+  <a href="https://discord.com/users/865630940361785345" target="_blank">
+    <img alt="My Discord Account" src="https://discord.c99.nl/widget/theme-1/865630940361785345.png"  />
+  </a>
+</p>

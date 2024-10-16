@@ -2,8 +2,7 @@ const
   {
     ActivityType,
     Routes,
-    REST,
-    PermissionsBitField
+    REST
   } = require("discord.js"),
   clc = require("cli-color"),
   os = require("os"),
@@ -12,6 +11,7 @@ const
   logger = require("../../functions/logger"),
   config = require("../../../config"),
   chooseRandom = require("../../functions/chooseRandom"),
+  database = require("../../functions/database"),
   selectLanguage = require("../../functions/selectLanguage"),
   defaultLanguage = selectLanguage(config.source.default_language),
   replaceValues = require("../../functions/replaceValues");
@@ -25,9 +25,12 @@ module.exports = async client => {
   try {
     // Load Slash Commands
     const
-      commands = client.commands.filter(a => a.only_slash),
-      rest = new REST()
-        .setToken(config.discord.token);
+      commands = client.commands
+        .filter(a => a.only_slash)
+        .map(a => a.data),
+
+      rest = new REST().setToken(config.discord.token),
+      db = new database(client.db);
 
     // Remove all of last commands
     // await client.application.commands.set([]); // Old way
@@ -82,7 +85,7 @@ module.exports = async client => {
           servers: client.guilds.cache.size.toLocaleString(),
           members: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString(),
           prefix: config.discord.prefix,
-          usedCommands: (await client.db.get("totalCommandsUsed")).toLocaleString(),
+          usedCommands: (await db.get("totalCommandsUsed")).toLocaleString(),
           joiendVoiceChannels: client.guilds.cache.reduce((count, guild) => {
             return count + guild.channels.cache.filter(channel =>
               channel?.isVoiceBased() && channel?.members?.has(client.user.id)
@@ -160,6 +163,25 @@ module.exports = async client => {
         }%`
       )
     );
+
+    // Add Slash Commands Id to Commands
+    client.commands.forEach(async (command) => {
+      const
+        cmd = client.commands.get(command.data.name),
+        slashCommand = (await client.application.commands.fetch({ cache: true }))
+          .find(a => a.name === command.data.name);
+
+      return await client.commands.set(
+        cmd.data.name,
+        {
+          ...cmd,
+          data: {
+            id: slashCommand?.id,
+            ...cmd.data
+          }
+        }
+      );
+    });
   } catch (e) {
     error(e);
   }

@@ -245,6 +245,22 @@
                 "activityName": "درود بر جهان",
                 "success": "✅| وضعیت ربات به‌صورت موقت تغییر کرد.\n```js\n{data}```"
             }
+        },
+        "guilds": {
+            "description": "نمایش لیست سرورهای ربات.",
+            "replies": {
+                "cantFindGuilds": "این آیدی یافت نشد.",
+                "embed": {
+                    "guild": "سرور:",
+                    "owner": "مالک:",
+                    "date": "تاریخ:",
+                    "dateValue": "`ایجاد شده در {createdAt} | پیوسته در {joinedAt}`",
+                    "page": "صفحه",
+                    "allGuilds": "همه‌ی سرورها:",
+                    "members": "اعضا"
+                },
+                "joinButton": "پیوستن به {guild}"
+            }
         }
     }
 }

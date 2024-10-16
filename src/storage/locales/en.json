@@ -245,6 +245,22 @@
                 "activityName": "Hello, World",
                 "success": "✅| The bot's status has been temporarily changed.\n```js\n{data}```"
             }
+        },
+        "guilds": {
+            "description": "Display the list of the bot's servers.",
+            "replies": {
+                "cantFindGuilds": "This ID was not found.",
+                "embed": {
+                    "guild": "Server:",
+                    "owner": "Owner:",
+                    "date": "Date:",
+                    "dateValue": "`Created at {createdAt} | Joined at {joinedAt}`",
+                    "page": "Page",
+                    "allGuilds": "All Servers:",
+                    "members": "Members"
+                },
+                "joinButton": "Join {guild}"
+            }
         }
     }
 }

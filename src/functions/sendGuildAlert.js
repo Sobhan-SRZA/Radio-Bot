@@ -8,7 +8,8 @@ const
   copyRight = require("../storage/embed"),
   config = require("../../config"),
   selectLanguage = require("./selectLanguage"),
-  defaultLanguage = selectLanguage(config.source.default_language);
+  defaultLanguage = selectLanguage(config.source.default_language),
+  createORgetInvite = require("./createORgetInvite");
 
 /**
  *
@@ -26,13 +27,9 @@ module.exports = async function ({
     let
       channel,
       owner = await guild?.fetchOwner(),
-      invite,
+      invite = await createORgetInvite(guild),
       messageData = {};
 
-    const inviteData = {
-      reason: "Invite the developers",
-      maxAge: 0
-    };
     if (isWebhook) {
       channel = new WebhookClient({ url: config.discord.support.webhook.url });
       messageData.avatarURL = config.discord.support.webhook.avatar;
@@ -44,17 +41,6 @@ module.exports = async function ({
     else
       channel = guildChannel;
 
-    try {
-      invite = await guild.invites?.cache?.find(a => a.inviterId === client.user.id) ||
-        await guild.widgetChannel?.createInvite(inviteData) ||
-        await guild.rulesChannel?.createInvite(inviteData) ||
-        await guild.channels.cache
-          .filter(a => a.type === ChannelType.GuildText && a.viewable)
-          .random(1)[0]
-          .createInvite(inviteData) ||
-
-        await guild.invites.cache.first();
-    } catch { };
     try {
       if (owner.user)
         owner = await (await guild.fetch()).fetchOwner();
