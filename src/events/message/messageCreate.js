@@ -1,7 +1,4 @@
 const
-  {
-    ChannelType
-  } = require("discord.js"),
   error = require("../../functions/error"),
   config = require("../../../config"),
   selectLanguage = require("../../functions/selectLanguage"),
@@ -26,8 +23,8 @@ module.exports = async (client, message) => {
       };
 
     // Filter dm channels, webhooks, the bots
-    if (message.channel.type === ChannelType.DM || !message || message?.webhookId || message.author?.bot)
-      return;
+    // if (message.channel.type === 1 || !message || message?.webhookId || message.author?.bot)
+      // return;
 
     // Filter all guilds
     if (config.source.one_guild && message.guildId !== config.discord.support.id)
@@ -71,7 +68,7 @@ module.exports = async (client, message) => {
 
     // Command Handler
     if (command && command.only_message) {
-      if (message.channel.type === ChannelType.DM && !command.data.dm_permission)
+      if (message.channel.type === 1 && !command.data.dm_permission)
         return;
 
       // Start to Typing
