@@ -27,7 +27,6 @@ module.exports = {
       PermissionFlagsBits.SendMessages,
       PermissionFlagsBits.EmbedLinks,
       PermissionFlagsBits.Connect,
-      PermissionFlagsBits.ManageGuild,
       PermissionFlagsBits.Speak
     ]),
     dm_permission: false,

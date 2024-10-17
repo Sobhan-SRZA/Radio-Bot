@@ -20,12 +20,14 @@ module.exports = {
     name: "afk",
     description: defaultLanguage.description,
     type: ApplicationCommandType.ChatInput,
-    default_member_permissions: new PermissionsBitField([PermissionFlagsBits.SendMessages]),
+    default_member_permissions: new PermissionsBitField([
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.ManageGuild
+    ]),
     default_bot_permissions: new PermissionsBitField([
       PermissionFlagsBits.SendMessages,
       PermissionFlagsBits.EmbedLinks,
       PermissionFlagsBits.Connect,
-      PermissionFlagsBits.ManageGuild,
       PermissionFlagsBits.Speak
     ]),
     dm_permission: false,
