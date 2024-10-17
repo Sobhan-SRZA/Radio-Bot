@@ -22,7 +22,7 @@ module.exports = async function (interaction, command, prefix = null, args = nul
     const
       db = interaction.client.db,
       databaseNames = {
-        language: `language.${interaction.guild.id}`
+        language: `language.${interaction?.guild?.id}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,

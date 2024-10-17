@@ -22,14 +22,16 @@ module.exports = async (client, message) => {
       db = new database(client.db),
       databaseNames = {
         prefix: `prefix.${message.guildId}`,
-        language: `language.${message.guildId}`
+        language: `langu.age.${message.guildId}`
       };
 
     // Filter dm channels, webhooks, the bots
-    if (message.channel.type === ChannelType.DM || !message || message?.webhookId || message.author?.bot) return;
+    if (message.channel.type === ChannelType.DM || !message || message?.webhookId || message.author?.bot)
+      return;
 
     // Filter all guilds
-    if (config.source.one_guild && message.guild.id !== config.discord.support.id) return;
+    if (config.source.one_guild && message.guildId !== config.discord.support.id)
+      return;
 
     // Select Guild Language
     const
@@ -45,7 +47,7 @@ module.exports = async (client, message) => {
       );
 
     // Send prefix to channel
-    if (message.content === client.user.toString())
+    if (message.guild && message.content === client.user.toString())
       return await message.reply({
         content: replaceValues(language.sendPrefix, {
           prefix: stringPrefix
@@ -69,19 +71,20 @@ module.exports = async (client, message) => {
 
     // Command Handler
     if (command && command.only_message) {
+      if (message.channel.type === ChannelType.DM && !command.data.dm_permission)
+        return;
 
       // Start to Typing
       await message.channel.sendTyping();
 
       // Filter Owners Commands
       if (command.only_owner)
-        if (!config.discord.support.owners.includes(message.author.id)) return;
-
-      if (message.guild)
-
-        // Check Perms
-        if (await checkCmdPerms(message, command, stringPrefix, args))
+        if (!config.discord.support.owners.includes(message.author.id))
           return;
+
+      // Check Perms
+      if (await checkCmdPerms(message, command, stringPrefix, args))
+        return;
 
       // Cooldown
       if (await checkCmdCooldown(message, command, stringPrefix, args))
@@ -89,7 +92,7 @@ module.exports = async (client, message) => {
 
       // Command Handler
       await db.add("totalCommandsUsed", 1);
-      return command.run(client, message, args);
+      return await command.run(client, message, args);
     }
   } catch (e) {
     error(e)
