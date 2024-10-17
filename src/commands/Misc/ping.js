@@ -64,7 +64,7 @@ module.exports = {
     const
       db = client.db,
       databaseNames = {
-        language: `language.${interaction.guild.id}`
+        language: `language.${interaction.guildId}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).commands.ping,

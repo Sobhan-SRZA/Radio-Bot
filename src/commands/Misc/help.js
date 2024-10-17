@@ -74,11 +74,11 @@ module.exports = {
       db = client.db,
       databaseNames = {
         prefix: `prefix.${interaction.guildId}`,
-        language: `language.${interaction.guild.id}`
+        language: `language.${interaction.guildId}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).commands.help,
-      author = interaction.guild.members.cache.get(interaction.member.id),
+      author = interaction.guild?.members?.cache?.get(interaction.member.id) || client.users.cache.get(interaction.member.id),
       onlyOwner = client.commands.filter(a => a.only_owner),
       prefix = await db.has(databaseNames.prefix) ? await db.get(databaseNames.prefix) : config.discord.prefix,
       help = client.commands.get("help"),

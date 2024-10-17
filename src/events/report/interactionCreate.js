@@ -61,57 +61,81 @@ module.exports = async (client, interaction) => {
         await interaction.deferReply({ ephemeral: true });
         const
           webhook = new WebhookClient({ url: config.discord.support.webhook.url }),
-          message = interaction.fields.getTextInputValue("reportModalMessage"),
-          invite = await createORgetInvite(interaction.guild);
+          message = interaction.fields.getTextInputValue("reportModalMessage");
 
-        let owner;
-        try {
-          owner = await (await interaction.guild.fetchOwner()).user ||
-            await client.users.cache.get(interaction.guild.ownerId);
-        } catch { }
-        const embed = new EmbedBuilder()
-          .setAuthor(
-            {
-              name: interaction.user.tag,
-              iconURL: interaction.user.displayAvatarURL({ forceStatic: true })
-            }
-          )
-          .setColor(copyRight.color.theme)
-          .setDescription(
-            replaceValues(language.replies.modals.reportEmbedDescription, {
-              message: message.toString().length < 3900 ? message.toString() : message.toString().slice(0, 3900) + " and more...",
-              user: `${interaction.user} | \`${interaction.user?.tag}\` | \`${interaction.user?.id}\``
-            })
+        if (interaction.guild) {
+          const
+            invite = await createORgetInvite(interaction.guild);
 
-          )
-          .addFields(
-            [
+          let owner;
+          try {
+            owner = await (await interaction.guild.fetchOwner()).user ||
+              await client.users.cache.get(interaction.guild.ownerId);
+          } catch { }
+          const embed = new EmbedBuilder()
+            .setAuthor(
               {
-                name: `${copyRight.emotes.default.owner}| ${defaultLanguage.replies.guild.owner}`,
-                value: `${copyRight.emotes.default.reply} **${owner} | \`${owner?.tag}\` | \`${owner?.id}\`**`,
-                inline: false
-              },
-              {
-                name: `${copyRight.emotes.default.server}| ${defaultLanguage.replies.guild.guild}`,
-                value: `${copyRight.emotes.default.reply} **${invite ? `[${interaction.guild.name}](${invite.url})` : `${interaction.guild.name}`} | \`${interaction.guild.id}\` | \`${interaction.guild.memberCount}\` Members**`,
-                inline: false
-              },
-              {
-                name: `${copyRight.emotes.default.date}| ${defaultLanguage.replies.guild.createdAt}`,
-                value: `${copyRight.emotes.default.reply} **<t:${Date.parse(interaction.guild.createdAt) / 1000}:D> | <t:${Date.parse(interaction.guild.createdAt) / 1000}:R>**`,
-                inline: false
+                name: interaction.user.tag,
+                iconURL: interaction.user.displayAvatarURL({ forceStatic: true })
               }
-            ]
-          )
-          .setThumbnail(interaction.guild.iconURL({ forceStatic: true }))
-          .setTimestamp();
+            )
+            .setColor(copyRight.color.theme)
+            .setDescription(
+              replaceValues(language.replies.modals.reportEmbedDescription, {
+                message: message.toString().length < 3900 ? message.toString() : message.toString().slice(0, 3900) + " and more...",
+                user: `${interaction.user} | \`${interaction.user?.tag}\` | \`${interaction.user?.id}\``
+              })
 
-        await webhook.send({
-          embeds: [embed],
-          username: interaction.user.displayName,
-          avatarURL: interaction.user.displayAvatarURL({ forceStatic: true }),
-          threadId: config.discord.support.webhook.threads.report
-        });
+            )
+            .addFields(
+              [
+                {
+                  name: `${copyRight.emotes.default.owner}| ${defaultLanguage.replies.guild.owner}`,
+                  value: `${copyRight.emotes.default.reply} **${owner} | \`${owner?.tag}\` | \`${owner?.id}\`**`,
+                  inline: false
+                },
+                {
+                  name: `${copyRight.emotes.default.server}| ${defaultLanguage.replies.guild.guild}`,
+                  value: `${copyRight.emotes.default.reply} **${invite ? `[${interaction.guild.name}](${invite.url})` : `${interaction.guild.name}`} | \`${interaction.guild.id}\` | \`${interaction.guild.memberCount}\` Members**`,
+                  inline: false
+                },
+                {
+                  name: `${copyRight.emotes.default.date}| ${defaultLanguage.replies.guild.createdAt}`,
+                  value: `${copyRight.emotes.default.reply} **<t:${Date.parse(interaction.guild.createdAt) / 1000}:D> | <t:${Date.parse(interaction.guild.createdAt) / 1000}:R>**`,
+                  inline: false
+                }
+              ]
+            )
+            .setThumbnail(interaction.guild.iconURL({ forceStatic: true }))
+            .setTimestamp();
+
+          await webhook.send({
+            embeds: [embed],
+            username: interaction.user.displayName,
+            avatarURL: interaction.user.displayAvatarURL({ forceStatic: true }),
+            threadId: config.discord.support.webhook.threads.report
+          });
+        } else {
+          const embed = new EmbedBuilder()
+            .setColor(copyRight.color.theme)
+            .setDescription(
+              replaceValues(language.replies.modals.reportEmbedDescription, {
+                message: message.toString().length < 3900 ? message.toString() : message.toString().slice(0, 3900) + " and more...",
+                user: `${interaction.user} | \`${interaction.user?.tag}\` | \`${interaction.user?.id}\``
+              })
+
+            )
+            .setThumbnail(interaction.user.displayAvatarURL({ forceStatic: true }))
+            .setTimestamp();
+
+          await webhook.send({
+            embeds: [embed],
+            username: interaction.user.displayName,
+            avatarURL: interaction.user.displayAvatarURL({ forceStatic: true }),
+            threadId: config.discord.support.webhook.threads.report
+          });
+        }
+
         return await interaction.editReply({
           content: language.replies.modals.sendReport
         });
