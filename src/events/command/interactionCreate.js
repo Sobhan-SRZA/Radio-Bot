@@ -31,7 +31,7 @@ module.exports = async (client, interaction) => {
 
       // Command Handler
       if (command && command.only_slash) {
-        if (message.channel.type === ChannelType.DM && !command.data.dm_permission)
+        if (interaction.channel?.type === 1 && !command.data.dm_permission)
           return;
 
         // Filter Owners Commands
@@ -59,7 +59,7 @@ module.exports = async (client, interaction) => {
           });
 
         await db.add("totalCommandsUsed", 1);
-        return await command.run(client, interaction, args);
+        return await command.run(client, interaction);
       }
     }
   } catch (e) {

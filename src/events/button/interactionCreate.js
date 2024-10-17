@@ -2,10 +2,10 @@ const
   { EmbedBuilder } = require("discord.js"),
   embed = require("../../storage/embed"),
   error = require("../../functions/error"),
-  response = require("../../functions/response"),
   database = require("../../functions/database"),
   config = require("../../../config"),
-  selectLanguage = require("../../functions/selectLanguage");
+  selectLanguage = require("../../functions/selectLanguage"),
+  sendError = require("../../functions/sendError");
 
 /**
  * 
@@ -25,7 +25,8 @@ module.exports = async (client, interaction) => {
       language = selectLanguage(lang).replies;
 
     if (interaction.customId === "botUpdates")
-      return await response(interaction, {
+      return await interaction.reply({
+        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setTitle(`${embed.emotes.default.update}| Bot New Updates`)
