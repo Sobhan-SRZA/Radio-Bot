@@ -80,11 +80,11 @@ module.exports = async (client, message) => {
       if (message.guild)
 
         // Check Perms
-        if (await checkCmdPerms(message, command, stringPrefix))
+        if (await checkCmdPerms(message, command, stringPrefix, args))
           return;
 
       // Cooldown
-      if (await checkCmdCooldown(message, command, stringPrefix))
+      if (await checkCmdCooldown(message, command, stringPrefix, args))
         return;
 
       // Command Handler

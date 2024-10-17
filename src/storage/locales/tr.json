@@ -1,10 +1,10 @@
 {
     "replies": {
         "onlyOwner": "```diff\n- Sıkıldın mı? Bu komut senin için değil! Ona dokunma!```",
-        "botPerm": "-# **Ben (bot) {mention_command} komutunu yürütmek için gerekli izinlere sahip değilim!\nGerekli izinler: [{bot_perms}]**",
-        "userPerm": "-# **{mention_command} komutunu kullanmak için gerekli izinlere sahip değilsin!\nGerekli izinler: [{user_perms}]**",
+        "botPerm": "**-# Ben (bot) {mention_command} komutunu yürütmek için gerekli izinlere sahip değilim!\nGerekli izinler: [{bot_perms}]**",
+        "userPerm": "**-# {mention_command} komutunu kullanmak için gerekli izinlere sahip değilsin!\nGerekli izinler: [{user_perms}]**",
         "error": "Maalesef bir hata oluştu.",
-        "cooldown": "-# **Aşırı kullanım nedeniyle, {mention_command} komutunu kullanman geçici olarak yasaklandı. Bu komutu tekrar <t:{expired_timestamp}:R> sonra kullanabilirsin.**",
+        "cooldown": "**-# Aşırı kullanım nedeniyle, {mention_command} komutunu kullanman geçici olarak yasaklandı. Bu komutu tekrar <t:{expired_timestamp}:R> sonra kullanabilirsin.**",
         "ephemeral": {
             "description": "Bu mesajı gizli tutmak ister misiniz?",
             "choices": {
@@ -19,8 +19,8 @@
         "channelFull": "```diff\n- Bu ses kanalı dolu!```",
         "userDeaf": "```diff\n- Sağırlaştırıldığınız sürece bu komutu kullanamazsınız.```",
         "clientMute": "```diff\n- Lütfen beni önce sessizden çıkarın ve tekrar deneyin.```",
-        "guildCreate": "-# **Yeni bir sunucuya katıldım, şu anda `{guilds}` sunucusundayım.**",
-        "guildDelete": "-# **Bir sunucudan çıkarıldım, ama hala `{guilds}` sunucusundayım.**",
+        "guildCreate": "**-# Yeni bir sunucuya katıldım, şu anda `{guilds}` sunucusundayım.**",
+        "guildDelete": "**-# Bir sunucudan çıkarıldım, ama hala `{guilds}` sunucusundayım.**",
         "errorEmbed": {
             "title": "Bir hata oluştu!",
             "name": "Ad:",
@@ -33,7 +33,7 @@
         "ipError": "Maalesef IP adresiniz Discord tarafından engellendi. Yeni bir IP kullanmanız önerilir.",
         "loginError": "Bir hata oluştu. Ya bot tokeniniz yanlış ya da bazı bot izinleri devre dışı bırakıldı :(",
         "noTokenError": "Bot tokeninizi config.js veya .env dosyasına girmediniz!",
-        "guildAlert": "-# **Katıldığım sunucuların toplam sayısı şimdi `{guilds}`.**",
+        "guildAlert": "**-# Katıldığım sunucuların toplam sayısı şimdi `{guilds}`.**",
         "guild": {
             "owner": "Sahip:",
             "guild": "Sunucu:",
@@ -73,7 +73,7 @@
             "reportModalTitle": "Rapor",
             "reportModalLabel": "Ne bildirmek istersiniz?",
             "reportModalPlaceholder": "Örnek: Merhaba, botu kullandığımda yardım komutu çalışmadı.",
-            "reportEmbedDescription": "**Rapor:**\n{message}\n\n-# **Gönderen {user}**",
+            "reportEmbedDescription": "**Rapor:**\n{message}\n\n**-# Gönderen {user}**",
             "sendReport": "```diff\n+ Raporunuz başarıyla geliştiricilere gönderildi ve birkaç gün içinde incelenecek.```"
         },
         "sendPrefix": "Bu sunucudaki önekim: {prefix}"
@@ -90,10 +90,10 @@
                     "replies": {
                         "panelTitle": "Radyo Kontrol",
                         "panelMenu": "Tercih ettiğiniz ağı seçin.",
-                        "success": "-# **Radyo kontrol paneli başarıyla <#{channel}> kanalında kuruldu.**",
-                        "doDeleteChannel": "-# **Paneli yeni bir kanala kurmak için lütfen istediğiniz kanalı seçin. Mevcut kanal <#{channel}> zaten panel için kayıtlıdır. Silmek isterseniz aşağıdaki düğmeleri kullanın.**",
+                        "success": "**-# Radyo kontrol paneli başarıyla <#{channel}> kanalında kuruldu.**",
+                        "doDeleteChannel": "**-# Paneli yeni bir kanala kurmak için lütfen istediğiniz kanalı seçin. Mevcut kanal <#{channel}> zaten panel için kayıtlıdır. Silmek isterseniz aşağıdaki düğmeleri kullanın.**",
                         "noChannel": "```diff\n- Lütfen bir metin kanalı belirtin.```",
-                        "deleteChannel": "-# **Kanal başarıyla veritabanından silindi.**"
+                        "deleteChannel": "**-# Kanal başarıyla veritabanından silindi.**"
                     }
                 },
                 "prefix": {
@@ -102,10 +102,10 @@
                         "input": "İstediğiniz ön eki girin."
                     },
                     "replies": {
-                        "doDeletePrefix": "-# **Bu sunucu için geçerli komut ön eki `{prefix}`'dir. Değiştirmek için lütfen yeni bir ön ek girin. Varsayılan değere dönmek için aşağıdaki düğmeleri kullanın.**",
-                        "deletePrefix": "-# **Botun ön eki varsayılan değere (`{prefix}`) sıfırlandı.**",
+                        "doDeletePrefix": "**-# Bu sunucu için geçerli komut ön eki `{prefix}`'dir. Değiştirmek için lütfen yeni bir ön ek girin. Varsayılan değere dönmek için aşağıdaki düğmeleri kullanın.**",
+                        "deletePrefix": "**-# Botun ön eki varsayılan değere (`{prefix}`) sıfırlandı.**",
                         "noPrefix": "```diff\n- Lütfen istediğiniz ön eki girin!```",
-                        "success": "-# **Botun ön eki başarıyla {prefix} olarak değiştirildi!**"
+                        "success": "**-# Botun ön eki başarıyla {prefix} olarak değiştirildi!**"
                     }
                 },
                 "language": {
@@ -114,10 +114,10 @@
                         "input": "İstediğiniz dili seçin."
                     },
                     "replies": {
-                        "doDeleteLanguage": "-# **Botun dilini değiştirmek için yeni bir dil seçin. Varsayılan dile dönmek için aşağıdaki düğmeleri kullanın.**",
-                        "deleteLanguage": "-# **Botun dili varsayılan değere (`{language}`) sıfırlandı.**",
-                        "noLanguage": "-# **Lütfen istediğiniz dili girin!**\n```json\n{languages}```",
-                        "success": "-# **Botun dili başarıyla `{language}` olarak değiştirildi!**"
+                        "doDeleteLanguage": "**-# Botun dilini değiştirmek için yeni bir dil seçin. Varsayılan dile dönmek için aşağıdaki düğmeleri kullanın.**",
+                        "deleteLanguage": "**-# Botun dili varsayılan değere (`{language}`) sıfırlandı.**",
+                        "noLanguage": "**-# Lütfen istediğiniz dili girin!**\n```json\n{languages}```",
+                        "success": "**-# Botun dili başarıyla `{language}` olarak değiştirildi!**"
                     }
                 }
             }
@@ -198,8 +198,8 @@
                 "noPlayerError": "```diff\n- Bu sunucuda aktif bir oynatıcı yok. Lütfen bir oynatıcı oluşturun.```",
                 "notMatchedVoice": "```diff\n- Ses kanalınız benimkiyle eşleşmiyor. Lütfen bulunduğum kanala katılın.```",
                 "success": "Müzik oynatma paneli başarıyla {channel} kanalında kuruldu.",
-                "doDeleteChannel": "-# **AFK kanalını değiştirmek için lütfen yeni bir kanal belirtin. Veritabanından silmek için aşağıdaki düğmeleri kullanın.**",
-                "deleteChannel": "-# **Kanal başarıyla veritabanından silindi.**"
+                "doDeleteChannel": "**-# AFK kanalını değiştirmek için lütfen yeni bir kanal belirtin. Veritabanından silmek için aşağıdaki düğmeleri kullanın.**",
+                "deleteChannel": "**-# Kanal başarıyla veritabanından silindi.**"
             }
         },
         "pause": {
@@ -215,8 +215,8 @@
             },
             "replies": {
                 "onlyPanel": "Bu komut yalnızca <#{channel}> kanalında kullanılabilir.",
-                "invalidQuery": "-# **Seçilen istasyon geçersiz! Lütfen aşağıdaki istasyonlardan birini seçin:**\n```json\n{stations}```",
-                "play": "-# **İstasyon `{song}` başarıyla oynatıldı.**"
+                "invalidQuery": "**-# Seçilen istasyon geçersiz! Lütfen aşağıdaki istasyonlardan birini seçin:**\n```json\n{stations}```",
+                "play": "**-# İstasyon `{song}` başarıyla oynatıldı.**"
             }
         },
         "stop": {

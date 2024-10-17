@@ -14,9 +14,10 @@ const
  * @param {import("discord.js").CommandInteraction} interaction
  * @param {import("../commands/Misc/help")} command
  * @param {string} prefix
+ * @param {Array<string>} args
  * @returns {import("discord.js").InteractionResponse}
  */
-module.exports = async function (interaction, command, prefix = null) {
+module.exports = async function (interaction, command, prefix = null, args = null) {
   try {
     const
       client = interaction.client,
@@ -27,8 +28,9 @@ module.exports = async function (interaction, command, prefix = null) {
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
-        `\`${prefix + command.data.name}\`` : `</${command.data.name}${await interaction.options.data.some(a => a.type === 1) ?
-          ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
+        `\`${prefix + command.data.name}${await command.data.options.some(a => a.type === 1 && a.name === args[0]) ?
+          ` ${await command.data.options.find(a => a.name === args[0]).name}` : ""}\`` : `</${command.data.name}${await interaction.options.data.some(a => a.type === 1) ?
+            ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
 
     if (!client.cooldowns.has(command.data.name))
       await client.cooldowns.set(command.data.name, new Collection());
