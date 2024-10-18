@@ -78,7 +78,7 @@ module.exports = {
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).commands.help,
-      author = interaction.guild?.members?.cache?.get(interaction.member.id) || client.users.cache.get(interaction.member.id),
+      author = interaction.guild?.members?.cache?.get(interaction?.member?.id).user || client.users.cache.get(interaction?.member?.id || interaction?.user?.id || interaction?.author?.id),
       onlyOwner = client.commands.filter(a => a.only_owner),
       prefix = await db.has(databaseNames.prefix) ? await db.get(databaseNames.prefix) : config.discord.prefix,
       help = client.commands.get("help"),
@@ -87,8 +87,8 @@ module.exports = {
           name: `${client.user.username} ${language.replies.embed.author}`
         })
         .setFooter({
-          text: `${language.replies.embed.footer} ${author.user.tag}`,
-          iconURL: author.user.displayAvatarURL({ forceStatic: true })
+          text: `${language.replies.embed.footer} ${author.tag}`,
+          iconURL: author.displayAvatarURL({ forceStatic: true })
         })
         .setColor(data.color.theme)
         .addFields(
@@ -111,7 +111,7 @@ module.exports = {
         .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
 
     client.commands.filter(a => !a.only_owner).forEach(a => category.set(a.category, a.category));
-    if (config.discord.support.owners.some(r => r.includes(author.user.id)))
+    if (config.discord.support.owners.some(r => r.includes(author.id)))
       onlyOwner.forEach(a => category.set(a.category, a.category));
 
     category.forEach((a) => {
@@ -133,7 +133,7 @@ module.exports = {
     });
     const collector = await message.createMessageComponentCollector({ time: timeout });
     collector.on("collect", async (int) => {
-      if (int.user.id === author.user.id) {
+      if (int.user.id === author.id) {
         if (int.isButton()) {
           if (int.customId === "home_page") {
             int.update({
@@ -156,8 +156,8 @@ module.exports = {
                 })
                 .setTitle(`${data.emotes.default[value]}| ${firstUpperCase(value)} [${client.commands.filter(a => a.category === value).size}]`)
                 .setFooter({
-                  text: `${language.replies.embed.footer} ${author.user.tag}`,
-                  iconURL: author.user.displayAvatarURL({ forceStatic: true })
+                  text: `${language.replies.embed.footer} ${author.tag}`,
+                  iconURL: author.displayAvatarURL({ forceStatic: true })
                 })
                 .setColor(data.color.theme)
                 .setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
@@ -174,7 +174,7 @@ module.exports = {
           interaction,
           log: replaceValues(language.replies.invalidUser, {
             mention_command: `</${help.data.name}:${help.data?.id}>`,
-            author: author.user
+            author: author
           })
         })
 

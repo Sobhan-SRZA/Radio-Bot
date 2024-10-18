@@ -16,10 +16,11 @@ const
 module.exports = async (client, interaction) => {
   try {
     if (!interaction.isButton()) return;
+
     const
       db = new database(client.db),
       databaseNames = {
-        language: `language.${interaction.guild.id}`
+        language: `language.${interaction.guildId}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies;

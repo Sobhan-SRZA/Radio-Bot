@@ -22,8 +22,9 @@ module.exports = async function (interaction, command, prefix = null, args = nul
     const
       client = interaction.client,
       db = client.db,
+      userId = interaction?.member?.id || interaction?.user?.id || interaction?.author?.id,
       databaseNames = {
-        language: `language.${interaction?.guild?.id}`
+        language: `language.${interaction?.guildId}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,
@@ -38,8 +39,8 @@ module.exports = async function (interaction, command, prefix = null, args = nul
     const timestamps = await client.cooldowns.get(command.data.name);
     const defaultCooldownDuration = 3;
     const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
-    if (timestamps.has(interaction.member.id)) {
-      const expirationTime = timestamps.get(interaction.member.id) + cooldownAmount;
+    if (timestamps.has(userId)) {
+      const expirationTime = timestamps.get(userId) + cooldownAmount;
       if (Date.now() < expirationTime) {
         const expiredTimestamp = Math.round(expirationTime / 1000);
         await sendError({
@@ -54,8 +55,8 @@ module.exports = async function (interaction, command, prefix = null, args = nul
       };
     };
 
-    timestamps.set(interaction.member.id, Date.now());
-    setTimeout(() => timestamps.delete(interaction.member.id), cooldownAmount);
+    timestamps.set(userId, Date.now());
+    setTimeout(() => timestamps.delete(userId), cooldownAmount);
 
     return false;
   } catch (e) {

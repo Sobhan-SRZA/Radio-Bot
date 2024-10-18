@@ -18,29 +18,22 @@ module.exports = async (client, oldState, newState) => {
             databaseNames = {
                 afk: `radioAFK.${oldState.guild.id}`,
                 station: `radioStation.${oldState.guild.id}`
-            };
+            },
+            channel = await db.get(databaseNames.afk),
+            station = await db.get(databaseNames.station) || "Lofi Radio";
 
         if (oldState.member.id === client.user.id && !newState.channelId)
             if (await db.has(databaseNames.afk)) {
-                const station = await db.get(databaseNames.station) || "Lofi Radio";
-                player
+                return await player
                     .setData({
-                        channelId: oldState.channelId,
+                        channelId: channel,
                         guildId: oldState.guild.id,
                         adapterCreator: oldState.guild.voiceAdapterCreator
                     })
                     .radio(radiostation[station]);
-            }
-
-        if (oldState && !newState.channelId)
-            if (player.isConnection(oldState.guild.id))
-                if (!await db.has(databaseNames.afk))
+            } else
+                if (player.isConnection(oldState.guild.id))
                     return await player
-                        .setData({
-                            channelId: oldState.channelId,
-                            guildId: oldState.guild.id,
-                            adapterCreator: oldState.guild.voiceAdapterCreator
-                        })
                         .stop();
 
     } catch (e) {

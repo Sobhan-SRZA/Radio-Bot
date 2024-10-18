@@ -1,6 +1,7 @@
 const
     error = require("../../functions/error"),
     radiostation = require("../../storage/radiostation.json"),
+    database = require("../../functions/database"),
     player = require("../../functions/player");
 
 /**
@@ -12,23 +13,23 @@ module.exports = async (client) => {
     try {
         client.guilds.cache.forEach(async guild => {
             const
-                db = client.db,
+                db = new database(client.db),
                 databaseNames = {
                     afk: `radioAFK.${guild.id}`,
                     station: `radioStation.${guild.id}`
-                };
+                },
+                channel = await db.get(databaseNames.afk),
+                station = await db.get(databaseNames.station) || "Lofi Radio";
 
-            if (await db.has(databaseNames.afk)) {
-                const channel = await db.get(databaseNames.afk);
-                const station = await db.get(databaseNames.station) || "Lofi Radio";
-                new player()
+            if (await db.has(databaseNames.afk)) 
+                return await new player()
                     .setData({
                         channelId: channel,
                         guildId: guild.id,
                         adapterCreator: guild.voiceAdapterCreator
                     })
                     .radio(radiostation[station]);
-            }
+            
         })
     } catch (e) {
         error(e)
