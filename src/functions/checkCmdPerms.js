@@ -7,6 +7,7 @@ const
   selectLanguage = require("./selectLanguage"),
   config = require("../../config"),
   sendError = require("./sendError"),
+  database = require("./database"),
   replaceValues = require("./replaceValues");
 
 /**
@@ -20,7 +21,7 @@ const
 module.exports = async function (interaction, command, prefix = null, args = null) {
   try {
     const
-      db = interaction.client.db,
+      db = new database(interaction.client.db),
       databaseNames = {
         language: `language.${interaction?.guild?.id}`
       },

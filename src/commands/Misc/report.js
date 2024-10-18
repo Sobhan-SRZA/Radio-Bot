@@ -14,6 +14,7 @@ const
   config = require("../../../config"),
   embed = require("../../storage/embed"),
   selectLanguage = require("../../functions/selectLanguage"),
+  database = require("../../functions/database"),
   defaultLanguage = selectLanguage(config.source.default_language).commands.report;
 
 module.exports = {
@@ -44,7 +45,7 @@ module.exports = {
    */
   run: async (client, interaction, args) => {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         language: `language.${interaction.guildId}`
       },

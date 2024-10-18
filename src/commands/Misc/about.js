@@ -15,6 +15,7 @@ const
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   defaultLanguage = selectLanguage(config.source.default_language).commands.about,
   statusEmbedBuilder = require("../../functions/statusEmbedBuilder"),
+  database = require("../../functions/database"),
   embed = require("../../storage/embed");
 
 module.exports = {
@@ -63,7 +64,7 @@ module.exports = {
    */
   run: async (client, interaction, args) => {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         language: `language.${interaction.guildId}`
       },

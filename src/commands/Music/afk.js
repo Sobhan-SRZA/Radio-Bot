@@ -13,6 +13,7 @@ const
   config = require("../../../config"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   replaceValues = require("../../functions/replaceValues"),
+  database = require("../../functions/database"),
   defaultLanguage = selectLanguage(config.source.default_language).commands.afk;
 
 module.exports = {
@@ -74,7 +75,7 @@ module.exports = {
    */
   run: async (client, interaction, args) => {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         afk: `radioAFK.${interaction.guildId}`,
         language: `language.${interaction.guild.id}`

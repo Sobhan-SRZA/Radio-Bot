@@ -29,6 +29,7 @@ const
         label: `${a}`,
         value: `${a}`
     })).map(a => JSON.parse(a)),
+    database = require("../../functions/database"),
     chooseRandom = require("../../functions/chooseRandom");
 
 module.exports = {
@@ -167,7 +168,7 @@ module.exports = {
     run: async (client, interaction, args) => {
         try {
             const
-                db = client.db,
+                db = new database(client.db),
                 databaseNames = {
                     panel: `radioPanel.${interaction.guildId}`,
                     prefix: `prefix.${interaction.guildId}`,

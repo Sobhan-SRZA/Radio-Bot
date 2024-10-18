@@ -15,6 +15,7 @@ const
   selectLanguage = require("../../functions/selectLanguage"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   defaultLanguage = selectLanguage(config.source.default_language).commands.invite,
+  database = require("../../functions/database"),
   replaceValues = require("../../functions/replaceValues");
 
 module.exports = {
@@ -63,7 +64,7 @@ module.exports = {
    */
   run: async (client, interaction, args) => {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         language: `language.${interaction.guildId}`
       },
