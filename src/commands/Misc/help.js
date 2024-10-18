@@ -20,6 +20,7 @@ const
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   defaultLanguage = selectLanguage(config.source.default_language).commands.help,
   editResponse = require("../../functions/editResponse"),
+  database = require("../../functions/database"),
   helpCommandDescription = require("../../functions/helpCommandDescription");
 
 module.exports = {
@@ -71,7 +72,7 @@ module.exports = {
     const timeout = 1000 * 60 * 2,
       category = new Map(),
       menu_options = [],
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         prefix: `prefix.${interaction.guildId}`,
         language: `language.${interaction.guildId}`

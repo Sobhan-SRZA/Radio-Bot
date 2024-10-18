@@ -3,6 +3,7 @@ const
   error = require("./error"),
   embed = require("../storage/embed"),
   selectLanguage = require("./selectLanguage"),
+  database = require("./database"),
   config = require("../../config");
 
 /**
@@ -19,9 +20,9 @@ module.exports = async function ({
 }) {
   try {
     const
-      db = interaction.client.db,
+      db = new database(interaction.client.db),
       databaseNames = {
-        language: `language.${interaction.guild.id}`
+        language: `language.${interaction.guildId}`
       },
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang);

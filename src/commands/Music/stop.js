@@ -10,6 +10,7 @@ const
   config = require("../../../config"),
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   defaultLanguage = selectLanguage(config.source.default_language).commands.stop,
+  database = require("../../functions/database"),
   response = require("../../functions/response");
 
 module.exports = {
@@ -60,7 +61,7 @@ module.exports = {
    */
   run: async (client, interaction, args) => {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         language: `language.${interaction.guild.id}`
       },

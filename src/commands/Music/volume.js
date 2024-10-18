@@ -15,6 +15,7 @@ const
   defaultLanguage = selectLanguage(config.source.default_language).commands.volume,
   response = require("../../functions/response"),
   checkPlayerPerms = require("../../functions/checkPlayerPerms"),
+  database = require("../../functions/database"),
   sendError = require("../../functions/sendError");
 
 module.exports = {
@@ -73,7 +74,7 @@ module.exports = {
    */
   run: async (client, interaction, args) => {
     const
-      db = client.db,
+      db = new database(client.db),
       databaseNames = {
         language: `language.${interaction.guild.id}`
       },

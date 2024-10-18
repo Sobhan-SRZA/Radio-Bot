@@ -16,6 +16,7 @@ const
     ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
     sendError = require("../../functions/sendError"),
     checkPlayerPerms = require("../../functions/checkPlayerPerms"),
+    database = require("../../functions/database"),
     chooseRandom = require("../../functions/chooseRandom");
 
 module.exports = {
@@ -76,7 +77,7 @@ module.exports = {
         try {
             const
                 query = interaction.user ? interaction.options.data.find(a => a.name.startsWith("station"))?.value : args.join(" "),
-                db = client.db,
+                db = new database(client.db),
                 databaseNames = {
                     station: `radioStation.${interaction.guildId}`,
                     panel: `radioPanel.${interaction.guildId}`,

@@ -2,6 +2,7 @@ const
   error = require("./error"),
   selectLanguage = require("./selectLanguage"),
   config = require("../../config"),
+  database = require("./database"),
   sendError = require("./sendError");
 
 /**
@@ -12,7 +13,7 @@ const
 module.exports = async function (interaction) {
   try {
     const
-      db = interaction.client.db,
+      db = new database(interaction.client.db),
       databaseNames = {
         language: `language.${interaction.guild.id}`
       },

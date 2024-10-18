@@ -1,12 +1,12 @@
 const
   {
-    ApplicationCommandOptionType,
     Collection
   } = require("discord.js"),
   error = require("./error"),
   selectLanguage = require("./selectLanguage"),
   config = require("../../config"),
   sendError = require("./sendError"),
+  database = require("./database"),
   replaceValues = require("./replaceValues");
 
 /**
@@ -21,7 +21,7 @@ module.exports = async function (interaction, command, prefix = null, args = nul
   try {
     const
       client = interaction.client,
-      db = client.db,
+      db = new database(client.db),
       userId = interaction?.member?.id || interaction?.user?.id || interaction?.author?.id,
       databaseNames = {
         language: `language.${interaction?.guildId}`
