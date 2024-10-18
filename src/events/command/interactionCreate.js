@@ -44,8 +44,9 @@ module.exports = async (client, interaction) => {
 
 
         // Check command perms
-        if (await checkCmdPerms(interaction, command))
-          return;
+        if (interaction.guild)
+          if (await checkCmdPerms(interaction, command))
+            return;
 
         // Command cooldown
         if (await checkCmdCooldown(interaction, command))

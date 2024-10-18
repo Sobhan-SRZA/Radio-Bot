@@ -24,7 +24,7 @@ module.exports = async (client, message) => {
 
     // Filter dm channels, webhooks, the bots
     // if (message.channel.type === 1 || !message || message?.webhookId || message.author?.bot)
-      // return;
+    // return;
 
     // Filter all guilds
     if (config.source.one_guild && message.guildId !== config.discord.support.id)
@@ -80,8 +80,9 @@ module.exports = async (client, message) => {
           return;
 
       // Check Perms
-      if (await checkCmdPerms(message, command, stringPrefix, args))
-        return;
+      if (message.guild)
+        if (await checkCmdPerms(message, command, stringPrefix, args))
+          return;
 
       // Cooldown
       if (await checkCmdCooldown(message, command, stringPrefix, args))
