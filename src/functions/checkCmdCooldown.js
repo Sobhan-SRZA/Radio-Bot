@@ -29,16 +29,18 @@ module.exports = async function (interaction, command, prefix = null, args = nul
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
-        `\`${prefix + command.data.name}${await command.data?.options.some(a => a.type === 1 && a.name === args[0]) ?
-          ` ${await command.data?.options.find(a => a.name === args[0]).name}` : ""}\`` : `</${command.data.name}${await interaction?.options.data.some(a => a.type === 1) ?
-            ` ${await interaction?.options.data.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
+        `\`${prefix + command.data.name}${await command.data?.options?.some(a => a.type === 1 && a.name === args[0]) ?
+          ` ${await command.data?.options?.find(a => a.name === args[0]).name}` : ""}\`` : `</${command.data.name}${await interaction.options.data.some(a => a.type === 1) ?
+            ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
 
     if (!client.cooldowns.has(command.data.name))
       await client.cooldowns.set(command.data.name, new Collection());
 
-    const timestamps = await client.cooldowns.get(command.data.name);
-    const defaultCooldownDuration = 3;
-    const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
+    const
+      timestamps = await client.cooldowns.get(command.data.name),
+      defaultCooldownDuration = 3,
+      cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
+
     if (timestamps.has(userId)) {
       const expirationTime = timestamps.get(userId) + cooldownAmount;
       if (Date.now() < expirationTime) {
