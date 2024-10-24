@@ -177,7 +177,8 @@ module.exports = {
                 },
                 lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
                 language = selectLanguage(lang).commands.setup,
-                prefix = (await db.has(databaseNames.prefix)) ? await db.get(databaseNames.prefix) : `${config.discord.prefix}`;
+                prefix = (await db.has(databaseNames.prefix)) ? await db.get(databaseNames.prefix) : `${config.discord.prefix}`,
+                setup = require("./setup");
 
             switch (interaction.user ? interaction.options.getSubcommand() : args[0]) {
                 case "panel": {
@@ -225,6 +226,15 @@ module.exports = {
                         });
                         const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
                         collector.on("collect", async (button) => {
+                            if (button.user.id !== interaction.member.id)
+                                return await sendError({
+                                    button,
+                                    log: replaceValues(selectLanguage(lang).commands.help.replies.invalidUser, {
+                                        mention_command: `</${setup.data.name}:${setup.data?.id}>`,
+                                        author: interaction.member
+                                    })
+                                });
+
                             switch (button.customId) {
                                 case "setup-accept": {
                                     await button.deferUpdate();
@@ -330,6 +340,15 @@ module.exports = {
                         });
                         const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
                         collector.on("collect", async (button) => {
+                            if (button.user.id !== interaction.member.id)
+                                return await sendError({
+                                    button,
+                                    log: replaceValues(selectLanguage(lang).commands.help.replies.invalidUser, {
+                                        mention_command: `</${setup.data.name}:${setup.data?.id}>`,
+                                        author: interaction.member
+                                    })
+                                });
+
                             switch (button.customId) {
                                 case "setup-accept": {
                                     await button.deferUpdate();
@@ -416,6 +435,15 @@ module.exports = {
                         });
                         const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
                         collector.on("collect", async (button) => {
+                            if (button.user.id !== interaction.member.id)
+                                return await sendError({
+                                    button,
+                                    log: replaceValues(selectLanguage(lang).commands.help.replies.invalidUser, {
+                                        mention_command: `</${setup.data.name}:${setup.data?.id}>`,
+                                        author: interaction.member
+                                    })
+                                });
+
                             switch (button.customId) {
                                 case "setup-accept": {
                                     await button.deferUpdate();
@@ -455,7 +483,6 @@ module.exports = {
                 }
 
                 default: {
-                    const setup = require("./setup");
                     const embed = new EmbedBuilder()
                         .setColor(copyRight.color.theme)
                         .setTitle("Help | Setup")

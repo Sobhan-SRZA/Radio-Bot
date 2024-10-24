@@ -134,51 +134,49 @@ module.exports = {
     });
     const collector = await message.createMessageComponentCollector({ time: timeout });
     collector.on("collect", async (int) => {
-      if (int.user.id === author.id) {
-        if (int.isButton()) {
-          if (int.customId === "home_page") {
-            int.update({
-              embeds: [embed],
-              components: message.components
-            })
-          }
-        };
-
-        if (int.isStringSelectMenu()) {
-          if (int.customId === "help_menu") {
-            await int.deferUpdate({ fetchReply: true });
-            const
-              value = int.values[0],
-              string = await helpCommandDescription(client.commands, selectLanguage(lang), value, prefix),
-              embed = new EmbedBuilder()
-                .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
-                .setAuthor({
-                  name: `${client.user.username} ${language.replies.embed.author}`
-                })
-                .setTitle(`${data.emotes.default[value]}| ${firstUpperCase(value)} [${client.commands.filter(a => a.category === value).size}]`)
-                .setFooter({
-                  text: `${language.replies.embed.footer} ${author.tag}`,
-                  iconURL: author.displayAvatarURL({ forceStatic: true })
-                })
-                .setColor(data.color.theme)
-                .setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
-
-            return await int.editReply({
-              embeds: [embed.toJSON()],
-              components: await components(language, false, false, menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
-            });
-          }
-        }
-      } else
+      if (int.user.id !== author.id)
         return await sendError({
-          isUpdateNeed: true,
-          interaction,
+          int,
           log: replaceValues(language.replies.invalidUser, {
             mention_command: `</${help.data.name}:${help.data?.id}>`,
             author: author
           })
-        })
+        });
 
+      if (int.isButton()) {
+        if (int.customId === "home_page") {
+          int.update({
+            embeds: [embed],
+            components: message.components
+          })
+        }
+      };
+
+      if (int.isStringSelectMenu()) {
+        if (int.customId === "help_menu") {
+          await int.deferUpdate({ fetchReply: true });
+          const
+            value = int.values[0],
+            string = await helpCommandDescription(client.commands, selectLanguage(lang), value, prefix),
+            embed = new EmbedBuilder()
+              .setThumbnail(client.user.displayAvatarURL({ forceStatic: true }))
+              .setAuthor({
+                name: `${client.user.username} ${language.replies.embed.author}`
+              })
+              .setTitle(`${data.emotes.default[value]}| ${firstUpperCase(value)} [${client.commands.filter(a => a.category === value).size}]`)
+              .setFooter({
+                text: `${language.replies.embed.footer} ${author.tag}`,
+                iconURL: author.displayAvatarURL({ forceStatic: true })
+              })
+              .setColor(data.color.theme)
+              .setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
+
+          return await int.editReply({
+            embeds: [embed.toJSON()],
+            components: await components(language, false, false, menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
+          });
+        }
+      }
     });
     collector.on("end", async () => {
       return await editResponse({
