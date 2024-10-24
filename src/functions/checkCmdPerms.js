@@ -29,8 +29,8 @@ module.exports = async function (interaction, command, prefix = null, args = nul
       language = selectLanguage(lang).replies,
       mentionCommand = prefix ?
         `\`${prefix + command.data.name}${await command.data?.options?.some(a => a.type === 1 && a.name === args[0]) ?
-          ` ${await command.data?.options?.find(a => a.name === args[0]).name}` : ""}\`` : `</${command.data.name}${await interaction.options.data.some(a => a.type === 1) ?
-            ` ${await interaction.options.data.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
+          ` ${await command.data?.options?.find(a => a.name === args[0]).name}` : ""}\`` : `</${command.data.name}${await interaction?.options?.data?.some(a => a.type === 1) ?
+            ` ${await interaction?.options?.data?.find(a => a.type === 1).name}` : ""}:${command.data.id}>`;
 
     if (!interaction.channel.permissionsFor(interaction.client.user).has(command.data.default_bot_permissions || [])) {
       await sendError({
