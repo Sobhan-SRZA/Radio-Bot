@@ -136,7 +136,7 @@ module.exports = {
     collector.on("collect", async (int) => {
       if (int.user.id !== author.id)
         return await sendError({
-          int,
+          interaction: int,
           log: replaceValues(language.replies.invalidUser, {
             mention_command: `</${help.data.name}:${help.data?.id}>`,
             author: author

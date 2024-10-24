@@ -228,7 +228,7 @@ module.exports = {
                         collector.on("collect", async (button) => {
                             if (button.user.id !== interaction.member.id)
                                 return await sendError({
-                                    button,
+                                    interaction: button,
                                     log: replaceValues(selectLanguage(lang).commands.help.replies.invalidUser, {
                                         mention_command: `</${setup.data.name}:${setup.data?.id}>`,
                                         author: interaction.member
@@ -342,7 +342,7 @@ module.exports = {
                         collector.on("collect", async (button) => {
                             if (button.user.id !== interaction.member.id)
                                 return await sendError({
-                                    button,
+                                    interaction: button,
                                     log: replaceValues(selectLanguage(lang).commands.help.replies.invalidUser, {
                                         mention_command: `</${setup.data.name}:${setup.data?.id}>`,
                                         author: interaction.member
@@ -437,7 +437,7 @@ module.exports = {
                         collector.on("collect", async (button) => {
                             if (button.user.id !== interaction.member.id)
                                 return await sendError({
-                                    button,
+                                    interaction: button,
                                     log: replaceValues(selectLanguage(lang).commands.help.replies.invalidUser, {
                                         mention_command: `</${setup.data.name}:${setup.data?.id}>`,
                                         author: interaction.member
