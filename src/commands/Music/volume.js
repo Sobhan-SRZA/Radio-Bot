@@ -61,6 +61,7 @@ module.exports = {
   },
   category: "music",
   cooldown: 5,
+  aliases: ["vol"],
   only_owner: false,
   only_slash: true,
   only_message: true,
@@ -82,11 +83,21 @@ module.exports = {
       language = selectLanguage(lang).commands.volume;
 
     // Check perms
-    checkPlayerPerms(interaction);
+    if (await checkPlayerPerms(interaction))
+      return;
+
+    if (queue.isConnection(interaction.guildId))
+      return await sendError(
+        {
+          interaction,
+          isUpdateNeed: true,
+          log: selectLanguage(lang).replies.noConnection
+        }
+      )
 
     // Stop The Player
     const queue = new radio(interaction);
-    const input = interaction.user ? interaction.options.getNumber("input", false) : args[0];
+    const input = interaction.user ? interaction.options.getNumber("input") : args[0];
     if (!input) {
       const embed = new EmbedBuilder()
         .setColor(data.color.theme)

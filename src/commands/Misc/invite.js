@@ -107,7 +107,6 @@ module.exports = {
             }
           )
           .setTimestamp()
-          .toJSON()
       ],
 
       components = [

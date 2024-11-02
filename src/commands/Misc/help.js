@@ -128,7 +128,7 @@ module.exports = {
     });
 
     const message = await response(interaction, {
-      embeds: [embed.toJSON()],
+      embeds: [embed],
       components: await await components(language, true, false, menu_options.map(a => JSON.parse(a))),
       fetchReply: true
     });
@@ -172,7 +172,7 @@ module.exports = {
               .setDescription(`${string.length < 1 ? language.replies.noCommands : string}`);
 
           return await int.editReply({
-            embeds: [embed.toJSON()],
+            embeds: [embed],
             components: await components(language, false, false, menu_options.map(a => JSON.parse(a)).filter(a => a.value !== value))
           });
         }
@@ -210,8 +210,7 @@ module.exports = {
               .setEmoji(data.emotes.default.home)
               .setDisabled(disableHomePage)
               .setCustomId("home_page")
-          )
-          .toJSON(),
+          ),
 
         new ActionRowBuilder()
           .addComponents(
@@ -222,7 +221,6 @@ module.exports = {
               .setDisabled(disableMenu)
               .addOptions(options)
           )
-          .toJSON()
       ]
     }
   }

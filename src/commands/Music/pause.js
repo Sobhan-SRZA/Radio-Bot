@@ -50,6 +50,7 @@ module.exports = {
   },
   category: "music",
   cooldown: 5,
+  aliases: ["pe"],
   only_owner: false,
   only_slash: true,
   only_message: true,
@@ -71,7 +72,8 @@ module.exports = {
       language = selectLanguage(lang).commands.pause;
 
     // Check perms
-    await checkPlayerPerms(interaction);
+    if (await checkPlayerPerms(interaction))
+      return;
 
     // Pause Player
     const queue = new radio(interaction);

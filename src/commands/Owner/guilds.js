@@ -30,6 +30,7 @@ module.exports = {
   },
   category: "owner",
   cooldown: 5,
+  aliases: ["gu"],
   usage: "[id]",
   only_owner: true,
   only_slash: false,
@@ -73,7 +74,6 @@ module.exports = {
         if (!guild || !guild.id)
           return await sendError({
             interaction: message,
-            isUpdateNeed: true,
             log: language.replies.cantFindGuilds
           });
 
@@ -152,7 +152,7 @@ module.exports = {
                       name: `${guild.name} (${guild.id}) | \`${(guild.memberCount).toLocaleString()}\` ${language.replies.embed.members}`,
                       value: `**${language.replies.embed.owner} \`${(await guild.fetchOwner()).user.tag}\`(\`${guild.ownerId}\`)\n${language.replies.embed.date} ${replaceValues(language.replies.embed.dateValue, {
                         createdAt: `<t:${Date.parse(guild.createdAt) / 1000}:D>(<t:${Date.parse(guild.createdAt) / 1000}:R>)`,
-                        joinedAt: `<t:${Date.parse((await guild.members.fetchMe({ cache: true })).joinedAt) / 1000}:D>(<t:${Date.parse((await guild.members.fetchMe({ cache: true })).joinedAt) / 1000}:R>`
+                        joinedAt: `<t:${Date.parse((await guild.members.fetchMe({ cache: true })).joinedAt) / 1000}:D>(<t:${Date.parse((await guild.members.fetchMe({ cache: true })).joinedAt) / 1000}:R>)`
                       })}**`
                     }
                   )
@@ -175,20 +175,25 @@ module.exports = {
       });
 
       collector.on("collect", async interaction => {
-        interaction.customId === backId ? (currentIndex -= 12) : (currentIndex += 12)
-        interaction.customId === backId ? (page -= 1) : (page += 1)
-        return await editResponse({
-          interaction: message,
-          message: msg,
-          data: {
+        if (interaction.customId === backId) {
+          currentIndex -= 12;
+          page -= 1;
+        } else {
+          page += 1;
+          currentIndex += 12;
+        }
+
+        await interaction.deferUpdate({ fetchReply: true });
+        return await interaction.editReply(
+          {
             embeds: [await generateEmbed(currentIndex)],
             components: [new ActionRowBuilder({ components: [...(currentIndex ? [backButton] : []), ...(currentIndex + 12 < guilds.length ? [forwardButton] : [])] })]
           }
-        })
-      })
+        );
+      });
       collector.on("end", async () => {
-        return deleteResponse({
-          interactioneraction: message,
+        return await deleteResponse({
+          interaction: message,
           message: msg
         })
       });

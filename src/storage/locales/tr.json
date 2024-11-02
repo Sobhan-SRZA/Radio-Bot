@@ -12,10 +12,11 @@
                 "no": "Hayır"
             }
         },
+        "noConnection": "```diff\n- Şu anda herhangi bir dosya çalmıyorum ve kanalda değilim.```",
         "noChannelError": "```diff\n- Bir ses kanalına bağlanmanız gerekiyor.```",
         "notMatchedVoice": "```diff\n- Ses kanalınız benimkine uymuyor. Lütfen bulunduğum kanala katılın.```",
-        "noPermToView": "```diff\n- Kanala erişimim yok. Lütfen bana 'Kanalı Gör' izni verin.```",
-        "noPermToConnect": "```diff\n- Kanala bağlanamıyorum. Lütfen bana 'Kanala Bağlan' izni verin.```",
+        "noPermToView": "```diff\n- Kanala erişimim yok. Lütfen bana 'ViewChannel' izni verin.```",
+        "noPermToConnect": "```diff\n- Kanala bağlanamıyorum. Lütfen bana 'Connect' izni verin.```",
         "channelFull": "```diff\n- Bu ses kanalı dolu!```",
         "userDeaf": "```diff\n- Sağırlaştırıldığınız sürece bu komutu kullanamazsınız.```",
         "clientMute": "```diff\n- Lütfen beni önce sessizden çıkarın ve tekrar deneyin.```",

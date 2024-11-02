@@ -97,6 +97,7 @@ module.exports = {
       reply: "➡",
       arrow_down: "👇🏻",
       arrow_right: "👉🏻",
+      arrow_left: "👈🏻",
       down: "👉🏻",
       tickets: "🎫",
       owner: "👑",
