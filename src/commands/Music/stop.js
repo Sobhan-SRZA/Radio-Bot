@@ -11,7 +11,8 @@ const
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   defaultLanguage = selectLanguage(config.source.default_language).commands.stop,
   database = require("../../functions/database"),
-  response = require("../../functions/response");
+  response = require("../../functions/response"),
+  checkPlayerPerms = require("../../functions/checkPlayerPerms");
 
 module.exports = {
   data: {
@@ -48,6 +49,7 @@ module.exports = {
   },
   category: "music",
   cooldown: 5,
+  aliases: ["sp"],
   only_owner: false,
   only_slash: true,
   only_message: true,
@@ -69,7 +71,8 @@ module.exports = {
       language = selectLanguage(lang).commands.stop;
 
     // Check perms
-    await checkPlayerPerms(interaction);
+    if (await checkPlayerPerms(interaction))
+      return;
 
     // Stop The Player
     const queue = new radio(interaction);

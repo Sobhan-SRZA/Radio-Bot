@@ -178,7 +178,7 @@ module.exports = {
                 lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
                 language = selectLanguage(lang).commands.setup,
                 prefix = (await db.has(databaseNames.prefix)) ? await db.get(databaseNames.prefix) : `${config.discord.prefix}`,
-                setup = require("./setup");
+                setup = client.commands.get("setup");
 
             switch (interaction.user ? interaction.options.getSubcommand() : args[0]) {
                 case "panel": {
@@ -253,6 +253,8 @@ module.exports = {
                         collector.on("end", async () => {
                             return await deleteResponse({ interaction, message: message });
                         });
+
+                        return;
                     }
 
                     else if (!channel)
@@ -367,6 +369,8 @@ module.exports = {
                         collector.on("end", async () => {
                             return await deleteResponse({ interaction, message: message });
                         });
+
+                        return;
                     }
 
                     else if (!newPrefix)
@@ -462,6 +466,8 @@ module.exports = {
                         collector.on("end", async () => {
                             return await deleteResponse({ interaction, message: message });
                         });
+
+                        return;
                     }
 
                     else if (!newlanguage || !firstChoice)

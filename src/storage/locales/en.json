@@ -12,10 +12,11 @@
                 "no": "No"
             }
         },
+        "noConnection": "```diff\n- I'm currently not playing any file and not in the channel.```",
         "noChannelError": "```diff\n- You need to connect to a voice channel.```",
         "notMatchedVoice": "```diff\n- Your voice channel does not match mine. Please join the channel I’m in.```",
-        "noPermToView": "```diff\n- I cannot view the channel. Please grant me the 'View Channel' permission.```",
-        "noPermToConnect": "```diff\n- I cannot connect to the channel. Please grant me the 'Connect to Channel' permission.```",
+        "noPermToView": "```diff\n- I cannot view the channel. Please grant me the 'ViewChannel' permission.```",
+        "noPermToConnect": "```diff\n- I cannot connect to the channel. Please grant me the 'Connect' permission.```",
         "channelFull": "```diff\n- This voice channel is full!```",
         "userDeaf": "```diff\n- You cannot use this command while you are deafened.```",
         "clientMute": "```diff\n- Please unmute me first before trying again.```",

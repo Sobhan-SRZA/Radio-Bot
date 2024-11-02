@@ -4,7 +4,12 @@ const
     ApplicationCommandOptionType,
     ChannelType,
     PermissionFlagsBits,
-    PermissionsBitField
+    PermissionsBitField,
+    EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ComponentType
   } = require("discord.js"),
   response = require("../../functions/response"),
   radio = require("../../functions/player"),
@@ -14,7 +19,9 @@ const
   ephemeral = selectLanguage(config.source.default_language).replies.ephemeral,
   replaceValues = require("../../functions/replaceValues"),
   database = require("../../functions/database"),
-  defaultLanguage = selectLanguage(config.source.default_language).commands.afk;
+  defaultLanguage = selectLanguage(config.source.default_language).commands.afk,
+  embed = require("../../storage/embed"),
+  deleteResponse = require("../../functions/deleteResponse");
 
 module.exports = {
   data: {
@@ -83,18 +90,12 @@ module.exports = {
       lang = await db.has(databaseNames.language) ? await db.get(databaseNames.language) : config.source.default_language,
       language = selectLanguage(lang).commands.afk,
       memberChannelId = interaction.member?.voice?.channelId,
-      queue = new radio();
+      queue = new radio(),
+      afk = client.commands.get("afk");
 
     let channel = interaction.user ? interaction.options.getChannel("channel") : interaction.mentions.channels.first() || interaction.guild.channels.cache.get(args[0]);
     if (!channel && memberChannelId)
       channel = interaction.member?.voice?.channel;
-
-    if (!channel && !memberChannelId)
-      return await sendError({
-        interaction,
-        isUpdateNeed: true,
-        log: language.replies.noChannelError
-      });
 
     if (!channel && await db.has(databaseNames.afk)) {
       const afkChannel = await db.get(databaseNames.afk);
@@ -104,11 +105,11 @@ module.exports = {
         data: {
           embeds: [
             new EmbedBuilder()
-              .setColor(copyRight.color.red)
+              .setColor(embed.color.red)
               .setFooter(
                 {
-                  text: copyRight.footer.footerText,
-                  iconURL: copyRight.footer.footerIcon
+                  text: embed.footer.footerText,
+                  iconURL: embed.footer.footerIcon
                 }
               )
               .setTitle(selectLanguage(lang).replies.error)
@@ -120,13 +121,13 @@ module.exports = {
             new ActionRowBuilder()
               .addComponents(
                 new ButtonBuilder()
-                  .setCustomId("setup-accept")
+                  .setCustomId("afk-accept")
                   .setEmoji("✅")
                   .setLabel(selectLanguage(lang).replies.buttons.buttonYes)
                   .setStyle(ButtonStyle.Success),
 
                 new ButtonBuilder()
-                  .setCustomId("setup-cancel")
+                  .setCustomId("afk-cancel")
                   .setEmoji("❌")
                   .setLabel(selectLanguage(lang).replies.buttons.buttonNo)
                   .setStyle(ButtonStyle.Secondary)
@@ -134,19 +135,31 @@ module.exports = {
           ]
         }
       });
-      const collector = await message.createMessageComponentCollector({ time: 60 * 1000, componentType: ComponentType.Button });
+      const collector = await message.createMessageComponentCollector({
+        time: 60 * 1000,
+        componentType: ComponentType.Button
+      });
       collector.on("collect", async (button) => {
+        if (button.user.id !== interaction.member.id)
+          return await sendError({
+            interaction: button,
+            log: replaceValues(selectLanguage(lang).commands.help.replies.invalidUser, {
+              mention_command: `</${afk.data.name}:${afk.data?.id}>`,
+              author: interaction.member
+            })
+          });
+
         switch (button.customId) {
-          case "setup-accept": {
+          case "afk-accept": {
             await button.deferUpdate();
-            await db.delete(databaseNames.panel);
+            await db.delete(databaseNames.afk);
             return await button.editReply({
               content: language.replies.deleteChannel,
               embeds: [],
               components: []
             });
           };
-          case "setup-cancel": {
+          case "afk-cancel": {
             collector.stop();
           };
         }
@@ -154,7 +167,16 @@ module.exports = {
       collector.on("end", async () => {
         return await deleteResponse({ interaction, message: message });
       });
+
+      return;
     }
+
+    if (!channel && !memberChannelId)
+      return await sendError({
+        interaction,
+        isUpdateNeed: true,
+        log: language.replies.noChannelError
+      });
 
     if (!queue.isConnection(interaction.guildId))
       return await sendError({

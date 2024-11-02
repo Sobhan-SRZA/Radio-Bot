@@ -12,10 +12,11 @@
                 "no": "否"
             }
         },
+        "noConnection": "```diff\n- 我目前没有播放任何文件，也不在频道中。```",
         "noChannelError": "```diff\n- 你需要连接到语音频道。```",
         "notMatchedVoice": "```diff\n- 你的语音频道与我所在的频道不匹配。请加入我所在的频道。```",
-        "noPermToView": "```diff\n- 我无法查看频道。请授予我“查看频道”的权限。```",
-        "noPermToConnect": "```diff\n- 我无法连接到频道。请授予我“连接频道”的权限。```",
+        "noPermToView": "```diff\n- 我无法查看频道。请授予我“ViewChannel”的权限。```",
+        "noPermToConnect": "```diff\n- 我无法连接到频道。请授予我“Connect”的权限。```",
         "channelFull": "```diff\n- 这个语音频道已满！```",
         "userDeaf": "```diff\n- 当你处于静音状态时，无法使用此命令。```",
         "clientMute": "```diff\n- 请先解除我的静音，然后再试一次。```",

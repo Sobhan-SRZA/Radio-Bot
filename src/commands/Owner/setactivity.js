@@ -25,6 +25,7 @@ module.exports = {
   },
   category: "owner",
   cooldown: 5,
+  aliases: ["sac"],
   only_owner: true,
   only_slash: false,
   only_message: true,
