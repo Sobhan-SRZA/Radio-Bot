@@ -207,12 +207,12 @@ module.exports = class {
     async radio(resources) {
         const connection = joinVoiceChannel(this.data);
         const player = createAudioPlayer(audioPlayerData);
-        resources
-            .forEach((re, index) => queue.set(++index, re));
+        // resources
+        //     .forEach((re, index) => queue.set(++index, re));
 
-        let count = 1;
-        if (queue.size < 1)
-            throw this.#error("No resource to play!");
+        // let count = 1;
+        // if (queue.size < 1)
+        //     throw this.#error("No resource to play!");
 
         player.play(
             createAudioResource(await this.#createStream(chooseRandom(resources)), audioResourceData)
@@ -223,9 +223,10 @@ module.exports = class {
             const [oldStatus, newStatus] = e.replace("state change:", "").split("\n").map(value => value.replace("from", "").replace("to", "").replaceAll(" ", "")).filter(value => value !== "").map(value => JSON.parse(value));
             if (newStatus.status === "idle") {
                 player.play(
-                    createAudioResource(await this.#createStream(queue.get(++count)), audioResourceData)
+                    // createAudioResource(await this.#createStream(queue.get(++count)), audioResourceData)
+                    createAudioResource(await this.#createStream(chooseRandom(resources)), audioResourceData)
                 );
-                if (count === queue.size) count = 1;
+                // if (count === queue.size) count = 1;
 
                 connection.subscribe(player);
                 audioPlayer.set(this.data.guildId, player);
