@@ -10,13 +10,14 @@ const
     chooseRandom = require("./chooseRandom"),
     audioPlayer = new Map(),
     queue = new Map(),
-    audioResourceData = {
-        inlineVolume: true,
-        inputType: StreamType.Arbitrary,
+    audioPlayerData = {
         behaviors: {
+            maxMissedFrames: Math.round(5000 / 20),
             noSubscriber: NoSubscriberBehavior.Pause
-        },
-        // maxMissedFrames: Math.round(5000 / 20)
+        }
+    },
+    audioResourceData = {
+        inlineVolume: true
     };
 
 /**
@@ -86,7 +87,7 @@ module.exports = class {
      */
     async play(resource) {
         const connection = joinVoiceChannel(this.data);
-        const player = createAudioPlayer();
+        const player = createAudioPlayer(audioPlayerData);
         player.play(
             createAudioResource(await this.#createStream(resource), audioResourceData)
         );
@@ -205,7 +206,7 @@ module.exports = class {
      */
     async radio(resources) {
         const connection = joinVoiceChannel(this.data);
-        const player = createAudioPlayer();
+        const player = createAudioPlayer(audioPlayerData);
         resources
             .forEach((re, index) => queue.set(++index, re));
 

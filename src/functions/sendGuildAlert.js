@@ -1,8 +1,7 @@
 const
   {
     EmbedBuilder,
-    WebhookClient,
-    ChannelType
+    WebhookClient
   } = require("discord.js"),
   error = require("./error"),
   copyRight = require("../storage/embed"),
@@ -26,7 +25,7 @@ module.exports = async function ({
   try {
     let
       channel,
-      owner = await guild?.fetchOwner(),
+      owner = {},
       invite = await createORgetInvite(guild),
       messageData = {};
 
@@ -42,11 +41,13 @@ module.exports = async function ({
       channel = guildChannel;
 
     try {
-      if (owner.user)
+      owner = await guild?.fetchOwner();
+      if (!owner.user)
         owner = await (await guild.fetch()).fetchOwner();
 
-      if (owner.user)
+      if (!owner.user)
         owner.user = await client.users.cache.get(guild.ownerId);
+
     } catch { }
     const embed = new EmbedBuilder()
       .setDescription(description.replace("{guilds}", await client.guilds.cache.size.toLocaleString()))
