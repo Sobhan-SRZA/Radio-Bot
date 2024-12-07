@@ -4,12 +4,11 @@ const
         createAudioPlayer,
         createAudioResource,
         NoSubscriberBehavior,
-        StreamType,
         getVoiceConnection
     } = require("@discordjs/voice"),
     chooseRandom = require("./chooseRandom"),
     audioPlayer = new Map(),
-    queue = new Map(),
+    // queue = new Map(),
     audioPlayerData = {
         behaviors: {
             maxMissedFrames: Math.round(5000 / 20),
