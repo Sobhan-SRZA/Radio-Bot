@@ -1,3 +1,4 @@
+
 const
     {
         joinVoiceChannel,
@@ -7,8 +8,13 @@ const
         getVoiceConnection
     } = require("@discordjs/voice"),
     chooseRandom = require("./chooseRandom"),
+    {
+        useMainPlayer,
+        QueueRepeatMode,
+        useQueue,
+        getVoiceConnections
+    } = require("discord-player"),
     audioPlayer = new Map(),
-    // queue = new Map(),
     audioPlayerData = {
         behaviors: {
             maxMissedFrames: Math.round(5000 / 20),
@@ -99,7 +105,7 @@ module.exports = class {
      * @returns {getVoiceConnection}
      */
     get connection() {
-        return getVoiceConnection(this.data.guildId);
+        return getVoiceConnections().get(this.data.guildId);
     }
 
     /**
@@ -118,8 +124,8 @@ module.exports = class {
      * @returns {number}
      */
     get volume() {
-        const player = audioPlayer.get(this.data.guildId);
-        return Number(player.state.resource.volume.volume);
+        const queue = (useMainPlayer()).queues.cache.get(this.data.guildId);
+        return Number(queue.node.volume);
     }
 
     /**
@@ -128,12 +134,10 @@ module.exports = class {
      * @returns {number}
      */
     setVolume(input) {
-        const player = audioPlayer.get(this.data.guildId);
+        const queue = (useMainPlayer()).queues.cache.get(this.data.guildId);
         if (input <= 100 && input >= 0)
-            player.state.resource.volume.volume = input / 100;
+            queue.node.setVolume(input);
 
-        const connection = joinVoiceChannel(this.data);
-        connection.subscribe(player);
         return Number(this.volume);
     }
 
@@ -142,18 +146,13 @@ module.exports = class {
      * @returns {void}
      */
     pause() {
-        const connection = joinVoiceChannel(this.data);
-        const player = audioPlayer.get(this.data.guildId);
-        if (this.isPaused())
-            player.unpause();
+        const queue = (useMainPlayer()).queues.cache.get(this.data.guildId);
+        if (queue.node.isPaused())
+            queue.node.resume();
 
         else
-            player.pause();
+            queue.node.pause();
 
-        // if (!this.isPaused())
-        //     player.pause();
-
-        connection.subscribe(player);
         return this;
     }
 
@@ -162,12 +161,10 @@ module.exports = class {
      * @returns {void}
      */
     resume() {
-        const connection = joinVoiceChannel(this.data);
-        const player = audioPlayer.get(this.data.guildId);
-        if (this.isPaused())
-            player.unpause();
+        const queue = (useMainPlayer()).queues.cache.get(this.data.guildId);
+        if (queue.node.isPaused())
+            queue.node.resume();
 
-        connection.subscribe(player);
         return this;
     }
 
@@ -176,8 +173,8 @@ module.exports = class {
      * @returns {boolean}
      */
     isPaused() {
-        const player = audioPlayer.get(this.data.guildId);
-        if (player.state.status === "paused")
+        const queue = (useMainPlayer()).queues.cache.get(this.data.guildId);
+        if (queue.node.isPaused())
             return true;
 
         else return false;
@@ -188,13 +185,10 @@ module.exports = class {
      * @returns {void}
      */
     stop() {
-        const connection = getVoiceConnection(this.data.guildId);
-        const player = audioPlayer.get(this.data.guildId);
+        const queue = (useMainPlayer()).queues.cache.get(this.data.guildId);
         try {
-            player.stop();
-            audioPlayer.delete(this.data.guildId);
+            queue.delete();
         } catch { }
-        connection.destroy();
         return this;
     }
 
@@ -204,34 +198,32 @@ module.exports = class {
      * @returns {import("@discordjs/voice").AudioResource}
      */
     async radio(resources) {
-        const connection = joinVoiceChannel(this.data);
-        const player = createAudioPlayer(audioPlayerData);
-        // resources
-        //     .forEach((re, index) => queue.set(++index, re));
-
-        // let count = 1;
-        // if (queue.size < 1)
-        //     throw this.#error("No resource to play!");
-
-        player.play(
-            createAudioResource(await this.#createStream(chooseRandom(resources)), audioResourceData)
-        );
-        connection.subscribe(player);
-        audioPlayer.set(this.data.guildId, player);
-        player.on("debug", async (e) => {
-            const [oldStatus, newStatus] = e.replace("state change:", "").split("\n").map(value => value.replace("from", "").replace("to", "").replaceAll(" ", "")).filter(value => value !== "").map(value => JSON.parse(value));
-            if (newStatus.status === "idle") {
-                player.play(
-                    // createAudioResource(await this.#createStream(queue.get(++count)), audioResourceData)
-                    createAudioResource(await this.#createStream(chooseRandom(resources)), audioResourceData)
-                );
-                // if (count === queue.size) count = 1;
-
-                connection.subscribe(player);
-                audioPlayer.set(this.data.guildId, player);
-                return this;
-            }
-        })
+        try {
+            const player = useMainPlayer();
+            const play = async () => {
+                try {
+                    const query = (await fetch(chooseRandom(resources))).url;
+                    await player.play(this.data.channelId, query, {
+                        nodeOptions: {
+                            pauseOnEmpty: true,
+                            selfDeaf: true,
+                            volume: 100,
+                            leaveOnEmpty: false,
+                            leaveOnEnd: false,
+                            leaveOnStop: true,
+                            repeatMode: QueueRepeatMode.QUEUE
+                        }
+                    });
+                } catch {
+                    await play();
+                }
+            };
+            await play();
+            player.events.on("emptyQueue", await play());
+            player.events.on("playerError", await play());
+            player.events.on("error", await play());
+            player.events.on("connectionDestroyed", await play());
+        } catch { }
         return this;
     }
 
