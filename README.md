@@ -167,12 +167,16 @@ This bot is built using **Node.js** and utilizes the following key packages:
 |------------- | ------------- | ------------- |
 | [discord.js](https://www.npmjs.com/package/discord.js) | Latest ^14.16.2 | `npm install discord.js` |
 | [@discordjs/voice](https://www.npmjs.com/package/@discordjs/voice) | Latest ^0.17.0 | `npm install @discordjs/voice` |
+| [@discord-player/extractor](https://www.npmjs.com/package/@discord-player/extractor) | Latest ^7.0.0-dev.3 | `npm install @discord-player/extractor` |
+| [discord-player](https://www.npmjs.com/package/discord-player) | Latest ^7.0.0-dev.3 | `npm install discord-player` |
 | [dotenv](https://www.npmjs.com/package/dotenv) | Latest ^16.4.5 | `npm install dotenv` |
 | [ffmpeg-static](https://www.npmjs.com/package/ffmpeg-static) | Latest ^5.2.0 | `npm install ffmpeg-static` |
 | [quick.db](https://www.npmjs.com/package/quick.db) | Latest ^9.1.7 | `npm install quick.db` |
 | [cli-color](https://www.npmjs.com/package/cli-color) | Latest ^2.0.4 | `npm install cli-color` |
 | [libsodium-wrappers](https://www.npmjs.com/package/libsodium-wrappers) | Latest ^0.7.14 | `npm install libsodium-wrappers` |
+| [prism-media](https://www.npmjs.com/package/prism-media) | Latest ^1.3.5 | `npm install prism-media` |
 | [opusscript](https://www.npmjs.com/package/opusscript) | Latest ^0.0.8 | `npm install opusscript` |
+| [mediaplex](https://www.npmjs.com/package/mediaplex) | Latest ^1.0.0 | `npm install mediaplex` |
 
 ---
 
