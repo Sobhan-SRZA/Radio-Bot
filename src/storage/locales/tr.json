@@ -204,9 +204,15 @@
             }
         },
         "pause": {
-            "description": "Radyo oynatmayı duraklatın.",
+            "description": "Oynatıcıyı geçici olarak durdur.",
             "replies": {
                 "paused": "Oynatıcı başarıyla duraklatıldı."
+            }
+        },
+        "resume": {
+            "description": "Oynatıcıyı devam ettir.",
+            "replies": {
+                "resumed": "Oynatıcı başarıyla devam ettirildi."
             }
         },
         "play": {

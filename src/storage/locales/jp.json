@@ -204,9 +204,15 @@
             }
         },
         "pause": {
-            "description": "ラジオ再生を一時停止します。",
+            "description": "プレイヤーを一時停止します。",
             "replies": {
-                "paused": "プレイヤーが正常に一時停止されました。"
+                "paused": "プレイヤーは正常に一時停止されました。"
+            }
+        },
+        "resume": {
+            "description": "プレイヤーを再開します。",
+            "replies": {
+                "resumed": "プレイヤーは正常に再開されました。"
             }
         },
         "play": {

@@ -65,14 +65,6 @@ client.token = config.discord.token;
 client.commands = new Collection();
 client.cooldowns = new Collection();
 
-// Discord Player Setup
-const { DefaultExtractors } = require("@discord-player/extractor");
-const { Player } = require("discord-player");
-const player = new Player(client);
-(async () => {
-  await player.extractors.loadMulti(DefaultExtractors);
-})();
-
 // Load Handlers
 let count = 0;
 post(
