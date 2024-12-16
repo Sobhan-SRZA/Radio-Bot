@@ -25,17 +25,16 @@ module.exports = async (client, oldState, newState) => {
         if (oldState.member.id === client.user.id && !newState.channelId)
             if (await db.has(databaseNames.afk)) {
                 return await player
-                    .setData({
-                        channelId: channel,
-                        guildId: oldState.guild.id,
-                        adapterCreator: oldState.guild.voiceAdapterCreator
-                    })
+                    .setData(
+                        {
+                            channelId: channel,
+                            guildId: oldState.guild.id,
+                            adapterCreator: oldState.guild.voiceAdapterCreator
+                        }
+                    )
                     .radio(radiostation[station]);
-            } else
-                if (player.isConnection(oldState.guild.id))
-                    return await player
-                        .stop();
 
+            }
     } catch (e) {
         error(e)
     }

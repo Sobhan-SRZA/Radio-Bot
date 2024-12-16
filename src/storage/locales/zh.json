@@ -204,9 +204,15 @@
             }
         },
         "pause": {
-            "description": "暂停电台播放。",
+            "description": "暂时停止播放器。",
             "replies": {
                 "paused": "播放器已成功暂停。"
+            }
+        },
+        "resume": {
+            "description": "继续播放播放器。",
+            "replies": {
+                "resumed": "播放器已成功恢复。"
             }
         },
         "play": {

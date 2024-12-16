@@ -21,15 +21,17 @@ module.exports = async (client) => {
                 channel = await db.get(databaseNames.afk),
                 station = await db.get(databaseNames.station) || "Lofi Radio";
 
-            if (await db.has(databaseNames.afk)) 
+            if (await db.has(databaseNames.afk))
                 return await new player()
-                    .setData({
-                        channelId: channel,
-                        guildId: guild.id,
-                        adapterCreator: guild.voiceAdapterCreator
-                    })
+                    .setData(
+                        {
+                            channelId: channel,
+                            guildId: guild.id,
+                            adapterCreator: guild.voiceAdapterCreator
+                        }
+                    )
                     .radio(radiostation[station]);
-            
+
         })
     } catch (e) {
         error(e)

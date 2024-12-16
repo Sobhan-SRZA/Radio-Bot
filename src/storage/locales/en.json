@@ -204,9 +204,15 @@
             }
         },
         "pause": {
-            "description": "Pause radio playback.",
+            "description": "Temporarily stop the player.",
             "replies": {
-                "paused": "The player was successfully paused."
+                "paused": "The player has been successfully paused."
+            }
+        },
+        "resume": {
+            "description": "Resume the player.",
+            "replies": {
+                "resumed": "The player has been successfully resumed."
             }
         },
         "play": {
