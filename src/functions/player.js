@@ -30,27 +30,33 @@ const
  * player.play("url");
  * 
  * // Get connection volume.
- * console.log(player.volume);
+ * console.log(player.volume);  // output: <player.volume> like 100
  * 
  * // Set connection volume.
- * console.log(player.setVolume(50));
+ * console.log(player.setVolume(50)); // output: 50
  * 
  * // Pause the player.
- * if(player.isPaused())
- *  player.pause();
+ * if(player.isPaused()) // If it's true it should be resumed.
+ *  player.resume();
+ * 
  * else
- *  // This one sould unpause.
+ *  // This one sould be paused.
  *  player.pause();
  * 
  * // Radio mode.
  * player.radio(["url"]);
+ * 
+ * // Stop the player.
+ * player.stop();
  * ```
  */
-module.exports = class {
+module.exports = class Player {
 
     /**
      * 
+     * @description To use this class with default settings you may to add "interaction" to it.
      * @param {import("discord.js").CommandInteraction} interaction 
+     * @returns {Player}
      */
     constructor(interaction) {
         if (interaction)
@@ -66,8 +72,9 @@ module.exports = class {
 
     /**
      * 
-     * @param {{channelId: string, guildId: string, adapterCreator: import("discord.js").InternalDiscordGatewayAdapterCreator }} param0 
-     * @returns 
+     * @description Set player data's for using the class.
+     * @param {import("@discordjs/voice").JoinVoiceChannelOptions & import("@discordjs/voice").CreateVoiceConnectionOptions} param0 
+     * @returns {Player}
      */
     setData({ channelId, guildId, adapterCreator, selfDeaf = true }) {
         this.data = {
@@ -81,11 +88,56 @@ module.exports = class {
 
     /**
      * 
+     * @description Set guild id of player data.
+     * @param {string} guildId 
+     * @returns {Player}
+     */
+    setGuildId(guildId) {
+        this.data.guildId = guildId;
+        return this;
+    }
+
+    /**
+     * 
+     * @description Set adapterCreator of player data.
+     * @param {import("discord.js").InternalDiscordGatewayAdapterCreator} adapterCreator 
+     * @returns {Player}
+     */
+    setAdapterCreator(adapterCreator) {
+        this.data.adapterCreator = adapterCreator;
+        return this;
+    }
+
+    /**
+     * 
+     * @description Set bot deaf in the voice channel.
+     * @param {boolean} selfDeaf 
+     * @returns {Player}
+     */
+    setSelfDeaf(selfDeaf) {
+        this.data.selfDeaf = selfDeaf;
+        return this;
+    }
+
+    /**
+     * 
+     * @description Set voice channel id to join or play something there.
+     * @param {string} channelId 
+     * @returns {Player}
+     */
+    setVoiceChannelId(channelId) {
+        this.data.channelId = channelId;
+        return this;
+    }
+
+    /**
+     * 
+     * @description Start playing resource in the voice.
      * @param {string} resource 
      * @returns {import("@discordjs/voice").AudioPlayer}
      */
     async play(resource) {
-        const connection = this.connection;
+        const connection = this.join();
         const player = createAudioPlayer(audioPlayerData);
         player.play(
             createAudioResource(await this.#createStream(resource), audioResourceData)
@@ -96,17 +148,30 @@ module.exports = class {
     }
 
     /**
+     * 
+     * @description Join to voice channel.
+     * @param {string} guildId
      * @returns {import("@discordjs/voice").VoiceConnection}
      */
-    get connection() {
+    join() {
         if (this.isConnection(this.data.guildId))
             return getVoiceConnection(this.data.guildId);
 
-        else
-            return joinVoiceChannel(this.data);
+        return joinVoiceChannel(this.data);
     }
 
     /**
+     * 
+     * @description Find a voice connection and return it.
+     * @returns {import("@discordjs/voice").VoiceConnection}
+     */
+    get connection() {
+        return getVoiceConnection(this.data.guildId);
+    }
+
+    /**
+     * 
+     * @description Find a voice connection and return it to boolean.
      * @param {string} guildId
      * @returns {boolean}
      */
@@ -114,11 +179,12 @@ module.exports = class {
         if (getVoiceConnection(guildId))
             return true;
 
-        else
-            false;
+        return false;
     }
 
     /**
+     * 
+     * @description Get player volume numver and return it.
      * @returns {number}
      */
     get volume() {
@@ -128,6 +194,7 @@ module.exports = class {
 
     /**
      * 
+     * @description Find a voice connection and return it to boolean.
      * @param {number} input 
      * @returns {number}
      */
@@ -143,6 +210,7 @@ module.exports = class {
 
     /**
      * 
+     * @description Check is player paused or not and return boolean.
      * @returns {boolean}
      */
     isPaused() {
@@ -155,6 +223,7 @@ module.exports = class {
 
     /**
      * 
+     * @description Pausing the player.
      * @returns {void}
      */
     pause() {
@@ -169,6 +238,7 @@ module.exports = class {
 
     /**
      * 
+     * @description Resuming the player.
      * @returns {void}
      */
     resume() {
@@ -183,6 +253,7 @@ module.exports = class {
 
     /**
      * 
+     * @description Stop the player and break the connection.
      * @returns {void}
      */
     stop() {
@@ -196,6 +267,7 @@ module.exports = class {
 
     /**
      * 
+     * @description Radio mode: It's should be play some resources many times as a loop.
      * @param {Array<string>} resources 
      * @returns {import("@discordjs/voice").AudioResource}
      */
