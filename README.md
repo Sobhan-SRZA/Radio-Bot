@@ -1,5 +1,6 @@
 <div align="center">
     <img src="https://badges.aleen42.com/src/node.svg">
+    <img src="https://badges.aleen42.com/src/javascript.svg">
     <img src="https://img.shields.io/github/v/release/Sobhan-SRZA/Radio-Bot?label=Version">
     <div>
         <img src="https://img.shields.io/github/license/Sobhan-SRZA/Radio-Bot?label=License">
