@@ -137,14 +137,18 @@ module.exports = class Player {
      * @returns {import("@discordjs/voice").AudioPlayer}
      */
     async play(resource) {
-        const connection = this.join();
-        const player = createAudioPlayer(audioPlayerData);
-        player.play(
-            createAudioResource(await this.#createStream(resource), audioResourceData)
-        );
-        connection.subscribe(player);
-        audioPlayer.set(this.data.guildId, player);
-        return player;
+        try {
+            const connection = this.join();
+            const player = createAudioPlayer(audioPlayerData);
+            player.play(
+                createAudioResource(await this.#createStream(resource), audioResourceData)
+            );
+            connection.subscribe(player);
+            audioPlayer.set(this.data.guildId, player);
+            return player;
+        } catch {
+            await this.play(resource);
+        }
     }
 
     /**
@@ -273,6 +277,11 @@ module.exports = class Player {
      */
     async radio(resources) {
         const player = await this.play(chooseRandom(resources));
+        const connection = this.connection;
+        connection.on("error", async () => {
+            const player = await this.play(chooseRandom(resources));
+            return player;
+        })
         player.on("debug", async (e) => {
             const [oldStatus, newStatus] = e.replace("state change:", "").split("\n").map(value => value.replace("from", "").replace("to", "").replaceAll(" ", "")).filter(value => value !== "").map(value => JSON.parse(value));
             if (newStatus.status === "idle") {
