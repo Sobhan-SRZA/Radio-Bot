@@ -5,7 +5,6 @@
         <img src="https://img.shields.io/github/license/Sobhan-SRZA/Radio-Bot?label=License">
         <img src="https://img.shields.io/github/last-commit/Sobhan-SRZA/Radio-Bot?label=Last Commit">
         <img src="https://img.shields.io/github/release-date/Sobhan-SRZA/Radio-Bot?label=Last Release">
-        <img src="https://img.shields.io/github/downloads/Sobhan-SRZA/Radio-Bot/total?label=Downloads">
     </div>
     <img src="https://img.shields.io/github/forks/Sobhan-SRZA/Radio-Bot?label=Forks">
     <img src="https://img.shields.io/github/stars/Sobhan-SRZA/Radio-Bot?label=Stars">
