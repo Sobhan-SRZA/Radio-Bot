@@ -11,12 +11,14 @@ const
     audioPlayer = new Map(),
     audioPlayerData = {
         behaviors: {
-            maxMissedFrames: Math.round(5000 / 20),
-            noSubscriber: NoSubscriberBehavior.Pause
+            // maxMissedFrames: Math.round(5000 / 20),
+            // noSubscriber: NoSubscriberBehavior.Pause
+            noSubscriber: NoSubscriberBehavior.Play
         }
     },
     audioResourceData = {
-        inlineVolume: true
+        inlineVolume: true,
+        debug: true
     };
 
 /**
